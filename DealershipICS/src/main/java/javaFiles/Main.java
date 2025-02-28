@@ -328,7 +328,7 @@ public class Main {
                 dealership = new Dealership(JSONIO.getDealIDVal(map));
                 company.add_dealership(dealership);
             }
-            Vehicle vehicle = createNewVehicle(
+            Vehicle vehicle = Dealership.createNewVehicle(
                     JSONIO.getTypeVal(map),
                     JSONIO.getVehicleIDVal(map)
             );
@@ -521,33 +521,5 @@ public class Main {
         }
     }
 
-    /**
-     * Creates a new Vehicle object based on the given type.
-     * <p>
-     * This method acts as a factory for creating different types of vehicles.  It uses
-     * a switch statement to determine which concrete Vehicle class to instantiate
-     * based on the provided argument vehicleType
-     *
-     * @param vehicleType The type of vehicle to create ("suv", "sedan", "pickup", "sports car").
-     * @param ID          The ID of the vehicle. This is used in the error message if the
-     *                    vehicle type is not supported.
-     * @return A new {@link Vehicle} object of the specified type, or  null if
-     *         the vehicleType is not supported. If null is returned, a
-     *         message is printed to the console indicating the unsupported type and
-     *         the vehicle ID was not added.
-     */
-    private static Vehicle createNewVehicle(String vehicleType, String ID) {
-        return switch (vehicleType) {
-            case "suv" -> new SUV();
-            case "sedan" -> new Sedan();
-            case "pickup" -> new Pickup();
-            case "sports car" -> new Sports_Car();
-            default -> {
-                System.out.println("\"" + vehicleType +
-                        "\" is not a supported vehicle type. " +
-                        "Vehicle ID: " + ID + "was not added");
-                yield null;
-            }
-        };
-    }
+
 }
