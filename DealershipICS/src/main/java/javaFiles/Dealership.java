@@ -106,7 +106,7 @@ public class Dealership {
      * using the provided details. It then attempts to add the new vehicle to the dealership's
      * inventory, but only if the vehicle type is valid. If the vehicle type is invalid, an error
      * message is printed, and the vehicle is not added.
-     *
+     *</p>
      * {@link #createNewVehicle(String,String)} is used to create and validate the vehicle type.
      * If the vehicle type is unsupported, the method will print an error message and return without
      * making any changes to the inventory. If the vehicle is created successfully, it will be added
