@@ -118,7 +118,7 @@ public class Main {
         {
             // for each dealership get the list of vehicles and print
             // data for each vehicle
-            list_vehicles = dealership.getInventory_Vehicles();
+            list_vehicles = dealership.getInventoryVehicles();
 
             // if current dealership does not have any vehicles, print message and continue to next dealership
             if(list_vehicles.isEmpty())
@@ -232,24 +232,24 @@ public class Main {
         String userInput;
         System.out.println("Enable or disable vehicle receiving status for dealership "
                 + dealer.getDealerId() + "? (Enter 'enable' or 'disable')\n" +
-                "Currently enabled? (" + dealer.getStatus_AcquiringVehicles() + ")");
+                "Currently enabled? (" + dealer.getStatusAcquiringVehicle() + ")");
         userInput = scanner.nextLine();
 
         if (userInput.equalsIgnoreCase("enable")) {
             // Check if the dealership's vehicle receiving status is already enabled
-            if (dealer.getStatus_AcquiringVehicles()) {
+            if (dealer.getStatusAcquiringVehicle()) {
                 System.out.println("Dealership " + dealer.getDealerId() + " is already set to receive vehicles.");
             } else {
                 // Enable vehicle receiving for the dealership
-                dealer.enable_receiving_vehicle();
+                dealer.enableReceivingVehicle();
                 System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been enabled.");
             }
         } else if (userInput.equalsIgnoreCase("disable")) {
             // Disable the vehicle receiving status
-            if (!dealer.getStatus_AcquiringVehicles()) {
+            if (!dealer.getStatusAcquiringVehicle()) {
                 System.out.println("Dealership " + dealer.getDealerId()+ " is already set to not receive vehicles.");
             } else {
-                dealer.disable_receiving_vehicle();
+                dealer.disableReceivingVehicle();
                 System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been disabled.");
             }
         } else {
@@ -427,7 +427,7 @@ public class Main {
      */
     private static List<Map<String, Object>> getDealershipData(Dealership dealership) {
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Vehicle vehicle: dealership.getInventory_Vehicles()) {
+        for (Vehicle vehicle: dealership.getInventoryVehicles()) {
             Map<String, Object> map = new HashMap<>();
             map.put(JSONIO.getDealIDKey(), dealership.getDealerId());
             map.put(JSONIO.getTypeKey(), vehicle.getVehicleType());
@@ -479,10 +479,10 @@ public class Main {
         List<Vehicle> accepted = new ArrayList<>();
         for (Vehicle vehicle : inventory.keySet()) {
             Dealership dealership = company.find_dealership(inventory.get(vehicle));
-            if (dealership.getStatus_AcquiringVehicles()) {
+            if (dealership.getStatusAcquiringVehicle()) {
                 accepted.add(vehicle);
             }
-            dealership.add_incoming_vehicle(vehicle);
+            dealership.addIncomingVehicle(vehicle);
         }
         for (Vehicle vehicle : accepted) {
             inventory.remove(vehicle);
@@ -510,7 +510,7 @@ public class Main {
             String open;
             if (d == null) {
                 open = " has not been initiated (will be initiated as accepting Vehicles).";
-            } else if (d.getStatus_AcquiringVehicles()) {
+            } else if (d.getStatusAcquiringVehicle()) {
                 open = " is accepting Vehicles.";
             } else {
                 open = " is not accepting Vehicles.";

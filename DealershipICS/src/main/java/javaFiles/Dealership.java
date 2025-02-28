@@ -10,60 +10,60 @@ import java.util.ArrayList;
     Author: Patrick McLucas */
 
 public class Dealership {
-    private final String dealer_id;
-    private final ArrayList<Vehicle> vehicle_inventory;
-    private boolean receiving_vehicle; 
+    private final String dealerID;
+    private final ArrayList<Vehicle> vehicleInventory;
+    private boolean receivingVehicle;
 
     // Instantiation requires dealer_ID
-    public Dealership(String dealer_id) {
-        this.dealer_id = dealer_id;
-        this.receiving_vehicle = true;
-        vehicle_inventory = new ArrayList<>();
+    public Dealership(String dealerID) {
+        this.dealerID = dealerID;
+        this.receivingVehicle = true;
+        vehicleInventory = new ArrayList<>();
     }
 
     // Returns Dealer ID
     public String getDealerId () {
-        return dealer_id;
+        return dealerID;
     }
 
     // Provides vehicle acquisition status
-    public Boolean getStatus_AcquiringVehicles() {
-        return receiving_vehicle;
+    public Boolean getStatusAcquiringVehicle() {
+        return receivingVehicle;
     }
 
     // Provides list of vehicles at the dealership
-    public ArrayList<Vehicle> getInventory_Vehicles() {
-        return vehicle_inventory;
+    public ArrayList<Vehicle> getInventoryVehicles() {
+        return vehicleInventory;
     }
 
     // ENABLES vehicle acquisition.
-    public void enable_receiving_vehicle() {
-        this.receiving_vehicle = true;
+    public void enableReceivingVehicle() {
+        this.receivingVehicle = true;
     }
 
     // DISABLES vehicle acquisition.
-    public void disable_receiving_vehicle() {
-        this.receiving_vehicle = false;
+    public void disableReceivingVehicle() {
+        this.receivingVehicle = false;
     }
 
     // Method for adding new vehicles to the dealership.
-    public void add_incoming_vehicle(Vehicle newVehicle) {
+    public void addIncomingVehicle(Vehicle newVehicle) {
         // Checks if the dealership is accepting new vehicles.
-        if (!receiving_vehicle) {
-            System.out.println("Dealership " + this.dealer_id + " is not accepting new vehicles at this time.");
-            System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealer_id +".");
+        if (!receivingVehicle) {
+            System.out.println("Dealership " + this.dealerID + " is not accepting new vehicles at this time.");
+            System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerID +".");
             return; // Exits method if the dealership is not accepting new vehicles.
         } 
         
         // Checks if the new vehicle is already located at the dealership. 
-        for (Vehicle vehicle : vehicle_inventory) {
+        for (Vehicle vehicle : vehicleInventory) {
             if (vehicle.getVehicleId().equals(newVehicle.getVehicleId())) {
                 System.out.println("This vehicle is already located at the dealership.");
-                System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealer_id + ".");
+                System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerID + ".");
                 return; // Exits method if the vehicle already exists at the dealership
             }
         }
-        this.vehicle_inventory.add(newVehicle);
+        this.vehicleInventory.add(newVehicle);
     }
 }
 
