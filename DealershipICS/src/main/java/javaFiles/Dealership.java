@@ -68,7 +68,7 @@ public class Dealership {
 
     /**
      * Creates a new Vehicle object based on the given type.
-     * <p>
+     *
      * This method acts as a factory for creating different types of vehicles.  It uses
      * a switch statement to determine which concrete Vehicle class to instantiate
      * based on the provided argument vehicleType
@@ -82,6 +82,9 @@ public class Dealership {
      *         the vehicle ID was not added.
      */
     public static Vehicle createNewVehicle(String vehicleType, String ID) {
+
+        vehicleType = vehicleType.toLowerCase();
+
         return switch (vehicleType) {
             case "suv" -> new SUV();
             case "sedan" -> new Sedan();
@@ -94,6 +97,61 @@ public class Dealership {
                 yield null;
             }
         };
+    }
+
+
+    /**
+     * Adds a new vehicle to the dealership inventory based on the provided vehicle details.
+     * This method creates a new vehicle based on the vehicle type and sets its attributes
+     * using the provided details. It then attempts to add the new vehicle to the dealership's
+     * inventory, but only if the vehicle type is valid. If the vehicle type is invalid, an error
+     * message is printed, and the vehicle is not added.
+     *
+     * {@link #createNewVehicle(String,String)} is used to create and validate the vehicle type.
+     * If the vehicle type is unsupported, the method will print an error message and return without
+     * making any changes to the inventory. If the vehicle is created successfully, it will be added
+     * to the dealership's inventory using the {@link #addIncomingVehicle(Vehicle)} method.
+     *
+     *
+     * @param vehicleID The unique identifier for the vehicle.
+     * @param vehicleManufacturer The manufacturer of the vehicle.
+     * @param vehicleModel The model of the vehicle.
+     * @param vehiclePrice The price of the vehicle. The price must be a positive value representing the
+     *                     cost of the vehicle.
+     * @param acquisitionDate The date when the vehicle was acquired by the dealership.
+     *                        @note acquisitionDate is a long value representing milliseconds
+     *                        since the epoch.
+     * @param vehicleType The type of the vehicle. This should be one of the following types:
+     *                    "suv", "sedan", "pickup", or "sports car". If an unsupported type is provided,
+     *                    the method will not add the vehicle and will print an error message.
+     *
+     */
+    public void manualVehicleAdd(String vehicleID, String vehicleManufacturer, String vehicleModel, long vehiclePrice, long acquisitionDate, String vehicleType) {
+
+        // Ensure the vehicle price is positive.
+        if (vehiclePrice <= 0) {
+            System.out.println("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleID + " was not added.");
+            return;  // Exit the method if the price is not positive.
+        }
+
+        Vehicle newVehicle = createNewVehicle(vehicleType, vehicleID);
+
+        // Check if the vehicle creation was successful (newVehicle is not null).
+        if (newVehicle == null) {
+            // Handle the case where the vehicle type is unsupported.
+            System.out.println("Vehicle creation failed. Invalid vehicle type: " + vehicleType);
+            return;  // Exit the method if vehicle creation failed.
+        }
+
+
+        newVehicle.setVehicleId(vehicleID);
+        newVehicle.setVehicleManufacturer(vehicleManufacturer);
+        newVehicle.setVehicleModel(vehicleModel);
+        newVehicle.setVehiclePrice(vehiclePrice);
+        newVehicle.setAcquisitionDate(acquisitionDate);
+
+
+        this.addIncomingVehicle(newVehicle);
     }
 
 
