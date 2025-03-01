@@ -9,7 +9,7 @@ public class Main {
         String userInput;
         Company company = new Company("c_ID", "c_Name");
 
-        readData(company, scanner);
+        company.dataToInventory(readData(scanner));
 
         while (true) {
             // Prompt user for the following:
@@ -44,10 +44,10 @@ public class Main {
                 case "3":
                     System.out.println("Changing dealership vehicle receiving status...");
 
-                    Dealership dealer = getDealership(company, scanner); // will hold Dealership object
+                    int dealerIndex = getDealershipIndex(company, scanner); // will hold index of Dealership object
                     // Proceed with enabling or disabling the vehicle receiving status once a valid dealership is found
-                    if (dealer != null) {
-                        changeReceivingStatus(dealer, scanner);
+                    if (dealerIndex != -1) {
+                        changeReceivingStatus(company, dealerIndex, scanner);
                     }
 
                     // After completing the dealership status change process, return to the main menu
@@ -59,7 +59,7 @@ public class Main {
                     continue;
                 case "5":
                     // reading another JSON file
-                    readData(company, scanner);
+                    company.dataToInventory(readData(scanner));
                     System.out.println("Reading JSON file...");
                     continue;
 
@@ -80,41 +80,6 @@ public class Main {
         scanner.close();
     }
 
-
-
-
-
-    /**
-     * Generates a formatted list of dealership IDs.
-     * <p>
-     * This method retrieves all dealerships associated with the given company and
-     * creates a string containing their IDs, separated by tabs.  The IDs are arranged
-     * with a maximum of 6 IDs per line. If the company has no dealerships,
-     * the method returns a message indicating this.
-     *
-     * @param company The {@link Company} object whose dealership IDs are to be retrieved.
-     * @return A string containing the formatted list of dealership IDs, or the
-     *         message "No valid Dealerships." if the company has no dealerships.
-     */
-    private static String getDealershipIDList(Company company) {
-        StringBuilder output = new StringBuilder();
-        int added = 0;
-        int idPerLine = 6;
-        for (Dealership dealership : company.get_list_dealerships()) {
-            output.append(dealership.getDealerId()).append("\t");
-            if (added % idPerLine == idPerLine - 1) {
-                output.append("\n");
-            }
-            added++;
-        }
-        if (output.isEmpty()) {
-            return "No valid Dealerships.";
-        }
-        return output.toString();
-    }
-
-
-
     /**
      * Prompts the user to select a dealership by ID.
      * <p>
@@ -126,26 +91,26 @@ public class Main {
      * @param company The {@link Company} object containing the dealerships.
      * @param scanner The {@link Scanner} object used to read user input.
      * @return The selected {@link Dealership} object if a valid ID is entered, or
-     *         null if the user chooses to return to the main menu
+     *         -1 if the user chooses to return to the main menu
      */
-    private static Dealership getDealership(Company company, Scanner scanner) {
+    private static int getDealershipIndex(Company company, Scanner scanner) {
         String userInput;
-        Dealership dealer;
+        int dealerIndex;
         do {
-            System.out.println("Valid ID's:\n" +getDealershipIDList(company));
+            System.out.println("Valid ID's:\n" + company.getDealershipIDList());
             System.out.print("Enter the ID of the dealership or back to return to menu: ");
             userInput = scanner.nextLine();
 
             // If user enters "exit", go back to the main menu
             if (userInput.equalsIgnoreCase("back")) {
                 System.out.println("Returning to the main menu...");
-                return null; // Exit the method and return to the main menu
+                return -1; // Exit the method and return to the main menu
             }
 
             // Try to find the dealership
-            dealer = company.find_dealership(userInput);
+            dealerIndex = company.getDealershipIndex(userInput);
 
-            if (dealer == null) {
+            if (dealerIndex == -1) {
                 // Dealership not found, prompt user to retry or exit
                 System.out.println("Dealership ID not found.");
                 System.out.print("Would you like to try again or return to the main menu? "+
@@ -154,52 +119,33 @@ public class Main {
 
                 if (userInput.equalsIgnoreCase("exit")) {
                     System.out.println("Returning to the main menu...");
-                    return null; // Exit the current while loop and return to the main menu
+                    return -1; // Exit the current while loop and return to the main menu
                 }
                 // Otherwise, the loop will continue to prompt for a valid dealership ID
             }
-        } while (dealer == null);
+        } while (dealerIndex == -1);
 
-        return dealer;
+        return dealerIndex;
     }
 
-    /**
+    /** TODO: Update description
      * Changes the vehicle receiving status of a dealership.
      * <p>
      * This method prompts the user to either enable or disable the vehicle receiving
      * status for the specified dealership.  It checks the current status and
      * provides feedback to the user.
      *
-     * @param dealer  The {@link Dealership} object whose receiving status is to be changed.
      * @param scanner The {@link Scanner} object used to read user input.
      */
-    private static void changeReceivingStatus(Dealership dealer, Scanner scanner) {
+    private static void changeReceivingStatus(Company company, int dealerIndex, Scanner scanner) {
         String userInput;
-        System.out.println("Enable or disable vehicle receiving status for dealership "
-                + dealer.getDealerId() + "? (Enter 'enable' or 'disable')\n" +
-                "Currently enabled? (" + dealer.getStatusAcquiringVehicle() + ")");
-        userInput = scanner.nextLine();
+        System.out.println(company.changeReceivingStatusIntroString(dealerIndex));
 
-        if (userInput.equalsIgnoreCase("enable")) {
-            // Check if the dealership's vehicle receiving status is already enabled
-            if (dealer.getStatusAcquiringVehicle()) {
-                System.out.println("Dealership " + dealer.getDealerId() + " is already set to receive vehicles.");
-            } else {
-                // Enable vehicle receiving for the dealership
-                dealer.enableReceivingVehicle();
-                System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been enabled.");
-            }
-        } else if (userInput.equalsIgnoreCase("disable")) {
-            // Disable the vehicle receiving status
-            if (!dealer.getStatusAcquiringVehicle()) {
-                System.out.println("Dealership " + dealer.getDealerId()+ " is already set to not receive vehicles.");
-            } else {
-                dealer.disableReceivingVehicle();
-                System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been disabled.");
-            }
-        } else {
-            System.out.println("Invalid input. Please enter 'enable' or 'disable'.");
-        }
+        boolean notChanged;
+        do {
+            userInput = scanner.nextLine();
+            notChanged = company.changeReceivingStatus(dealerIndex, userInput);
+        } while (notChanged);
     }
 
     /**
@@ -261,23 +207,20 @@ public class Main {
      * This data is then used to populate the provided inventory map and associate
      * vehicles with their respective dealerships within the given company.
      *
-     * @param company The {@link Company} object that manages the dealerships. This object is used
-     *                to find existing dealerships or create new {@link Dealership} objects if
-     *                they don't already exist.
      * @param sc  A {@link Scanner} object used by {@link #openFile(char, Scanner)} to read user input from the console for path
      *            selection and retry prompts.
      */
-    private static void readData(Company company, Scanner sc) {
+    private static List<Map<String, Object>> readData(Scanner sc) {
         List<Map<String, Object>> data = new ArrayList<>();
         JSONIO jsonio = openFile('r', sc);
-        if (jsonio == null) {return;}
+        if (jsonio == null) {return null;}
         try {
             data.addAll(jsonio.read());
         } catch (ReadWriteException e) {
             System.out.println(e.getMessage());
         }
 
-        company.dataToInventory(data);
+        return data;
     }
 
     /**

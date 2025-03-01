@@ -20,7 +20,18 @@ public class Company {
 
     public ArrayList<Dealership> get_list_dealerships() {return list_dealerships;}
 
-    public Dealership find_dealership(String dealer_id) {
+    public int getDealershipIndex(String dealer_id) {
+        Dealership dealership;
+        for (int i = 0; i < list_dealerships.size(); i++) {
+            dealership = list_dealerships.get(i);
+            if (dealership.getDealerId().equals(dealer_id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private Dealership find_dealership(String dealer_id) {
         for (Dealership dealership : list_dealerships) {
             if (dealership.getDealerId().equals(dealer_id)) {
                 return dealership;
@@ -34,6 +45,7 @@ public class Company {
     public String getCompanyName() {return company_name;}
 
     public void dataToInventory(List<Map<String, Object>> data) {
+        if (data == null) {return;}
         for (Map<String, Object> map: data) {
             Dealership dealership = find_dealership(JSONIO.getDealIDVal(map));
             if (dealership == null) {
@@ -89,5 +101,66 @@ public class Company {
             dealership.printInventory();
             System.out.println();
         }
+    }
+
+    /**
+     * Generates a formatted list of Dealership IDs.
+     * <p>
+     * This method retrieves all Dealerships associated with the Company and
+     * creates a String containing their IDs, separated by tabs. The IDs are arranged
+     * with a maximum of 6 IDs per line. If the Company has no Dealerships,
+     * the method returns a message indicating this.
+     *
+     * @return A string containing the formatted list of dealership IDs, or the
+     *         message "No valid Dealerships." if the company has no dealerships.
+     */
+    public String getDealershipIDList() {
+        StringBuilder output = new StringBuilder();
+        int added = 0;
+        int idPerLine = 6;
+        for (Dealership dealership : list_dealerships) {
+            output.append(dealership.getDealerId()).append("\t");
+            if (added % idPerLine == idPerLine - 1) {
+                output.append("\n");
+            }
+            added++;
+        }
+        if (output.isEmpty()) {
+            return "No valid Dealerships.";
+        }
+        return output.toString();
+    }
+
+    public String changeReceivingStatusIntroString(int dealerIndex) {
+        Dealership dealer = list_dealerships.get(dealerIndex);
+        return "Enable or disable vehicle receiving status for dealership "
+                + dealer.getDealerId() + "? (Enter 'enable' or 'disable')\n" +
+                "Currently enabled? (" + dealer.getStatusAcquiringVehicle() + ")";
+    }
+
+    public boolean changeReceivingStatus(int dealerIndex, String userInput) {
+        Dealership dealer = list_dealerships.get(dealerIndex);
+        if (userInput.equalsIgnoreCase("enable")) {
+            // Check if the dealership's vehicle receiving status is already enabled
+            if (dealer.getStatusAcquiringVehicle()) {
+                System.out.println("Dealership " + dealer.getDealerId() + " is already set to receive vehicles.");
+            } else {
+                // Enable vehicle receiving for the dealership
+                dealer.enableReceivingVehicle();
+                System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been enabled.");
+            }
+            return false;
+        } else if (userInput.equalsIgnoreCase("disable")) {
+            // Disable the vehicle receiving status
+            if (!dealer.getStatusAcquiringVehicle()) {
+                System.out.println("Dealership " + dealer.getDealerId() + " is already set to not receive vehicles.");
+            } else {
+                dealer.disableReceivingVehicle();
+                System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been disabled.");
+            }
+            return false;
+        }
+        System.out.println("Invalid input. Please enter 'enable' or 'disable'.");
+        return true;
     }
 }
