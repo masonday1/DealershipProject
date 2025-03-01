@@ -11,60 +11,60 @@ import java.util.Map;
     Author: Patrick McLucas */
 
 public class Dealership {
-    private final String dealer_id;
-    private final ArrayList<Vehicle> vehicle_inventory;
-    private boolean receiving_vehicle; 
+    private final String dealerID;
+    private final ArrayList<Vehicle> vehicleInventory;
+    private boolean receivingVehicle;
 
     // Instantiation requires dealer_ID
-    public Dealership(String dealer_id) {
-        this.dealer_id = dealer_id;
-        this.receiving_vehicle = true;
-        vehicle_inventory = new ArrayList<>();
+    public Dealership(String dealerID) {
+        this.dealerID = dealerID;
+        this.receivingVehicle = true;
+        vehicleInventory = new ArrayList<>();
     }
 
     // Returns Dealer ID
     public String getDealerId () {
-        return dealer_id;
+        return dealerID;
     }
 
     // Provides vehicle acquisition status
-    public Boolean getStatus_AcquiringVehicles() {
-        return receiving_vehicle;
+    public Boolean getStatusAcquiringVehicle() {
+        return receivingVehicle;
     }
 
     // Provides list of vehicles at the dealership
-    public ArrayList<Vehicle> getInventory_Vehicles() {
-        return vehicle_inventory;
+    public ArrayList<Vehicle> getInventoryVehicles() {
+        return vehicleInventory;
     }
 
     // ENABLES vehicle acquisition.
-    public void enable_receiving_vehicle() {
-        this.receiving_vehicle = true;
+    public void enableReceivingVehicle() {
+        this.receivingVehicle = true;
     }
 
     // DISABLES vehicle acquisition.
-    public void disable_receiving_vehicle() {
-        this.receiving_vehicle = false;
+    public void disableReceivingVehicle() {
+        this.receivingVehicle = false;
     }
 
     // Method for adding new vehicles to the dealership.
-    public void add_incoming_vehicle(Vehicle newVehicle) {
+    public void addIncomingVehicle(Vehicle newVehicle) {
         // Checks if the dealership is accepting new vehicles.
-        if (!receiving_vehicle) {
-            System.out.println("Dealership " + this.dealer_id + " is not accepting new vehicles at this time.");
-            System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealer_id +".");
+        if (!receivingVehicle) {
+            System.out.println("Dealership " + this.dealerID + " is not accepting new vehicles at this time.");
+            System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerID +".");
             return; // Exits method if the dealership is not accepting new vehicles.
         } 
         
         // Checks if the new vehicle is already located at the dealership. 
-        for (Vehicle vehicle : vehicle_inventory) {
+        for (Vehicle vehicle : vehicleInventory) {
             if (vehicle.getVehicleId().equals(newVehicle.getVehicleId())) {
                 System.out.println("This vehicle is already located at the dealership.");
-                System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealer_id + ".");
+                System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerID + ".");
                 return; // Exits method if the vehicle already exists at the dealership
             }
         }
-        this.vehicle_inventory.add(newVehicle);
+        this.vehicleInventory.add(newVehicle);
     }
 
     /**
@@ -112,8 +112,65 @@ public class Dealership {
         vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
         vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
 
-        add_incoming_vehicle(vehicle);
+        addIncomingVehicle(vehicle);
     }
+
+    /**
+     * Adds a new vehicle to the dealership inventory based on the provided vehicle details.
+     * This method creates a new vehicle based on the vehicle type and sets its attributes
+     * using the provided details. It then attempts to add the new vehicle to the dealership's
+     * inventory, but only if the vehicle type is valid. If the vehicle type is invalid, an error
+     * message is printed, and the vehicle is not added.
+     *</p>
+     * {@link #createNewVehicle(String,String)} is used to create and validate the vehicle type.
+     * If the vehicle type is unsupported, the method will print an error message and return without
+     * making any changes to the inventory. If the vehicle is created successfully, it will be added
+     * to the dealership's inventory using the {@link #addIncomingVehicle(Vehicle)} method.
+     *
+     *
+     * @param vehicleID The unique identifier for the vehicle.
+     * @param vehicleManufacturer The manufacturer of the vehicle.
+     * @param vehicleModel The model of the vehicle.
+     * @param vehiclePrice The price of the vehicle. The price must be a positive value representing the
+     *                     cost of the vehicle.
+     * @param acquisitionDate The date when the vehicle was acquired by the dealership.
+     *                        @note acquisitionDate is a long value representing milliseconds
+     *                        since the epoch.
+     * @param vehicleType The type of the vehicle. This should be one of the following types:
+     *                    "suv", "sedan", "pickup", or "sports car". If an unsupported type is provided,
+     *                    the method will not add the vehicle and will print an error message.
+     *
+     */
+    public void manualVehicleAdd(String vehicleID, String vehicleManufacturer, String vehicleModel, long vehiclePrice, long acquisitionDate, String vehicleType) {
+
+        // Ensure the vehicle price is positive.
+        if (vehiclePrice <= 0) {
+            System.out.println("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleID + " was not added.");
+            return;  // Exit the method if the price is not positive.
+        }
+
+        Vehicle newVehicle = createNewVehicle(vehicleType, vehicleID);
+
+        // Check if the vehicle creation was successful (newVehicle is not null).
+        if (newVehicle == null) {
+            // Handle the case where the vehicle type is unsupported.
+            System.out.println("Vehicle creation failed. Invalid vehicle type: " + vehicleType);
+            return;  // Exit the method if vehicle creation failed.
+        }
+
+
+        newVehicle.setVehicleId(vehicleID);
+        newVehicle.setVehicleManufacturer(vehicleManufacturer);
+        newVehicle.setVehicleModel(vehicleModel);
+        newVehicle.setVehiclePrice(vehiclePrice);
+        newVehicle.setAcquisitionDate(acquisitionDate);
+
+
+        this.addIncomingVehicle(newVehicle);
+    }
+
+
+
 }
 
 
