@@ -10,7 +10,7 @@ public class Main {
         Map<Vehicle, String> carInventory = new HashMap<>(); // Vehicle, dealershipID
         Company company = new Company("c_ID", "c_Name");
 
-        readData(scanner, carInventory, company);
+        readData(scanner, company);
         if (carInventory.isEmpty()) {
             System.out.println("No json file read. No data in company yet.");
         } else {
@@ -66,7 +66,7 @@ public class Main {
                     continue;
                 case "5":
                     // reading another JSON file
-                    readData(scanner, carInventory, company);
+                    readData(scanner, company);
                     System.out.println("Reading JSON file...");
                     continue;
 
@@ -306,7 +306,7 @@ public class Main {
         return jsonio;
     }
 
-    /**
+    /** TODO: Edit description
      * Populates an inventory map with vehicle data from a list of maps.
      * <p>
      * This method iterates through a list of maps, each representing a vehicle's data.
@@ -314,39 +314,16 @@ public class Main {
      * Vehicle object, populates the vehicle's attributes, and adds the vehicle
      * to the inventory map, associating it with the dealership ID.
      *
-     * @param inventory A {@link Map} where the key is a {@link Vehicle} object and the value is the dealership ID (as a String).
-     *                  This map represents the inventory to be populated.
      * @param data      A {@link List} of {@link Map} objects, where each map represents
      *                  the data for a single vehicle.
      * @param company   The {@link Company} object to which the dealerships belong.  This is used
      *                  to find existing dealerships or create new {@link Dealership} objects.
      */
-    private static void dataToInventory(Map<Vehicle, String> inventory, List<Map<String, Object>> data, Company company) {
-        for (Map<String, Object> map: data) {
-            Dealership dealership = company.find_dealership(JSONIO.getDealIDVal(map));
-            if (dealership == null) {
-                dealership = new Dealership(JSONIO.getDealIDVal(map));
-                company.add_dealership(dealership);
-            }
-            Vehicle vehicle = createNewVehicle(
-                    JSONIO.getTypeVal(map),
-                    JSONIO.getVehicleIDVal(map)
-            );
-            if (vehicle == null) {
-                continue;
-            }
-            vehicle.setVehicleId(JSONIO.getVehicleIDVal(map));
-            vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
-            vehicle.setVehicleModel(JSONIO.getModelVal(map));
-            vehicle.setVehicleId(JSONIO.getVehicleIDVal(map));
-            vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
-            vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
-
-            inventory.put(vehicle, JSONIO.getDealIDVal(map));
-        }
+    private static void dataToInventory(List<Map<String, Object>> data, Company company) {
+        company.dataToInventory(data);
     }
 
-    /**
+    /** TODO: Edit description
      * Reads data from a JSON file and populates an inventory.
      * <p>
      * This method opens a JSON file in "read" mode ('r') using the provided {@link Scanner}
@@ -358,15 +335,11 @@ public class Main {
      *
      * @param sc  A {@link Scanner} object used by {@link #openFile(char, Scanner)} to read user input from the console for path
      *            selection and retry prompts.
-     * @param inventory A {@link Map} where the key is a {@link Vehicle} object and the value
-     *                  is the dealership ID (a String). This map represents the inventory
-     *                  to be populated.  The dealership ID is used to associate the vehicle
-     *                  with a specific dealership.
      * @param company The {@link Company} object that manages the dealerships. This object is used
      *                to find existing dealerships or create new {@link Dealership} objects if
      *                they don't already exist.
      */
-    private static void readData(Scanner sc, Map<Vehicle, String> inventory, Company company) {
+    private static void readData(Scanner sc, Company company) {
         List<Map<String, Object>> data = new ArrayList<>();
         JSONIO jsonio = openFile('r', sc);
         if (jsonio == null) {return;}
@@ -376,7 +349,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        dataToInventory(inventory, data, company);
+        dataToInventory(data, company);
     }
 
     /**
@@ -521,33 +494,5 @@ public class Main {
         }
     }
 
-    /**
-     * Creates a new Vehicle object based on the given type.
-     * <p>
-     * This method acts as a factory for creating different types of vehicles.  It uses
-     * a switch statement to determine which concrete Vehicle class to instantiate
-     * based on the provided argument vehicleType
-     *
-     * @param vehicleType The type of vehicle to create ("suv", "sedan", "pickup", "sports car").
-     * @param ID          The ID of the vehicle. This is used in the error message if the
-     *                    vehicle type is not supported.
-     * @return A new {@link Vehicle} object of the specified type, or  null if
-     *         the vehicleType is not supported. If null is returned, a
-     *         message is printed to the console indicating the unsupported type and
-     *         the vehicle ID was not added.
-     */
-    private static Vehicle createNewVehicle(String vehicleType, String ID) {
-        return switch (vehicleType) {
-            case "suv" -> new SUV();
-            case "sedan" -> new Sedan();
-            case "pickup" -> new Pickup();
-            case "sports car" -> new Sports_Car();
-            default -> {
-                System.out.println("\"" + vehicleType +
-                        "\" is not a supported vehicle type. " +
-                        "Vehicle ID: " + ID + "was not added");
-                yield null;
-            }
-        };
-    }
+
 }

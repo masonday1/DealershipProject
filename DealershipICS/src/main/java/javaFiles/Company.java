@@ -1,6 +1,8 @@
 package javaFiles;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Company {
     private String company_id;
@@ -31,4 +33,14 @@ public class Company {
 
     public String getCompanyName() {return company_name;}
 
+    public void dataToInventory(List<Map<String, Object>> data) {
+        for (Map<String, Object> map: data) {
+            Dealership dealership = find_dealership(JSONIO.getDealIDVal(map));
+            if (dealership == null) {
+                dealership = new Dealership(JSONIO.getDealIDVal(map));
+                add_dealership(dealership);
+            }
+            dealership.dataToInventory(map);
+        }
+    }
 }
