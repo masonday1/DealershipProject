@@ -1,6 +1,7 @@
 package javaFiles;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  Vehicle is an abstract class that defines a set of common attributes
@@ -117,5 +118,22 @@ public abstract class Vehicle {
                 "\nModel: " + vehicleModel +
                 "\nPrice: $" + vehiclePrice +
                 "\nAcquired: " + date;
+    }
+
+    /**
+     * Retrieves Vehicle data for a given Dealership.
+     * <p>
+     * This method fills a Map where each key-value pairs
+     * represents the vehicle's attributes.
+     *
+     * @param map The Map to be filled with data from the Vehicle
+     */
+    public void getDataMap(Map<String, Object> map) {
+        map.put(JSONIO.getTypeKey(), vehicleType);
+        map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
+        map.put(JSONIO.getModelKey(), vehicleModel);
+        map.put(JSONIO.getVehicleIDKey(), vehicleId);
+        map.put(JSONIO.getPriceKey(), vehiclePrice);
+        map.put(JSONIO.getDateKey(), acquisitionDate);
     }
 }

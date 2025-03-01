@@ -7,27 +7,22 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String userInput;
-        Map<Vehicle, String> carInventory = new HashMap<>(); // Vehicle, dealershipID
         Company company = new Company("c_ID", "c_Name");
 
-        readData(scanner, company);
-        if (carInventory.isEmpty()) {
-            System.out.println("No json file read. No data in company yet.");
-        } else {
-            System.out.println("Data loaded to queue, but not written to company");
-        }
+        readData(company, scanner);
 
         while (true) {
             // Prompt user for the following:
             System.out.println(
-                    "\nSelect one of the following actions: \n" +
-                            "1) Send vehicles to dealership.\n" +
-                            "2) Check pending vehicle deliveries. \n" +
-                            "3) Change dealership vehicle receiving status. \n" +
-                            "4) Write dealership inventory to file.\n" +
-                            "5) Read a json file.\n" +
-                            "6) Print Company Inventory.\n" +
-                            "7) Exit program."
+                    """
+                            Select one of the following actions:\s
+                            1) Send vehicles to dealership.
+                            2) Check pending vehicle deliveries.\s
+                            3) Change dealership vehicle receiving status.\s
+                            4) Write dealership inventory to file.
+                            5) Read a json file.
+                            6) Print Company Inventory.
+                            7) Exit program."""
             );
 
             userInput = scanner.nextLine();
@@ -35,17 +30,15 @@ public class Main {
             switch (userInput) {
                 case "1": // send vehicles in queue to dealership(s)
                     // if carInventory is empty, print message and return to menu
-                    if (carInventory.isEmpty()) {
-                        System.out.println("No vehicles in queue, nothing added.");
-                        continue;
-                    }
+                    System.out.println("Likely to be removed (as pending removed), not functional at the moment");
 
-                    writeCompanyData(company, carInventory);
+                    writeCompanyData(company);
                     System.out.println("Sending vehicles to dealership...");
                     continue;
                 case "2":
                     // checking pending vehicle deliveries
-                    printPending(carInventory, company);
+                    System.out.println("Likely to be removed (as pending removed), not functional at the moment");
+                    printPending(company);
                     System.out.println("Checking pending vehicle deliveries...");
                     continue;
                 case "3":
@@ -61,12 +54,12 @@ public class Main {
                     continue; // Exit Case 3 and go back to the main menu
                 case "4":
                     // writing dealership inventory to file
-                    int itemsWritten =  writeData(getCompanyData(company), scanner);
+                    int itemsWritten =  writeData(company.getDataMap(), scanner);
                     System.out.println("Wrote " + itemsWritten + " items to file");
                     continue;
                 case "5":
                     // reading another JSON file
-                    readData(scanner, company);
+                    readData(company, scanner);
                     System.out.println("Reading JSON file...");
                     continue;
 
@@ -90,7 +83,7 @@ public class Main {
 
     /**
      * Prints the inventory of vehicles for each dealership in the company.
-     *
+     * <p>
      * This method iterates through the list of dealerships associated with the given
      * company. For each {@link Dealership} it retrieves the vehicle inventory and prints
      * information about each {@link Vehicle}. If a dealership has no inventory, a message
@@ -139,7 +132,7 @@ public class Main {
 
     /**
      * Generates a formatted list of dealership IDs.
-     *
+     * <p>
      * This method retrieves all dealerships associated with the given company and
      * creates a string containing their IDs, separated by tabs.  The IDs are arranged
      * with a maximum of 6 IDs per line. If the company has no dealerships,
@@ -170,7 +163,7 @@ public class Main {
 
     /**
      * Prompts the user to select a dealership by ID.
-     *
+     * <p>
      * This method displays a list of valid dealership IDs, prompts the user to enter
      * a dealership ID, and attempts to find the corresponding {@link Dealership}
      * object within the given company. It continues to prompt the user until a valid
@@ -220,7 +213,7 @@ public class Main {
 
     /**
      * Changes the vehicle receiving status of a dealership.
-     *
+     * <p>
      * This method prompts the user to either enable or disable the vehicle receiving
      * status for the specified dealership.  It checks the current status and
      * provides feedback to the user.
@@ -306,24 +299,7 @@ public class Main {
         return jsonio;
     }
 
-    /** TODO: Edit description
-     * Populates an inventory map with vehicle data from a list of maps.
-     * <p>
-     * This method iterates through a list of maps, each representing a vehicle's data.
-     * For each vehicle data map, it retrieves dealership information, creates a new
-     * Vehicle object, populates the vehicle's attributes, and adds the vehicle
-     * to the inventory map, associating it with the dealership ID.
-     *
-     * @param data      A {@link List} of {@link Map} objects, where each map represents
-     *                  the data for a single vehicle.
-     * @param company   The {@link Company} object to which the dealerships belong.  This is used
-     *                  to find existing dealerships or create new {@link Dealership} objects.
-     */
-    private static void dataToInventory(List<Map<String, Object>> data, Company company) {
-        company.dataToInventory(data);
-    }
-
-    /** TODO: Edit description
+    /** 
      * Reads data from a JSON file and populates an inventory.
      * <p>
      * This method opens a JSON file in "read" mode ('r') using the provided {@link Scanner}
@@ -333,13 +309,13 @@ public class Main {
      * This data is then used to populate the provided inventory map and associate
      * vehicles with their respective dealerships within the given company.
      *
-     * @param sc  A {@link Scanner} object used by {@link #openFile(char, Scanner)} to read user input from the console for path
-     *            selection and retry prompts.
      * @param company The {@link Company} object that manages the dealerships. This object is used
      *                to find existing dealerships or create new {@link Dealership} objects if
      *                they don't already exist.
+     * @param sc  A {@link Scanner} object used by {@link #openFile(char, Scanner)} to read user input from the console for path
+     *            selection and retry prompts.
      */
-    private static void readData(Scanner sc, Company company) {
+    private static void readData(Company company, Scanner sc) {
         List<Map<String, Object>> data = new ArrayList<>();
         JSONIO jsonio = openFile('r', sc);
         if (jsonio == null) {return;}
@@ -349,7 +325,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        dataToInventory(data, company);
+        company.dataToInventory(data);
     }
 
     /**
@@ -384,114 +360,32 @@ public class Main {
         return 0;
     }
 
-    /**
-     * Retrieves vehicle data for a given dealership.
-     * <p>
-     * This method generates a list of maps, where each map represents a vehicle
-     * in the specified dealership's inventory.  Each map contains key-value pairs
-     * representing the vehicle's attributes.
-     *
-     * @param dealership A {@link Dealership} object whose vehicle data is to be retrieved.
-     *                  Dealership objects hold a collection {@link Vehicle} objects.
-      *@return {@link List} of {@link Map} objects where each Map object holds a specific vehicle
-     *         and its data.(dealership ID, vehicle type, manufacturer, model,
-     *         vehicle ID, price, and acquisition date) as key-value pairs. Method returns
-     *         null if the Dealership object is empty.
-     */
-    private static List<Map<String, Object>> getDealershipData(Dealership dealership) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        for (Vehicle vehicle: dealership.getInventoryVehicles()) {
-            Map<String, Object> map = new HashMap<>();
-            map.put(JSONIO.getDealIDKey(), dealership.getDealerId());
-            map.put(JSONIO.getTypeKey(), vehicle.getVehicleType());
-            map.put(JSONIO.getManufacturerKey(), vehicle.getVehicleManufacturer());
-            map.put(JSONIO.getModelKey(), vehicle.getVehicleModel());
-            map.put(JSONIO.getVehicleIDKey(), vehicle.getVehicleId());
-            map.put(JSONIO.getPriceKey(), vehicle.getVehiclePrice());
-            map.put(JSONIO.getDateKey(), vehicle.getAcquisitionDate());
-            list.add(map);
-        }
-        return list;
-    }
-
-    /**
-     * Retrieves vehicle data for all dealerships within a company.
-     * <p>
-     * This method gathers vehicle information from all dealerships associated with the
-     * given company and compiles it into a single list of maps. Each map in the list
-     * represents a vehicle and contains its attributes.
-     *
-     * @param company The {@link Company} object whose dealership vehicle data is to be retrieved.
-     *                This company object should contain a collection of {@link Dealership} objects.
-     * @return A {@link List} of {@link Map} objects. Each {@link Map} represents a vehicle
-     *         and contains its attributes (dealership ID, vehicle type, manufacturer, model,
-     *         vehicle ID, price, and acquisition date) as key-value pairs. Returns all vehicles from each
-     *         Dealership in the company. Returns an empty list if the company has no dealerships
-     *         or if none of the dealerships have any vehicles.
-     */
-    private static List<Map<String, Object>> getCompanyData(Company company) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        for (Dealership dealership : company.get_list_dealerships()) {
-            list.addAll(getDealershipData(dealership));
-        }
-        return list;
-    }
-
-    /**
+    /** TODO: Edit description
      * This method processes the vehicle inventory and updates the dealership's incoming vehicles.
      * It checks each vehicle in the provided inventory, finds the corresponding dealership, and if
      * the dealership is acquiring vehicles, it adds the vehicle to the dealership's incoming
      * vehicle list. After processing, it removes the accepted vehicles from the inventory
      *
      * @param company The {@link Company} object that contains the dealerships
-     * @param inventory A map containing vehicles as keys and the corresponding dealership ID (as Strings)
-     *                  as values. The vehicles in the inventory will be processed and moved based on
-     *                  the status of their respective dealerships.
      */
-    private static void writeCompanyData(Company company, Map<Vehicle, String> inventory) {
-        List<Vehicle> accepted = new ArrayList<>();
-        for (Vehicle vehicle : inventory.keySet()) {
-            Dealership dealership = company.find_dealership(inventory.get(vehicle));
-            if (dealership.getStatusAcquiringVehicle()) {
-                accepted.add(vehicle);
-            }
-            dealership.addIncomingVehicle(vehicle);
-        }
-        for (Vehicle vehicle : accepted) {
-            inventory.remove(vehicle);
-        }
-
+    private static void writeCompanyData(Company company) {
+        System.out.println("Likely to be removed (as pending removed), not functional at the moment" + company);
     }
 
-    /**
+    /** TODO: Edit description
      * Prints information about pending vehicle deliveries and dealership status.
      * <p>
      * This method iterates through the provided inventory of vehicles and prints
      * details about each vehicle, including its associated dealership and the
      * dealership's current vehicle receiving status (accepting or not accepting vehicles).
      *
-     * @param inventory A {@link Map} where the key is a {@link Vehicle} object and the value
-     *                  is the dealership ID (a String). This map represents the pending
-     *                  vehicle deliveries.
      * @param company   The {@link Company} object used to look up dealership information
      *                  based on the dealership ID.
      */
-    private static void printPending(Map<Vehicle, String> inventory, Company company) {
-        Dealership d;
-        for (Vehicle vehicle : inventory.keySet()) {
-            d = company.find_dealership(inventory.get(vehicle));
-            String open;
-            if (d == null) {
-                open = " has not been initiated (will be initiated as accepting Vehicles).";
-            } else if (d.getStatusAcquiringVehicle()) {
-                open = " is accepting Vehicles.";
-            } else {
-                open = " is not accepting Vehicles.";
-            }
-
-            System.out.println(vehicle);
-            System.out.println("Dealership ID: " + inventory.get(vehicle) + open + "\n");
-        }
+    private static void printPending(Company company) {
+        // if this is used, it will call a method in company that calls a method in dealership
+        // that prints out all of the
+        System.out.println("Likely to be removed (as pending removed), not functional at the moment."  + company);
     }
 
 

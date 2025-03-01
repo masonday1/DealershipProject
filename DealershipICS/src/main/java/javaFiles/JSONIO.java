@@ -41,7 +41,7 @@ public class JSONIO
         this.mode = getMode(mode);
         if (filePath.endsWith(".json")) {
             file = new File(filePath);
-            if (!file.exists()) {
+            if (!file.exists() && mode == 'r') {
                 throw new ReadWriteException("filePath \"" + filePath +"\" does not exist "
                         + "or could not be found where indicated.");
             }

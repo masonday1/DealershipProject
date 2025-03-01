@@ -1,6 +1,8 @@
 package javaFiles;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*  Creates Dealership object with the following attributes:
@@ -83,7 +85,7 @@ public class Dealership {
      *         the vehicle ID was not added.
      */
     private static Vehicle createNewVehicle(String vehicleType, String ID) {
-        return switch (vehicleType) {
+        return switch (vehicleType.toLowerCase()) {
             case "suv" -> new SUV();
             case "sedan" -> new Sedan();
             case "pickup" -> new Pickup();
@@ -169,8 +171,26 @@ public class Dealership {
         this.addIncomingVehicle(newVehicle);
     }
 
-
+    /**
+     * Retrieves Vehicle data for the Dealership.
+     * <p>
+     * This method generates a List of Maps, where each Map represents a Vehicle
+     * in the specified Dealership's inventory. Each Map contains key-value pairs
+     * representing the vehicle's attributes.
+     *
+     *@return {@link List} of {@link Map} Objects where each Map object holds a specific vehicle
+     *         and its data.(dealership ID, vehicle type, manufacturer, model,
+     *         vehicle ID, price, and acquisition date) as key-value pairs.
+     */
+    public List<Map<String, Object>> getDataMap() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Vehicle vehicle: vehicleInventory) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(JSONIO.getDealIDKey(), dealerID);
+            vehicle.getDataMap(map);
+            list.add(map);
+        }
+        return list;
+    }
 
 }
-
-
