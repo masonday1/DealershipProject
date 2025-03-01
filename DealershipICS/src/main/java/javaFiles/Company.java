@@ -65,4 +65,29 @@ public class Company {
         if (list.isEmpty()) {return null;}
         return list;
     }
+
+    /**
+     * Prints the inventory of Vehicles for each Dealership in the Company.
+     * <p>
+     * This method iterates through the List of Dealerships associated in the Company.
+     * For each {@link Dealership} it retrieves the Vehicle inventory and prints
+     * information about each {@link Vehicle}. If a Dealership has no inventory, a message
+     * indicating this is printed. If the Company has no Dealerships, a message is
+     * printed to the console.
+     */
+    public void printInventory()
+    {
+        // if company does not have any dealerships, print message and return to menu
+        if(list_dealerships.isEmpty())
+        {
+            System.out.println("There are currently no dealerships in the company");
+            return;
+        }
+
+        for(Dealership dealership : list_dealerships)
+        {
+            dealership.printInventory();
+            System.out.println();
+        }
+    }
 }

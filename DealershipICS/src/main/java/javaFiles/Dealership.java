@@ -99,6 +99,11 @@ public class Dealership {
         };
     }
 
+    /**
+     * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.
+     *
+     * @param map The data needed to create the new Vehicle.
+     */
     public void dataToInventory(Map<String, Object> map) {
         Vehicle vehicle = createNewVehicle(
                 JSONIO.getTypeVal(map),
@@ -193,4 +198,25 @@ public class Dealership {
         return list;
     }
 
+    /**
+     * Prints the inventory of Vehicles for the Dealership.
+     * <p>
+     * This method iterates through the List of Vehicles in the Dealership.
+     * It prints the Dealership ID followed by the inventory of Vehicles
+     * separated by an empty line If a Dealership has no inventory,
+     * a message indicating this is printed.
+     */
+    public void printInventory() {
+        System.out.println("Dealership: " + dealerID);
+
+        // if Dealership does not have any Vehicles, print message and return
+        if (vehicleInventory.isEmpty()) {
+            System.out.println(", Does not currently have any inventory\n");
+            return;
+        }
+
+        for (Vehicle vehicle : vehicleInventory) {
+            System.out.println("\n" + vehicle.toString());
+        }
+    }
 }

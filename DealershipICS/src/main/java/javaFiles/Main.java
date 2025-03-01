@@ -64,7 +64,7 @@ public class Main {
                     continue;
 
                 case "6":
-                    printCompanyInventory(company);
+                    company.printInventory();
                     continue;
                 case "7": // exit program
                     System.out.println("Exiting program...");
@@ -81,53 +81,7 @@ public class Main {
     }
 
 
-    /**
-     * Prints the inventory of vehicles for each dealership in the company.
-     * <p>
-     * This method iterates through the list of dealerships associated with the given
-     * company. For each {@link Dealership} it retrieves the vehicle inventory and prints
-     * information about each {@link Vehicle}. If a dealership has no inventory, a message
-     * indicating this is printed. If the company has no dealerships, a message is
-     * printed to the console.
-     *
-     * @param company The {@link Company} object whose dealership and vehicle
-     *                inventory is to be printed.
-     */
-    private static void printCompanyInventory(Company company)
-    {
 
-        ArrayList<Dealership> list_dealers = company.get_list_dealerships();
-
-        // if company does not have any dealerships, print message and return to menu
-        if(list_dealers.isEmpty())
-        {
-            System.out.println("There are currently no dealerships in the company");
-            return;
-        }
-
-        ArrayList<Vehicle> list_vehicles = new ArrayList<Vehicle>();
-
-        for(Dealership dealership : list_dealers)
-        {
-            // for each dealership get the list of vehicles and print
-            // data for each vehicle
-            list_vehicles = dealership.getInventoryVehicles();
-
-            // if current dealership does not have any vehicles, print message and continue to next dealership
-            if(list_vehicles.isEmpty())
-            {
-                System.out.println("Dealership: " + dealership.getDealerId() + ", Does not currently have any inventory\n");
-                continue;
-            }
-            System.out.println("Dealership: " + dealership.getDealerId() + "\n ");
-
-            for(Vehicle vehicle : list_vehicles)
-            {
-                System.out.println(vehicle.toString());
-                System.out.println("\n");
-            }
-        }
-    }
 
 
     /**
@@ -143,20 +97,20 @@ public class Main {
      *         message "No valid Dealerships." if the company has no dealerships.
      */
     private static String getDealershipIDList(Company company) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         int added = 0;
         int idPerLine = 6;
         for (Dealership dealership : company.get_list_dealerships()) {
-            output += dealership.getDealerId() + "\t";
+            output.append(dealership.getDealerId()).append("\t");
             if (added % idPerLine == idPerLine - 1) {
-                output += "\n";
+                output.append("\n");
             }
             added++;
         }
         if (output.isEmpty()) {
             return "No valid Dealerships.";
         }
-        return output;
+        return output.toString();
     }
 
 
@@ -208,8 +162,6 @@ public class Main {
 
         return dealer;
     }
-
-
 
     /**
      * Changes the vehicle receiving status of a dealership.
