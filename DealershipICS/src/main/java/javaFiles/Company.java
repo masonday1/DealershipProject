@@ -67,9 +67,9 @@ public class Company {
     public void dataToInventory(List<Map<String, Object>> data) {
         if (data == null) {return;}
         for (Map<String, Object> map: data) {
-            Dealership dealership = findDealership(GetMapInfo.getInstance().getDealIDVal(map));
+            Dealership dealership = findDealership(Key.DEALERSHIP_ID.getValString(map));
             if (dealership == null) {
-                dealership = new Dealership(GetMapInfo.getInstance().getDealIDVal(map));
+                dealership = new Dealership(Key.DEALERSHIP_ID.getValString(map));
                 addDealership(dealership);
             }
             dealership.dataToInventory(map);

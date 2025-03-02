@@ -78,8 +78,8 @@ public class JSONIO
      * @return Whether object is of the correct type.
      */
     private boolean validJSONObjectType(String key, Object object) {
-        if (key.equals(GetMapInfo.getInstance().getDateKey()) ||
-                key.equals(GetMapInfo.getInstance().getPriceKey())) {
+        if (key.equals(Key.VEHICLE_ACQUISITION_DATE.getKey()) ||
+                key.equals(Key.VEHICLE_PRICE.getKey())) {
             return object instanceof Long;
         }
         return object instanceof String;
@@ -95,7 +95,7 @@ public class JSONIO
     private Map<String, Object> readJSONObject(JSONObject jObj) {
         Map<String, Object> map = new HashMap<>();
 
-        for (String key : GetMapInfo.getInstance().getAllKeys()) {
+        for (String key : Key.getKeys()) {
             Object dataPoint = jObj.get(key);
             if (dataPoint == null) {return null;}
             if (!validJSONObjectType(key, dataPoint)) {
@@ -159,7 +159,7 @@ public class JSONIO
      */
     private JSONObject makeJSONObject(Map<String, Object> data) {
         JSONObject jObj = new JSONObject();
-        for (String key : GetMapInfo.getInstance().getAllKeys()) {
+        for (String key : Key.getKeys()) {
             Object dataPoint = data.get(key);
             if (dataPoint == null) {return null;}
             jObj.put(key, dataPoint);
@@ -183,7 +183,7 @@ public class JSONIO
 
         JSONArray jArray = new JSONArray();
         for (Map<String, Object> carData : data) {
-            if (carData.size() == GetMapInfo.getInstance().getAllKeys().length) {
+            if (carData.size() == Key.getKeys().length) {
                 JSONObject jObj = makeJSONObject(carData);
                 if (jObj != null) {
                     jArray.add(jObj);
@@ -192,7 +192,7 @@ public class JSONIO
                     System.out.println("Did not add. (invalid key)");
                 }
             } else {
-                System.out.println("Did not add. " + carData.size() + " != " + GetMapInfo.getInstance().getAllKeys().length);
+                System.out.println("Did not add. " + carData.size() + " != " + Key.getKeys().length);
             }
         }
 
