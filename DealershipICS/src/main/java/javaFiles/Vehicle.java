@@ -64,7 +64,11 @@ public abstract class Vehicle {
      *
      * @param vehiclePrice the price of the vehicle
      */
-    public void setVehiclePrice(long vehiclePrice) {
+    public void setVehiclePrice(Long vehiclePrice) {
+        if (vehiclePrice == null) {
+            System.out.println("vehiclePrice = null");
+            return;
+        }
         this.vehiclePrice = vehiclePrice;
     }
 
@@ -73,7 +77,12 @@ public abstract class Vehicle {
      *
      * @param acquisitionDate the date the vehicle was acquired
      */
-    public void setAcquisitionDate(long acquisitionDate) { this.acquisitionDate = acquisitionDate;
+    public void setAcquisitionDate(Long acquisitionDate) {
+        if (acquisitionDate == null) {
+            System.out.println("acquisitionDate = null");
+            return;
+        }
+        this.acquisitionDate = acquisitionDate;
     }
 
     // Getter methods for shared attributes

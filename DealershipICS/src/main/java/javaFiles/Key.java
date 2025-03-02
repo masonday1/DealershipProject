@@ -3,18 +3,23 @@ package javaFiles;
 import java.util.Map;
 
 public enum Key {
-        DEALERSHIP_ID ("dealership_id"),
-        VEHICLE_TYPE ("vehicle_type"),
-        VEHICLE_MANUFACTURER ("vehicle_manufacturer"),
-        VEHICLE_MODEL ("vehicle_model"),
-        VEHICLE_ID ("vehicle_id"),
-        VEHICLE_PRICE ("price"),
-        VEHICLE_ACQUISITION_DATE ("acquisition_date");
+        DEALERSHIP_ID ("dealership_id", String.class.getName()),
+        VEHICLE_TYPE ("vehicle_type", String.class.getName()),
+        VEHICLE_MANUFACTURER ("vehicle_manufacturer", String.class.getName()),
+        VEHICLE_MODEL ("vehicle_model", String.class.getName()),
+        VEHICLE_ID ("vehicle_id", String.class.getName()),
+        VEHICLE_PRICE ("price", Long.class.getName()),
+        VEHICLE_ACQUISITION_DATE ("acquisition_date", Long.class.getName());
 
     private static String[] keys = null;
     private final String KEY;
+    private final String CLASS;
+    // ^would love to make it a generic instead, but can't seem to do that with enum
 
-    Key(String key) {KEY = key;}
+    Key(String key, String c) {
+        KEY = key;
+        CLASS = c;
+    }
 
     public String getKey() {return KEY;}
 
@@ -26,11 +31,10 @@ public enum Key {
      * @return The String value in the Map at key: KEY
      */
     public String getValString(Map<String, Object> map) {
-        return switch (this) {
-            case DEALERSHIP_ID, VEHICLE_TYPE, VEHICLE_MANUFACTURER,
-                 VEHICLE_MODEL, VEHICLE_ID -> (String) map.get(KEY);
-            default -> null;
-        };
+        if (CLASS.equals(String.class.getName())) {
+            return (String) map.get(KEY);
+        }
+        return null;
     }
 
     /**
@@ -41,10 +45,10 @@ public enum Key {
      * @return The Long value in the Map at key: KEY
      */
     public Long getValLong(Map<String, Object> map) {
-        return switch (this) {
-            case VEHICLE_PRICE, VEHICLE_ACQUISITION_DATE -> (Long) map.get(KEY);
-            default -> null;
-        };
+        if (CLASS.equals(Long.class.getName())) {
+            return (Long) map.get(KEY);
+        }
+        return null;
     }
 
     /**
