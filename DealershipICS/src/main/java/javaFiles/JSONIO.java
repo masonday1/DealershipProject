@@ -23,10 +23,6 @@ public class JSONIO
 {
     private final File file;
     private final char mode;
-    private final static String[] keys = {
-            "dealership_id", "vehicle_type",
-            "vehicle_manufacturer", "vehicle_model",
-            "vehicle_id", "price", "acquisition_date" };
 
     /**
      * Creates or opens a JSON file with name fileName in read ('r') or write ('w') mode.
@@ -73,39 +69,6 @@ public class JSONIO
     }
 
     /**
-     * Returns the given key. Helps avoid repeating / misspelling.
-     */
-    public static String getDealIDKey() {       return keys[0];}
-    public static String getTypeKey() {         return keys[1];}
-    public static String getManufacturerKey() { return keys[2];}
-    public static String getModelKey() {        return keys[3];}
-    public static String getVehicleIDKey() {    return keys[4];}
-    public static String getPriceKey() {        return keys[5];}
-    public static String getDateKey() {         return keys[6];}
-
-    public static String getDealIDVal(Map<String, Object> map) {
-        return (String) map.get(getDealIDKey());
-    }
-    public static String getTypeVal(Map<String, Object> map) {
-        return (String) map.get(getTypeKey());
-    }
-    public static String getManufacturerVal(Map<String, Object> map) {
-        return (String) map.get(getManufacturerKey());
-    }
-    public static String getModelVal(Map<String, Object> map) {
-        return (String) map.get(getModelKey());
-    }
-    public static String getVehicleIDVal(Map<String, Object> map) {
-        return (String) map.get(getVehicleIDKey());
-    }
-    public static long getPriceVal(Map<String, Object> map) {
-        return (long) map.get(getPriceKey());
-    }
-    public static long getDateVal(Map<String, Object> map) {
-        return (long) map.get(getDateKey());
-    }
-
-    /**
      * Confirms that the given Object is an instance of the correct type.
      * (Long for price and acquisition date, String otherwise)
      * Assumes that the key is a valid key (should be confirmed before calling).
@@ -115,7 +78,8 @@ public class JSONIO
      * @return Whether object is of the correct type.
      */
     private boolean validJSONObjectType(String key, Object object) {
-        if (key.equals(getDateKey()) || key.equals(getPriceKey())) {
+        if (key.equals(GetMapInfo.getInstance().getDateKey()) ||
+                key.equals(GetMapInfo.getInstance().getPriceKey())) {
             return object instanceof Long;
         }
         return object instanceof String;
@@ -131,7 +95,7 @@ public class JSONIO
     private Map<String, Object> readJSONObject(JSONObject jObj) {
         Map<String, Object> map = new HashMap<>();
 
-        for (String key : keys) {
+        for (String key : GetMapInfo.getInstance().getAllKeys()) {
             Object dataPoint = jObj.get(key);
             if (dataPoint == null) {return null;}
             if (!validJSONObjectType(key, dataPoint)) {
@@ -195,7 +159,7 @@ public class JSONIO
      */
     private JSONObject makeJSONObject(Map<String, Object> data) {
         JSONObject jObj = new JSONObject();
-        for (String key : keys) {
+        for (String key : GetMapInfo.getInstance().getAllKeys()) {
             Object dataPoint = data.get(key);
             if (dataPoint == null) {return null;}
             jObj.put(key, dataPoint);
@@ -219,7 +183,7 @@ public class JSONIO
 
         JSONArray jArray = new JSONArray();
         for (Map<String, Object> carData : data) {
-            if (carData.size() == keys.length) {
+            if (carData.size() == GetMapInfo.getInstance().getAllKeys().length) {
                 JSONObject jObj = makeJSONObject(carData);
                 if (jObj != null) {
                     jArray.add(jObj);
@@ -228,7 +192,7 @@ public class JSONIO
                     System.out.println("Did not add. (invalid key)");
                 }
             } else {
-                System.out.println("Did not add. " + carData.size() + " != " + keys.length);
+                System.out.println("Did not add. " + carData.size() + " != " + GetMapInfo.getInstance().getAllKeys().length);
             }
         }
 

@@ -110,11 +110,11 @@ public abstract class Vehicle {
      * @param map The Map to be filled with data from the Vehicle
      */
     public void getDataMap(Map<String, Object> map) {
-        map.put(JSONIO.getTypeKey(), vehicleType);
-        map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
-        map.put(JSONIO.getModelKey(), vehicleModel);
-        map.put(JSONIO.getVehicleIDKey(), vehicleId);
-        map.put(JSONIO.getPriceKey(), vehiclePrice);
-        map.put(JSONIO.getDateKey(), acquisitionDate);
+        map.put(GetMapInfo.getInstance().getTypeKey(), vehicleType);
+        map.put(GetMapInfo.getInstance().getManufacturerKey(), vehicleManufacturer);
+        map.put(GetMapInfo.getInstance().getModelKey(), vehicleModel);
+        map.put(GetMapInfo.getInstance().getVehicleIDKey(), vehicleId);
+        map.put(GetMapInfo.getInstance().getPriceKey(), vehiclePrice);
+        map.put(GetMapInfo.getInstance().getDateKey(), acquisitionDate);
     }
 }

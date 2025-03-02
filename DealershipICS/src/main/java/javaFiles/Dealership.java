@@ -106,18 +106,18 @@ public class Dealership {
      */
     public void dataToInventory(Map<String, Object> map) {
         Vehicle vehicle = createNewVehicle(
-                JSONIO.getTypeVal(map),
-                JSONIO.getVehicleIDVal(map)
+                GetMapInfo.getInstance().getTypeVal(map),
+                GetMapInfo.getInstance().getVehicleIDVal(map)
         );
         if (vehicle == null) {
             return;
         }
-        vehicle.setVehicleId(JSONIO.getVehicleIDVal(map));
-        vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
-        vehicle.setVehicleModel(JSONIO.getModelVal(map));
-        vehicle.setVehicleId(JSONIO.getVehicleIDVal(map));
-        vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
-        vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
+        vehicle.setVehicleId(GetMapInfo.getInstance().getVehicleIDVal(map));
+        vehicle.setVehicleManufacturer(GetMapInfo.getInstance().getManufacturerVal(map));
+        vehicle.setVehicleModel(GetMapInfo.getInstance().getModelVal(map));
+        vehicle.setVehicleId(GetMapInfo.getInstance().getVehicleIDVal(map));
+        vehicle.setVehiclePrice(GetMapInfo.getInstance().getPriceVal(map));
+        vehicle.setAcquisitionDate(GetMapInfo.getInstance().getDateVal(map));
 
         addIncomingVehicle(vehicle);
     }
@@ -191,7 +191,7 @@ public class Dealership {
         List<Map<String, Object>> list = new ArrayList<>();
         for (Vehicle vehicle: vehicleInventory) {
             Map<String, Object> map = new HashMap<>();
-            map.put(JSONIO.getDealIDKey(), dealerID);
+            map.put(GetMapInfo.getInstance().getDealIDKey(), dealerID);
             vehicle.getDataMap(map);
             list.add(map);
         }
