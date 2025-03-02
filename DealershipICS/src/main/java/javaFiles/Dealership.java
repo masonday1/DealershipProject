@@ -13,20 +13,20 @@ import java.util.Map;
     Author: Patrick McLucas */
 
 public class Dealership {
-    private final String dealerID;
+    private final String dealerId;
     private final ArrayList<Vehicle> vehicleInventory;
     private boolean receivingVehicle;
 
     // Instantiation requires dealer_ID
-    public Dealership(String dealerID) {
-        this.dealerID = dealerID;
+    public Dealership(String dealerId) {
+        this.dealerId = dealerId;
         this.receivingVehicle = true;
         vehicleInventory = new ArrayList<>();
     }
 
     // Returns Dealer ID
     public String getDealerId () {
-        return dealerID;
+        return dealerId;
     }
 
     // Provides vehicle acquisition status
@@ -53,8 +53,8 @@ public class Dealership {
     public void addIncomingVehicle(Vehicle newVehicle) {
         // Checks if the dealership is accepting new vehicles.
         if (!receivingVehicle) {
-            System.out.println("Dealership " + this.dealerID + " is not accepting new vehicles at this time.");
-            System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerID +".");
+            System.out.println("Dealership " + this.dealerId + " is not accepting new vehicles at this time.");
+            System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerId +".");
             return; // Exits method if the dealership is not accepting new vehicles.
         } 
         
@@ -62,7 +62,7 @@ public class Dealership {
         for (Vehicle vehicle : vehicleInventory) {
             if (vehicle.getVehicleId().equals(newVehicle.getVehicleId())) {
                 System.out.println("This vehicle is already located at the dealership.");
-                System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerID + ".");
+                System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerId + ".");
                 return; // Exits method if the vehicle already exists at the dealership
             }
         }
@@ -89,7 +89,7 @@ public class Dealership {
             case "suv" -> new SUV();
             case "sedan" -> new Sedan();
             case "pickup" -> new Pickup();
-            case "sports car" -> new Sports_Car();
+            case "sports car" -> new SportsCar();
             default -> {
                 System.out.println("\"" + vehicleType +
                         "\" is not a supported vehicle type. " +
@@ -107,15 +107,15 @@ public class Dealership {
     public void dataToInventory(Map<String, Object> map) {
         Vehicle vehicle = createNewVehicle(
                 JSONIO.getTypeVal(map),
-                JSONIO.getVehicleIDVal(map)
+                JSONIO.getVehicleIdVal(map)
         );
         if (vehicle == null) {
             return;
         }
-        vehicle.setVehicleId(JSONIO.getVehicleIDVal(map));
+        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
         vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
         vehicle.setVehicleModel(JSONIO.getModelVal(map));
-        vehicle.setVehicleId(JSONIO.getVehicleIDVal(map));
+        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
         vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
         vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
 
@@ -191,7 +191,7 @@ public class Dealership {
         List<Map<String, Object>> list = new ArrayList<>();
         for (Vehicle vehicle: vehicleInventory) {
             Map<String, Object> map = new HashMap<>();
-            map.put(JSONIO.getDealIDKey(), dealerID);
+            map.put(JSONIO.getDealIdKey(), dealerId);
             vehicle.getDataMap(map);
             list.add(map);
         }
@@ -207,7 +207,7 @@ public class Dealership {
      * a message indicating this is printed.
      */
     public void printInventory() {
-        System.out.println("Dealership: " + dealerID);
+        System.out.println("Dealership: " + dealerId);
 
         // if Dealership does not have any Vehicles, print message and return
         if (vehicleInventory.isEmpty()) {

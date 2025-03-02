@@ -97,7 +97,7 @@ public class Main {
         String userInput;
         int dealerIndex;
         do {
-            System.out.println("Valid ID's:\n" + company.getDealershipIDList());
+            System.out.println("Valid ID's:\n" + company.getDealershipIdList());
             System.out.print("Enter the ID of the dealership or back to return to menu: ");
             userInput = scanner.nextLine();
 

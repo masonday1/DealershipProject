@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * A class that reads and writes to JSON files
  *
@@ -75,16 +74,16 @@ public class JSONIO
     /**
      * Returns the given key. Helps avoid repeating / misspelling.
      */
-    public static String getDealIDKey() {       return keys[0];}
+    public static String getDealIdKey() {       return keys[0];}
     public static String getTypeKey() {         return keys[1];}
     public static String getManufacturerKey() { return keys[2];}
     public static String getModelKey() {        return keys[3];}
-    public static String getVehicleIDKey() {    return keys[4];}
+    public static String getVehicleIdKey() {    return keys[4];}
     public static String getPriceKey() {        return keys[5];}
     public static String getDateKey() {         return keys[6];}
 
-    public static String getDealIDVal(Map<String, Object> map) {
-        return (String) map.get(getDealIDKey());
+    public static String getDealIdVal(Map<String, Object> map) {
+        return (String) map.get(getDealIdKey());
     }
     public static String getTypeVal(Map<String, Object> map) {
         return (String) map.get(getTypeKey());
@@ -95,8 +94,8 @@ public class JSONIO
     public static String getModelVal(Map<String, Object> map) {
         return (String) map.get(getModelKey());
     }
-    public static String getVehicleIDVal(Map<String, Object> map) {
-        return (String) map.get(getVehicleIDKey());
+    public static String getVehicleIdVal(Map<String, Object> map) {
+        return (String) map.get(getVehicleIdKey());
     }
     public static long getPriceVal(Map<String, Object> map) {
         return (long) map.get(getPriceKey());
