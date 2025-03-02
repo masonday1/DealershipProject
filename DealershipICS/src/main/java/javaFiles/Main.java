@@ -1,6 +1,9 @@
 package javaFiles;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
 
@@ -97,7 +100,7 @@ public class Main {
         String userInput;
         int dealerIndex;
         do {
-            System.out.println("Valid ID's:\n" + company.getDealershipIDList());
+            System.out.println("Valid ID's:\n" + company.getDealershipIdList());
             System.out.print("Enter the ID of the dealership or back to return to menu: ");
             userInput = scanner.nextLine();
 

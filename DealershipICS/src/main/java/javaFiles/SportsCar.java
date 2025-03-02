@@ -7,13 +7,13 @@ package javaFiles;
  * @author Christopher Engelhart
 */
 
-public class Sports_Car extends Vehicle
+public class SportsCar extends Vehicle
 {
     /**
      * Sports_car constructor calls upon its parent class Vehicle's constructor.
      * Sports_car constructor passes the String "Sports_car" to Vehicle's constructor.
      */
-    Sports_Car()
+    SportsCar()
     {
         super("Sports car");
     }

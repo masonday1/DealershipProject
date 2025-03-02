@@ -24,11 +24,11 @@ public abstract class Vehicle {
      * Constructor method to be used by Vehicle's child classes
      * to specify the children's vehicle type for example, SUV, Sedan, Pickup, Sports car.
      *
-     * @param vehicle_type represents the specific vehicle type that the extending class is
+     * @param vehicleType represents the specific vehicle type that the extending class is
      */
-    public Vehicle(String vehicle_type)
+    public Vehicle(String vehicleType)
     {
-        this.vehicleType = vehicle_type;
+        this.vehicleType = vehicleType;
 
     }
 
@@ -113,7 +113,7 @@ public abstract class Vehicle {
         map.put(JSONIO.getTypeKey(), vehicleType);
         map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
         map.put(JSONIO.getModelKey(), vehicleModel);
-        map.put(JSONIO.getVehicleIDKey(), vehicleId);
+        map.put(JSONIO.getVehicleIdKey(), vehicleId);
         map.put(JSONIO.getPriceKey(), vehiclePrice);
         map.put(JSONIO.getDateKey(), acquisitionDate);
     }
