@@ -13,6 +13,11 @@ public class GetMapInfo {
                 "vehicle_id", "price", "acquisition_date"};
     }
 
+    /**
+     * Return the singleton instance of the Class.
+     *
+     * @return The singleton instance of the Class
+     */
     public static GetMapInfo getInstance() {
         if (instance == null) {
             instance = new GetMapInfo();
@@ -20,6 +25,11 @@ public class GetMapInfo {
         return instance;
     }
 
+    /**
+     * Return the list of all keys used for Vehicle Maps
+     *
+     * @return All keys used for Vehicle Maps.
+     */
     public String[] getAllKeys() {
         return keys;
     }
@@ -35,6 +45,9 @@ public class GetMapInfo {
     public String getPriceKey() {        return keys[5];}
     public String getDateKey() {         return keys[6];}
 
+    /**
+     * Returns the value at the given key. Helps avoid repeating / misspelling.
+     */
     public String getDealIDVal(Map<String, Object> map) {
         return (String) map.get(getDealIDKey());
     }

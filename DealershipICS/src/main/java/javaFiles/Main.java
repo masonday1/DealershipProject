@@ -128,13 +128,15 @@ public class Main {
         return dealerIndex;
     }
 
-    /** TODO: Update description
-     * Changes the vehicle receiving status of a dealership.
+    /**
+     * Changes the Vehicle receiving status of a Dealership.
      * <p>
-     * This method prompts the user to either enable or disable the vehicle receiving
-     * status for the specified dealership.  It checks the current status and
+     * This method prompts the user to either enable or disable the Vehicle receiving
+     * status for the specified Dealership.  It checks the current status and
      * provides feedback to the user.
      *
+     * @param company The {@link Company} object that contains the dealerships.
+     * @param dealerIndex The index of the Dealership in company's list_dealerships list
      * @param scanner The {@link Scanner} object used to read user input.
      */
     private static void changeReceivingStatus(Company company, int dealerIndex, Scanner scanner) {
@@ -282,6 +284,4 @@ public class Main {
         // that prints out all of the
         System.out.println("Likely to be removed (as pending removed), not functional at the moment."  + company);
     }
-
-
 }

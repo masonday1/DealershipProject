@@ -89,7 +89,7 @@ public class Dealership {
             case "suv" -> new SUV();
             case "sedan" -> new Sedan();
             case "pickup" -> new Pickup();
-            case "sports car" -> new Sports_Car();
+            case "sports car" -> new SportsCar();
             default -> {
                 System.out.println("\"" + vehicleType +
                         "\" is not a supported vehicle type. " +
