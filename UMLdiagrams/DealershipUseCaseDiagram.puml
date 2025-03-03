@@ -8,10 +8,11 @@ usecase "Enable Vehicle Rent Status" as UC1
 usecase "Disable Vehicle Rent Status" as UC2
 usecase "Add Dealership Name" as UC3
 usecase "Edit Dealership Name" as UC4
-usecase "Transfer Vehicle" as UC5
-usecase "Remove Vehicle from Inventory" as UC6
+usecase "Add a Dealership" as UC5
+usecase "Transfer Vehicle" as UC6
 usecase "Add Vehicle with Manual Input" as UC7
 usecase "Load Vehicle Data" as UC8
+usecase "Remove Vehicle from Inventory" as UC9
 User -- UC1
 User -- UC2
 User -- UC3
@@ -20,6 +21,7 @@ User -- UC5
 User -- UC6
 User -- UC7
 User -- UC8
+User -- UC9
 User --> (Exit)
 
 
