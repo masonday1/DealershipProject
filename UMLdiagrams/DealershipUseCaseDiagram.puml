@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+left to right direction
+
+actor User
+
+usecase "Enable Vehicle Rent Status" as UC1
+usecase "Disable Vehicle Rent Status" as UC2
+usecase "Add Dealership Name" as UC3
+usecase "Edit Dealership Name" as UC4
+usecase "Transfer Vehicle" as UC5
+usecase "Remove Vehicle from Inventory" as UC6
+usecase "Add Vehicle with Manual Input" as UC7
+usecase "Load Vehicle Data" as UC8
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+User -- UC5
+User -- UC6
+User -- UC7
+User -- UC8
+User --> (Exit)
+
+
+
+@enduml
