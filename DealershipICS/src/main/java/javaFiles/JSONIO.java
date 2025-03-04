@@ -5,8 +5,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,13 +17,9 @@ import java.util.Map;
  *
  * @author Dylan Browne
  */
-public class JSONIO
-{
-    private final File file;
-    private final char mode;
-
+public class JSONIO extends FileIO {
     /**
-     * Creates or opens a JSON file with name fileName in read ('r') or write ('w') mode.
+     * Creates or opens a JSON file with name filePath in read ('r') or write ('w') mode.
      * Read mode allows the reading, but not writing of files, write mode allows for the
      * writing, but not reading of files.
      *
@@ -34,38 +28,7 @@ public class JSONIO
      * @throws ReadWriteException Thrown if the mode is an invalid char
      */
     public JSONIO(String filePath, char mode) throws ReadWriteException {
-        this.mode = getMode(mode);
-        if (filePath.endsWith(".json")) {
-            file = new File(filePath);
-            if (!file.exists() && mode == 'r') {
-                throw new ReadWriteException("filePath \"" + filePath +"\" does not exist "
-                        + "or could not be found where indicated.");
-            }
-        } else {
-            throw new ReadWriteException("filePath \"" + filePath +"\" is not a .json file. "
-                                        + "Make sure to include .json at the end for filePath.");
-        }
-    }
-
-    /**
-     * Takes a char and converts it to an appropriate lowercase version of the mode
-     *
-     * @param mode A char representation of the type of file this is to be converted to correct form
-     * @return The correct form of the char representation (read 'r', write 'w')
-     * @throws ReadWriteException Thrown if the mode is an invalid char
-     */
-    public static char getMode(char mode)  throws ReadWriteException{
-        mode = Character.toLowerCase(mode);
-        char[] valid_modes = {'r', 'w'};
-        for (char mode_lower : valid_modes) {
-            if (mode == mode_lower) {
-                return mode;
-            }
-        }
-
-        String message = "Mode '" + mode +
-                "' is not in {'r', 'R', 'w', 'W'}, file not opened.";
-        throw new ReadWriteException(message);
+        super(filePath, mode);
     }
 
     /**
@@ -119,7 +82,7 @@ public class JSONIO
      *         The Map has data in the same keys as keys.
      * @throws ReadWriteException Thrown if not in read ('r') mode.
      */
-    public List<Map<String, Object>> read() throws ReadWriteException {
+    public List<Map<String, Object>> readInventory() throws ReadWriteException {
         if (mode != 'r') {
             throw new ReadWriteException("Must be mode 'r', not mode '" + mode + "'.");
         }
@@ -175,7 +138,7 @@ public class JSONIO
      * @return The number of entries written to the file
      * @throws ReadWriteException Thrown if not in write ('w') mode.
      */
-    public int write(List<Map<String, Object>> data) throws ReadWriteException {
+    public int writeInventory(List<Map<String, Object>> data) throws ReadWriteException {
         int added = 0;
         if (mode != 'w') {
             throw new ReadWriteException("Must be mode 'w', not mode '" + mode + "'.");
@@ -210,40 +173,15 @@ public class JSONIO
         return added;
     }
 
-    /**
-     * Opens a file chooser dialog to allow the user to select a JSON file.
-     * The file chooser will start in the current user's working directory
-     * and will filter files to only show those with a ".json" extension.
-     *
-     * @return The selected JSON file if the user selects a file and confirms the dialog,
-     *         or null if the user cancels or closes the dialog without selecting a file.
-     *
-     * @author Christopher Engelhart
-     */
-    public static File selectJsonFile() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-        fileChooser.setFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
-        int result = fileChooser.showOpenDialog(null);
-        return result == 0 ? fileChooser.getSelectedFile() : null;
+    @Override
+    public List<Map<String, Object>> readDealerships() {
+        System.out.println("Not implemented (readDealerships).");
+        return null;
     }
 
-    /**
-     * Opens a file chooser dialog to allow the user to select a JSON file.
-     * The file chooser will start in the current user's working directory
-     * and will filter files to only show those with a ".json" extension.
-     *
-     * @return The selected path to the JSON file if the user selects a file and confirms
-     *         the dialog, or null if the user cancels or closes the dialog without
-     *         selecting a file.
-     */
-    public static String selectJsonFilePath() {
-        File file = selectJsonFile();
-        if (file == null) {return null;}
-        return file.toString();
-    }
-
-    public String toString() {
-        return "Opened file \"" + file.toString() + "\" in (" + mode + ") mode.";
+    @Override
+    public int writeDealerships(List<Map<String, Object>> maps) {
+        System.out.println("Not implemented (writeDealerships).");
+        return 0;
     }
 }
