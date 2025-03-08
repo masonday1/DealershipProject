@@ -1,0 +1,30 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User
+participant "Software" as System
+participant "Dealership" as Dealership
+participant "Vehicle" as Vehicle
+
+User -> System: Click "Modify Dealership Inventory"
+System -> User: Present options (Enable Rent, Disable Rent, Remove Vehicle, Transfer Inventory)
+User -> System: Click "Disable Rent"
+System -> Dealership: List dealerships currently renting vehicles
+alt No dealerships currently renting
+    System -> User: Notify no dealerships currently renting
+else Dealerships available
+    System -> User: Present list of dealerships renting
+    end
+
+User -> System: Select dealership to modify
+System -> Dealership: getDataMap()
+alt No rental vehicles in dealership
+    System -> User: notify no rental vehicles
+ else Rental vehicles available
+    System -> User: Present table of vehicles
+    end
+
+User -> System: Select vehicle(s) to disable rent
+System -> Vehicle: disableRent()
+System -> Dealership : Move selected vehicles to sales inventory
+@enduml
