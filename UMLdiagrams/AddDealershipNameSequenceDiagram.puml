@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-actor "User" as User
+actor User
 participant "Software" as System
 participant "Dealership" as Dealership
 
