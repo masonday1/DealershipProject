@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User
+participant "Software" as System
+participant "Dealership" as Dealership
+
+
+User -> System: Click "Modify Dealership Inventory"
+System -> User: Present options(Add Vehicle, Enable Rent, Disable Rent, Transfer Inventory)
+User -> System: Click "Transfer Inventory"
+System -> Dealership: Get list dealerships as sender
+
+alt dealerships available accepting vehicles
+    System -> Dealership: Get list dealerships as receiver
+else no dealerships available accepting vehicles
+    System -> User: notify user
+    end
+
+User -> System: Select dealership as sender
+User -> System: Select dealership as receiver
+
+System -> User: show table with all vehicles from sender dealership
+User -> System: Select one or more vehicles
+System -> Dealership: transferVehicles()
+
+@enduml

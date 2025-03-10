@@ -1,0 +1,32 @@
+@startuml
+
+actor User
+participant "Software" as System
+participant "Dealership" as Dealership
+participant "Vehicle" as Vehicle
+
+
+User -> System: Click "Modify Dealership Inventory"
+System -> User: Present options(Add Vehicle, Enable Rent, Disable Rent, Remove Vehicle, Transfer Inventory)
+
+User -> System: Click "Add Vehicle"
+Software -> User: Present options(Add from File, Add Manually)
+User -> Software: click "Add Manually"
+
+Software -> User: get list dealerships accepting vehicles
+User -> Software: Select dealership
+
+Software -> User: present text fields to enter vehicle data
+User -> Software: click "Create" button
+Software -> Dealership: manualVehicleAdd()
+
+
+
+
+
+
+
+
+
+
+@enduml

@@ -7,7 +7,7 @@ participant "Dealership" as Dealership
 participant "Vehicle" as Vehicle
 
 User -> System: Click "Modify Dealership Inventory"
-System -> User: Present options (Enable Rent, Disable Rent, Remove Vehicle, Transfer Inventory)
+System -> User: Present options (Add Vehicle, Enable Rent, Disable Rent, Remove Vehicle, Transfer Inventory)
 User -> System: Click "Disable Rent"
 System -> Dealership: List dealerships currently renting vehicles
 alt No dealerships currently renting
