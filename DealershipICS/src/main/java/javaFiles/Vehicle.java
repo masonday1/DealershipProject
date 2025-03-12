@@ -1,5 +1,7 @@
 package javaFiles;
 
+import javaFiles.CustomExceptions.*;
+import javaFiles.Rental.*;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,17 +21,35 @@ public abstract class Vehicle {
     private long vehiclePrice;
     private long acquisitionDate;
     private final String vehicleType; // Common field to all vehicle
+    private boolean rental;
+    private final RentalStrategy rentalStrategy;
 
     /**
      * Constructor method to be used by Vehicle's child classes
-     * to specify the children's vehicle type for example, SUV, Sedan, Pickup, Sports car.
+     * to specify the children's vehicle type with default rental strategy
      *
      * @param vehicleType represents the specific vehicle type that the extending class is
      */
     public Vehicle(String vehicleType)
     {
         this.vehicleType = vehicleType;
+        this.rental = false;
+        this.rentalStrategy = new DefaultRentalStrategy();
 
+    }
+
+    /**
+     * Constructor method to be used by Vehicle's child classes
+     * to specify the children's vehicle type with  a specified rental strategy
+     *
+     *
+     * @param vehicleType the specific vehicle type that the extending class is
+     * @param rentalStrategy the rental strategy used for this vehicle
+     */
+    public Vehicle(String vehicleType, RentalStrategy rentalStrategy)
+    {
+        this.vehicleType = vehicleType;
+        this.rentalStrategy = rentalStrategy;
     }
 
     /**
@@ -76,6 +96,20 @@ public abstract class Vehicle {
     public void setAcquisitionDate(long acquisitionDate) { this.acquisitionDate = acquisitionDate;
     }
 
+
+    public void setRental(boolean state) {this.rental = state; }
+
+    public void enableRental() throws RentalException
+    {
+        rentalStrategy.enableRental(this);
+
+    }
+
+    public void disableRental() throws RentalException
+    {
+        rentalStrategy.disableRental(this);
+    }
+
     // Getter methods for shared attributes
     public String getVehicleId() {return vehicleId;}
     public String getVehicleManufacturer() {return vehicleManufacturer;}
@@ -83,6 +117,7 @@ public abstract class Vehicle {
     public long getVehiclePrice() {return vehiclePrice;}
     public long getAcquisitionDate() {return acquisitionDate;}
     public String getVehicleType() {return vehicleType;}
+    public boolean getRentalStatus() { return rental; }
 
     /**
      * Creates and returns a String representation of the Vehicle

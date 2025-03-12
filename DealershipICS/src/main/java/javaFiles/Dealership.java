@@ -14,14 +14,18 @@ import java.util.Map;
 
 public class Dealership {
     private final String dealerId;
-    private final ArrayList<Vehicle> vehicleInventory;
+    private final ArrayList<Vehicle> salesInventory;
+    private final ArrayList<Vehicle> rentalInventory;
     private boolean receivingVehicle;
+    private boolean rentalStatus;
 
     // Instantiation requires dealer_ID
     public Dealership(String dealerId) {
         this.dealerId = dealerId;
         this.receivingVehicle = true;
-        vehicleInventory = new ArrayList<>();
+        this.rentalStatus = false;
+        salesInventory = new ArrayList<>();
+        rentalInventory = new ArrayList<>();
     }
 
     // Returns Dealer ID
@@ -34,9 +38,15 @@ public class Dealership {
         return receivingVehicle;
     }
 
+    public Boolean getRentalStatus() { return rentalStatus; }
+
     // Provides list of vehicles at the dealership
-    public ArrayList<Vehicle> getInventoryVehicles() {
-        return vehicleInventory;
+    public ArrayList<Vehicle> getSaleVehicles() {
+        return salesInventory;
+    }
+
+    public ArrayList<Vehicle> getRentalVehicles() {
+        return rentalInventory;
     }
 
     // ENABLES vehicle acquisition.
@@ -49,6 +59,15 @@ public class Dealership {
         this.receivingVehicle = false;
     }
 
+
+    // enable dealership to perform rental services
+    public void enableRentalService(){this.rentalStatus = true; }
+
+
+    // disable dealership's rental services
+    public void disableRentalService() {this.rentalStatus = false; }
+
+
     // Method for adding new vehicles to the dealership.
     public void addIncomingVehicle(Vehicle newVehicle) {
         // Checks if the dealership is accepting new vehicles.
@@ -59,14 +78,14 @@ public class Dealership {
         } 
         
         // Checks if the new vehicle is already located at the dealership. 
-        for (Vehicle vehicle : vehicleInventory) {
+        for (Vehicle vehicle : salesInventory) {
             if (vehicle.getVehicleId().equals(newVehicle.getVehicleId())) {
                 System.out.println("This vehicle is already located at the dealership.");
                 System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerId + ".");
                 return; // Exits method if the vehicle already exists at the dealership
             }
         }
-        this.vehicleInventory.add(newVehicle);
+        this.salesInventory.add(newVehicle);
     }
 
     /**
@@ -176,6 +195,41 @@ public class Dealership {
         this.addIncomingVehicle(newVehicle);
     }
 
+
+    /**
+     * Adds a vehicle to the dealership's rental inventory.
+     *
+     * @param rental The vehicle to add to the rental inventory. Cannot be null.
+     * @throws Exception If an error occurs during the addition process, including:
+     * - If the rental parameter is null.
+     * - If the vehicle is already in the rental inventory.
+     * - If the dealership does not currently provide rental services.
+     * - If the vehicle is not currently rentable.
+     *
+     * @author Christopher Engelhart
+     */
+    public void addRentalVehicle(Vehicle rental) throws Exception {
+        if (rental == null) {
+            throw new Exception("Rental vehicle object is null.");
+        }
+
+        if (this.getRentalStatus() && rental.getRentalStatus()) {
+            if (!this.rentalInventory.contains(rental)) {
+                this.rentalInventory.add(rental);
+            } else {
+                throw new Exception("Vehicle " + rental.getVehicleId() + " is already in the rental inventory.");
+            }
+        } else {
+            if (!this.getRentalStatus()) {
+                throw new Exception("Dealership " + this.getDealerId() + " is not currently providing rental services.");
+            } else if (!rental.getRentalStatus()) {
+                throw new Exception("Vehicle " + rental.getVehicleId() + " is not currently rentable.");
+            }
+        }
+    }
+
+
+
     /**
      * Retrieves Vehicle data for the Dealership.
      * <p>
@@ -189,7 +243,7 @@ public class Dealership {
      */
     public List<Map<String, Object>> getDataMap() {
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Vehicle vehicle: vehicleInventory) {
+        for (Vehicle vehicle: salesInventory) {
             Map<String, Object> map = new HashMap<>();
             map.put(JSONIO.getDealIdKey(), dealerId);
             vehicle.getDataMap(map);
@@ -210,12 +264,12 @@ public class Dealership {
         System.out.println("Dealership: " + dealerId);
 
         // if Dealership does not have any Vehicles, print message and return
-        if (vehicleInventory.isEmpty()) {
+        if (salesInventory.isEmpty()) {
             System.out.println(", Does not currently have any inventory\n");
             return;
         }
 
-        for (Vehicle vehicle : vehicleInventory) {
+        for (Vehicle vehicle : salesInventory) {
             System.out.println("\n" + vehicle.toString());
         }
     }

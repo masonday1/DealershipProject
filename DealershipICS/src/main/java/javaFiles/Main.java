@@ -1,5 +1,8 @@
 package javaFiles;
 
+import javaFiles.CustomExceptions.RentalException;
+import javaFiles.CustomExceptions.SportsCarRentalNotAllowedException;
+
 import java.util.*;
 
 public class Main {
@@ -22,7 +25,9 @@ public class Main {
                             4) Write dealership inventory to file.
                             5) Read a json file.
                             6) Print Company Inventory.
-                            7) Exit program."""
+                            7) Exit program.\s
+                            8) Rental test"""
+
             );
 
             userInput = scanner.nextLine();
@@ -70,6 +75,35 @@ public class Main {
                     System.out.println("Exiting program...");
                     System.exit(0);
                     break;
+                case "8": // test rental
+                    Dealership d1 = company.getListDealerships().get(1); // 77338
+                    System.out.println("rental status " + d1.getRentalStatus());
+                    d1.enableRentalService(); // enable dealership rental services
+                    System.out.println("rental status after toggle " + d1.getRentalStatus());
+
+                    d1.manualVehicleAdd("111","Dodge", "Charger",25000L,1515354694451L,"Sedan");
+                    Vehicle sedCar = d1.getSaleVehicles().getLast();
+
+
+
+
+
+                    try {
+                        sedCar.enableRental();
+                        System.out.println("sedCar rental enabled");
+                        d1.addRentalVehicle(sedCar);
+                        System.out.println(d1.getRentalVehicles());
+                    } catch (SportsCarRentalNotAllowedException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    } catch (RentalException e) {
+                        throw new RuntimeException(e);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    continue;
+
+
                 default:
                     System.out.println("Invalid input. Please select a valid option.");
                     continue;

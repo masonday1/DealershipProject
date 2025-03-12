@@ -1,8 +1,10 @@
 package javaFiles;
 
-/** Sports_Car is a child class of Vehicle, it calls Vehicle class's constructor
- * with the string "Sports car" , which then sets a Sports_Car object's vehicle_type
- * to "Sports_car"
+import javaFiles.Rental.SportsCarRentalStrategy;
+
+/** SportsCar is a child class of Vehicle, it calls Vehicle class's constructor
+ * with the string "Sports car" , which then sets a SportsCar object's vehicleType
+ * to "SportsCar"
  *
  * @author Christopher Engelhart
 */
@@ -15,6 +17,6 @@ public class SportsCar extends Vehicle
      */
     SportsCar()
     {
-        super("Sports car");
+        super("Sports car", new SportsCarRentalStrategy());
     }
 }
