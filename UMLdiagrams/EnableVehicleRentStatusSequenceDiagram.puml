@@ -17,7 +17,8 @@ else Dealerships available
     end
 
 User -> System: Select dealership to modify
-System -> Dealership: getDataMap()
+System -> Dealership: getInventoryVehicles()
+Dealership --> System: inventoryVehicles
 alt No vehicles in dealership
     System -> User: notify to add vehicle(s)
  else Vehicles available
@@ -26,5 +27,9 @@ alt No vehicles in dealership
 
 User -> System: Select vehicle(s) to enable rent
 System -> Vehicle: enableRent()
+opt instance of SportsCar
+    Dealership --> System: throw Exception
+    end
+
 System -> Dealership : Move vehicles to rental inventory
 @enduml

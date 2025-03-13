@@ -3,16 +3,20 @@
 
 actor User
 participant "Software" as System
+participant "Company" as Company
 participant "Dealership" as Dealership
 
 
 User -> System: Click "Modify Dealership Inventory"
 System -> User: Present options(Add Vehicle, Enable Rent, Disable Rent, Transfer Inventory)
 User -> System: Click "Transfer Inventory"
-System -> Dealership: Get list dealerships as sender
+System -> Company: Get list of dealerships
+Company --> System: dealership list
+
 
 alt dealerships available accepting vehicles
-    System -> Dealership: Get list dealerships as receiver
+    System -> Company: Get list of dealerships as receiver
+    Company --> System: dealership list
 else no dealerships available accepting vehicles
     System -> User: notify user
     end

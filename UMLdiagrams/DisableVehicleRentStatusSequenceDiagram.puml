@@ -17,7 +17,8 @@ else Dealerships available
     end
 
 User -> System: Select dealership to modify
-System -> Dealership: getDataMap()
+System -> Dealership: getInventoryVehicles()
+Dealership --> System: inventoryVehicles
 alt No rental vehicles in dealership
     System -> User: notify no rental vehicles
  else Rental vehicles available

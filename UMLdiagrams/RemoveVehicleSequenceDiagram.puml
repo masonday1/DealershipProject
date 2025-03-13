@@ -4,17 +4,18 @@ actor User
 participant "Software" as Software
 participant "Dealership" as Dealership
 participant "Company" as Company
+
 User -> Software: Click "Modify Dealership Inventory"
 Software -> User: Present options(Add Vehicle, Enable Rent, Disable Rent, Remove Vehicle, Transfer Inventory)
 User -> Software: click "Remove Vehicle"
 
 Software -> User: present list of all dealerships in company
-Software -> Company: getDataMap()
+User -> Software: Choose dealership
+Software -> Dealership: getInventoryVehicles()
+Dealership --> Software: inventoryVehicles
 
-User -> Software: Select dealership
 Software -> User: Present table with all vehicles from dealership
 User -> Software: Select vehicle(s)
-User -> Software: Click "Select"
 
 Software -> Dealership: removeVehicles()
 
