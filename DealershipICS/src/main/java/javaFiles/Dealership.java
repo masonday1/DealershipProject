@@ -12,7 +12,7 @@ import java.util.Map;
         Vehicle acquisition status  (default: ENABLED)
         Vehicle inventory           (default: empty)
 
-    Author: Patrick McLucas */
+    Authors: Patrick McLucas, Christopher Engelhart */
 
 public class Dealership {
     private final String dealerId;
