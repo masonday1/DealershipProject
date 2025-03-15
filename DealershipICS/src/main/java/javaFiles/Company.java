@@ -1,5 +1,9 @@
 package javaFiles;
 
+import javaFiles.CustomExceptions.DealershipNotAcceptingVehiclesException;
+import javaFiles.CustomExceptions.InvalidVehicleTypeException;
+import javaFiles.CustomExceptions.VehicleAlreadyExistsException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +48,7 @@ public class Company {
 
     public String getCompanyName() {return companyName;}
 
-    public void dataToInventory(List<Map<String, Object>> data) {
+    public void dataToInventory(List<Map<String, Object>> data) throws VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidVehicleTypeException {
         if (data == null) {return;}
         for (Map<String, Object> map: data) {
             Dealership dealership = findDealership(JSONIO.getDealIdVal(map));
