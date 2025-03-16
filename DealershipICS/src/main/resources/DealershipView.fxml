@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="200.0" prefWidth="300.0" spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="company.gui.DealershipController">
+    <children>
+        <Button fx:id="loadInventoryButton" mnemonicParsing="false" onAction="#handleLoadInventory" text="Load Inventory" />
+        <Button fx:id="modifyProfileButton" mnemonicParsing="false" onAction="#handleModifyProfile" text="Modify Dealership Profile" />
+        <Button fx:id="modifyInventoryButton" mnemonicParsing="false" onAction="#handleModifyInventory" text="Modify Dealership Inventory" />
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+</VBox>
