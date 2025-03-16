@@ -98,14 +98,31 @@ public abstract class Vehicle {
     }
 
 
+    /**
+     * Sets the rental state of the vehicle object.
+     *
+     * @param state {@code true} to enable rentals, {@code false} to disable.
+     */
     public void setRental(boolean state) {this.rental = state; }
 
+
+
+    /**
+     * Enables rentals using the configured rental strategy.
+     *
+     * @throws RentalException If an error occurs during the rental enabling process.
+     */
     public void enableRental() throws RentalException
     {
         rentalStrategy.enableRental(this);
 
     }
 
+    /**
+     * Disables rentals using the configured rental strategy.
+     *
+     * @throws RentalException If an error occurs during the rental disabling process.
+     */
     public void disableRental() throws RentalException
     {
         rentalStrategy.disableRental(this);
