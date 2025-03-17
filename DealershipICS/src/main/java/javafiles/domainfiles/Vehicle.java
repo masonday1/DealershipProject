@@ -36,7 +36,6 @@ public abstract class Vehicle {
         this.vehicleType = vehicleType;
         this.rental = false;
         this.rentalStrategy = new DefaultRentalStrategy();
-
     }
 
     /**

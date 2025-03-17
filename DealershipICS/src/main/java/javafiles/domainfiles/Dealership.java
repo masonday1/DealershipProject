@@ -88,7 +88,7 @@ public class Dealership {
      */
     public Vehicle getVehicleFromSalesInventory(String vehicleID) throws VehicleNotFoundException {
         for (Vehicle vehicle : salesInventory) {
-            if (vehicle.getVehicleId().equals(vehicleID)) {
+            if (vehicle.getVehicleId()!= null && vehicle.getVehicleId().equals(vehicleID)) {
                 return vehicle;
             }
         }
@@ -103,8 +103,10 @@ public class Dealership {
      * @throws VehicleNotFoundException if the vehicle is not found.
      */
     public Vehicle getVehicleFromRentalInventory(String vehicleID) throws VehicleNotFoundException {
+
+
         for (Vehicle vehicle : rentalInventory) {
-            if (vehicle.getVehicleId().equals(vehicleID)) {
+            if (vehicle.getVehicleId()!= null && vehicle.getVehicleId().equals(vehicleID)) {
                 return vehicle;
             }
         }
@@ -244,7 +246,6 @@ public class Dealership {
 
         Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleID);
 
-        newVehicle.setVehicleId(vehicleID);
         newVehicle.setVehicleManufacturer(vehicleManufacturer);
         newVehicle.setVehicleModel(vehicleModel);
         newVehicle.setVehiclePrice(vehiclePrice);
@@ -282,7 +283,7 @@ public class Dealership {
             throw new VehicleNotRentableException("Vehicle " + rental.getVehicleId() + " is not currently rentable.");
         }
 
-        if (this.rentalInventory.contains(rental)) {
+        if (this.isVehicleInInventory(rental,this.rentalInventory)) {
             throw new VehicleAlreadyExistsException("Vehicle " + rental.getVehicleId() + " is already in the rental inventory.");
         }
 
@@ -382,4 +383,5 @@ public class Dealership {
             System.out.println("\nRental does not currently have any inventory\n");
         }
     }
+
 }

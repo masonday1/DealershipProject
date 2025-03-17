@@ -26,10 +26,10 @@ class VehicleCreator implements VehicleFactory {
     @Override
     public Vehicle createVehicle(String vehicleType, String vehicleID) throws InvalidVehicleTypeException {
         return switch (vehicleType.toLowerCase()) {
-            case "suv" -> new SUV();
-            case "sedan" -> new Sedan();
-            case "pickup" -> new Pickup();
-            case "sports car" -> new SportsCar();
+            case "suv" -> new SUV(vehicleID);
+            case "sedan" -> new Sedan(vehicleID);
+            case "pickup" -> new Pickup(vehicleID);
+            case "sports car" -> new SportsCar(vehicleID);
             default ->  throw new InvalidVehicleTypeException("Unsupported vehicle type: " + vehicleType
             + " " + vehicleID + " unable to be created");
         };
