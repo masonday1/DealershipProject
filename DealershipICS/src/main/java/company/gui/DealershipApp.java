@@ -11,11 +11,11 @@ public class DealershipApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/DealershipView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainScreen.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root, 300, 200);
-        primaryStage.setTitle("Dealership Manager");
+        primaryStage.setTitle("Company Manager");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
