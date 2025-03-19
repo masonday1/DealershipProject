@@ -1,6 +1,6 @@
 package javafiles.domainfiles;
 
-import javafiles.Key;
+import javafiles.dataaccessfiles.Key;
 
 import java.util.ArrayList;
 import java.util.HashMap;

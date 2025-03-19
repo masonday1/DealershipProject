@@ -1,4 +1,4 @@
-package javafiles;
+package javafiles.dataaccessfiles;
 
 import javafiles.customexceptions.ReadWriteException;
 import org.w3c.dom.*;
