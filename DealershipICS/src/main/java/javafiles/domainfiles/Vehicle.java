@@ -2,7 +2,6 @@ package javafiles.domainfiles;
 
 import javafiles.customexceptions.*;
 import javafiles.dataaccessfiles.JSONIO;
-import javafiles.rentalstrategies.*;
 import java.util.Date;
 import java.util.Map;
 

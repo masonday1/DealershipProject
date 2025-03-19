@@ -1,8 +1,8 @@
 package javafiles.domainfiles;
 
 /**
- * SUV is a child class of Vehicle, it calls Vehicle class's constructor
- * with the string "SUV" , which then sets an SUV object's vehicle_type to "SUV"
+ /**
+ * SUV is a child class of Vehicle. Its constructor is called by {@link VehicleCreator#createVehicle(String, String)}.
  *
  * @author Christopher Engelhart
  */
@@ -10,12 +10,16 @@ package javafiles.domainfiles;
 public class SUV extends Vehicle
 {
     /**
-     * SUV's constructor calls upon its parent class Vehicle's constructor.
-     * SUV's constructor passes the String "SUV" to Vehicle's constructor.
+     * Constructs a new SUV object.
+     * Invokes the superclass constructor with "SUV" as the vehicle type,
+     * and sets the vehicle ID using {@link Vehicle#setVehicleId(String)}.
+     *
+     * @param vehicleID The vehicle ID of the Pickup to be created.
      */
-    public SUV()
+    public SUV(String vehicleID)
     {
         super("SUV");
+        this.setVehicleId(vehicleID);
     }
 
 }

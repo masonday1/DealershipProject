@@ -1,20 +1,27 @@
 package javafiles.domainfiles;
 
-/** SportsCar is a child class of Vehicle, it calls Vehicle class's constructor
- * with the string "Sports car" , which then sets a SportsCar object's vehicle_type
- * to "Sports car"
+/**
+ * SportsCar is a child class of Vehicle. It represents a sports car vehicle,
+ * which has a special rental strategy that prevents it from being rented.
+ * The constructor initializes the vehicle with the "Sports car" type and the
+ * {@link SportsCarRentalStrategy}. SportsCar constructor is called by {@link VehicleCreator#createVehicle(String, String).
  *
  * @author Christopher Engelhart
-*/
+ */
 
 public class SportsCar extends Vehicle
 {
     /**
-     * Sports_car constructor calls upon its parent class Vehicle's constructor.
-     * Sports_car constructor passes the String "Sports_car" to Vehicle's constructor.
+     * Constructs a new SportsCar object.
+     * Invokes the superclass constructor with "Sports car" as the vehicle type
+     * and a {@link SportsCarRentalStrategy} to prevent rentals.
+     * Sets the vehicle ID using {@link Vehicle#setVehicleId(String)}.
+     *
+     * @param vehicleID The vehicle ID of the SportsCar to be created.
      */
-    SportsCar()
+    SportsCar(String vehicleID)
     {
-        super("Sports car");
+        super("Sports car", new SportsCarRentalStrategy());
+        this.setVehicleId(vehicleID);
     }
 }

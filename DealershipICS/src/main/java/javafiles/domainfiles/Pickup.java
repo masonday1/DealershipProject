@@ -1,8 +1,7 @@
 package javafiles.domainfiles;
 
 /**
- * Pickup is a child class of Vehicle, it calls Vehicle class's constructor
- * with the string "Pickup" , which then sets a Pickup object's vehicle_type to "Pickup"
+ * Pickup is a child class of Vehicle. Its constructor is called by {@link VehicleCreator#createVehicle(String, String)}.
  *
  * @author Christopher Engelhart
  */
@@ -10,12 +9,16 @@ package javafiles.domainfiles;
 public class Pickup extends Vehicle
 {
     /**
-     * Pickup's constructor calls upon its parent class Vehicle's constructor.
-     * Pickup's constructor passes the String "Pickup" to Vehicle's constructor.
+     * Constructs a new Pickup object.
+     * Invokes the superclass constructor with "Pickup" as the vehicle type,
+     * and sets the vehicle ID using {@link Vehicle#setVehicleId(String)}.
+     *
+     * @param vehicleID The vehicle ID of the Pickup to be created.
      */
-    public Pickup()
+    public Pickup(String vehicleID)
     {
         super("Pickup");
+        this.setVehicleId(vehicleID);
     }
 
 }
