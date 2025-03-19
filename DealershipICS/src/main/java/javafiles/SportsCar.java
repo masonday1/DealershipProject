@@ -1,4 +1,4 @@
-package javaFiles;
+package javafiles;
 
 /** SportsCar is a child class of Vehicle, it calls Vehicle class's constructor
  * with the string "Sports car" , which then sets a SportsCar object's vehicle_type

@@ -7,6 +7,6 @@ module com.example.dealershipics {
     requires json.simple;
     requires java.desktop;
 
-    opens com.example.dealershipics to javafx.fxml;
-    exports com.example.dealershipics;
+    opens company.gui to javafx.fxml;
+    exports company.gui;
 }

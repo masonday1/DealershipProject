@@ -1,65 +1,52 @@
-package javaFiles;
+package javafiles;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.util.*;
 
-public abstract class FileIOBuilderTemp {
-    private static class JSONIOBuilder extends FileIOBuilderTemp{
-        JSONIOBuilder(String[] extensions) {
-            super(extensions);
-        }
-
-        @Override
-        protected FileIO createFileIO(String path, char mode) throws ReadWriteException {
-            return new JSONIO(path, mode);
-        }
-    }
-    private static class XMLBuilder extends FileIOBuilderTemp{
-        XMLBuilder(String[] extensions) {
-            super(extensions);
-        }
-
-        @Override
-        protected FileIO createFileIO(String path, char mode) throws ReadWriteException {
-            return new XMLIO(path, mode);
-        }
-    }
-
-    protected abstract FileIO createFileIO(String path, char mode) throws ReadWriteException;
-    
+public class FileIOBuilder<Build extends FileIO> {
     private final String[] EXTENSIONS;
+    private final Class<Build> CLASS; // used to get around inability to use static
+    private static final Class<?>[] CONSTRUCTOR_PARAMS = {String.class, char.class};
 
-    private static final List<FileIOBuilderTemp> BUILDERS = new ArrayList<>();
+    private static final List<FileIOBuilder<?>> BUILDERS = new ArrayList<>();
     private static final List<String> BUILDERS_EXTENSIONS = new ArrayList<>();
-    private static boolean instantiated = false;
-
 
     /**
-     * Creates a new {@link FileIOBuilderTemp} that creates {@link FileIO} type {@link FileIO}s
+     * Creates a new {@link FileIOBuilder} that creates {@link Build} type {@link FileIO}s
      * when the extension on the path is in extensions.
      *
-     * @param extensions The valid path extensions for creating a {@link FileIO} object.
+     * @param extensions The valid path extensions for creating a {@link Build} object.
+     * @param clazz The {@link Class} of the {@link Build} this {@link FileIOBuilder} creates.
      */
-    private FileIOBuilderTemp(String[] extensions) {
+    private FileIOBuilder(String[] extensions, Class<Build> clazz) {
+        CLASS = clazz;
         EXTENSIONS = extensions;
-        BUILDERS_EXTENSIONS.addAll(Arrays.asList(extensions));
     }
 
     /**
-     * Creates and returns a new {@link FileIO} of type {@link FileIO} with parameters (path, mode).
+     * Creates and returns a new {@link FileIO} of type {@link Build} with parameters (path, mode).
      * Instead, returns null if the path does not have an appropriate extension.
      *
      * @param path The path of the file to be opened or created.
      * @param mode A char representation of the type of file this is (read 'r' or write 'w').
-     * @return A new {@link FileIO} of type {@link FileIO} with parameters (path, mode).
-     * @throws ReadWriteException When creating {@link FileIO}(path, mode) throws an exception.
+     * @return A new {@link FileIO} of type {@link Build} with parameters (path, mode).
+     * @throws ReadWriteException When creating {@link Build}(path, mode) throws an exception.
      */
     private FileIO build(String path, char mode) throws ReadWriteException {
-        if (FileIO.buildable(path, EXTENSIONS)) {
-            return createFileIO(path, mode);
+        try {
+            if (Build.buildable(path, EXTENSIONS)) {
+                return CLASS.getDeclaredConstructor(CONSTRUCTOR_PARAMS).newInstance(path, mode);
+            }
+        } catch (InvocationTargetException e) {
+            throw (ReadWriteException) e.getCause();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+            System.out.println("Reflection error on \"" + path + "\": '"
+                               + mode + "', returning null.");
         }
         return null;
     }
@@ -134,28 +121,49 @@ public abstract class FileIOBuilderTemp {
             throw new ReadWriteException("Path: \"" + path + "\" does not exist, so it can't be read.");
         }
 
-        for (FileIOBuilderTemp builder : BUILDERS) {
+        for (FileIOBuilder<?> builder : BUILDERS) {
             FileIO fileIO = builder.build(path, mode);
             if (fileIO != null) {
                 return fileIO;
             }
         }
         throw new ReadWriteException("Extension for \"" + path + "\" not in " +
-                BUILDERS_EXTENSIONS.toString() + ".");
+                                      BUILDERS_EXTENSIONS.toString() + ".");
     }
 
     /**
-     * Creates and adds the {@link FileIOBuilderTemp}s to a list of {@link FileIOBuilderTemp}s
+     * Creates and adds a single instance of {@link FileIOBuilder} with the appropriate
+     * checks to a List of {@link FileIOBuilder}s that will be used to build the appropriate
+     * type of {@link FileIO}. Function must be called before calling selectFilePath as
+     * selectFilePath needs this as setup, and is only called by setupFileIOBuilders.
+     *
+     * @param extensions An array of the acceptable extensions for the path that is
+     *                   used to create the {@link FileIO}s build by the {@link FileIOBuilder}.
+     * @param clazz The {@link Class}<{@link FileIO}> that the {@link FileIOBuilder} is creating.
+     */
+    private static <Build extends FileIO> void setupFileIOBuilder(String[] extensions, Class<Build> clazz) {
+        FileIOBuilder<Build> newBuilder = new FileIOBuilder<>(extensions, clazz);
+        try {
+            for (FileIOBuilder<?> builder : BUILDERS) {
+                if (builder.CLASS == clazz) {
+                    throw new ReadWriteException(clazz.getName() + " builder already created.");
+                }
+            }
+            BUILDERS.add(newBuilder);
+            Collections.addAll(BUILDERS_EXTENSIONS, newBuilder.EXTENSIONS);
+        } catch (ReadWriteException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Creates and adds the {@link FileIOBuilder}s to a list of {@link FileIOBuilder}s
      * that will be used to build the appropriate type of {@link FileIO}. Function must
      * be called before calling selectFilePath as selectFilePath needs this as setup.
      */
     public static void setupFileIOBuilders() {
-        if (!instantiated) {
-            BUILDERS.add(new JSONIOBuilder(new String[]{"json"}));
-            BUILDERS.add(new XMLBuilder(new String[]{"xml"}));
-            instantiated = true;
-        }
+        setupFileIOBuilder(new String[]{"json"}, JSONIO.class);
+        setupFileIOBuilder(new String[]{"xml"}, XMLIO.class);
     }
 
 }
-

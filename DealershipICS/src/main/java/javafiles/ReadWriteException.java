@@ -1,4 +1,4 @@
-package javaFiles;
+package javafiles;
 
 /**
  * An Exception indicating that a JSONIO Object is invalid or unable

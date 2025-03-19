@@ -1,4 +1,4 @@
-package javaFiles;
+package javafiles;
 
 import java.util.Date;
 import java.util.Map;
