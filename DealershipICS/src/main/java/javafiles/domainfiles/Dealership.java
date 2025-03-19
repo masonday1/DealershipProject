@@ -1,29 +1,42 @@
 package javafiles.domainfiles;
 
-import javafiles.dataaccessfiles.Key;
+import javafiles.customexceptions.*;
+import javafiles.dataaccessfiles.JSONIO;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*  Creates Dealership object with the following attributes:
-        Dealership ID (String)      (Required during instantiation)
-        Vehicle acquisition status  (default: ENABLED)
-        Vehicle inventory           (default: empty)
-
-    Author: Patrick McLucas */
+/**
+ * Represents a dealership that manages vehicle sales and rentals.
+ * <p>
+ * This class provides functionality to add, remove, and retrieve vehicles from the dealership's
+ * sales and rental inventories. It also allows for enabling and disabling vehicle acquisition
+ * and rental services.
+ * <p>
+ * The dealership is identified by a unique dealer ID and maintains separate inventories for
+ * vehicles available for sale and rental.
+ * <p>
+ * Authors: Patrick McLucas, Christopher Engelhart
+ */
 
 public class Dealership {
     private final String dealerId;
-    private final ArrayList<Vehicle> vehicleInventory;
+    private final ArrayList<Vehicle> salesInventory;
+    private final ArrayList<Vehicle> rentalInventory;
+    private static final VehicleFactory vehicleFactory = VehicleCreator.getInstance(); // Singleton
     private boolean receivingVehicle;
+    private boolean rentalStatus;
 
     // Instantiation requires dealer_ID
     public Dealership(String dealerId) {
         this.dealerId = dealerId;
         this.receivingVehicle = true;
-        vehicleInventory = new ArrayList<>();
+        this.rentalStatus = false;
+        salesInventory = new ArrayList<>();
+        rentalInventory = new ArrayList<>();
     }
 
     // Returns Dealer ID
@@ -36,9 +49,15 @@ public class Dealership {
         return receivingVehicle;
     }
 
+    public Boolean getRentalStatus() { return rentalStatus; }
+
     // Provides list of vehicles at the dealership
-    public ArrayList<Vehicle> getInventoryVehicles() {
-        return vehicleInventory;
+    public ArrayList<Vehicle> getSaleVehicles() {
+        return salesInventory;
+    }
+
+    public ArrayList<Vehicle> getRentalVehicles() {
+        return rentalInventory;
     }
 
     // ENABLES vehicle acquisition.
@@ -51,75 +70,138 @@ public class Dealership {
         this.receivingVehicle = false;
     }
 
-    // Method for adding new vehicles to the dealership.
-    public void addIncomingVehicle(Vehicle newVehicle) {
-        // Checks if the dealership is accepting new vehicles.
-        if (!receivingVehicle) {
-            System.out.println("Dealership " + this.dealerId + " is not accepting new vehicles at this time.");
-            System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerId +".");
-            return; // Exits method if the dealership is not accepting new vehicles.
-        } 
-        
-        // Checks if the new vehicle is already located at the dealership. 
-        for (Vehicle vehicle : vehicleInventory) {
-            if (vehicle.getVehicleId().equals(newVehicle.getVehicleId())) {
-                System.out.println("This vehicle is already located at the dealership.");
-                System.out.println("Vehicle ID: " + newVehicle.getVehicleId() + " was not added to Dealership: " + this.dealerId + ".");
-                return; // Exits method if the vehicle already exists at the dealership
+
+    // enable dealership to perform rental services
+    public void enableRentalService(){this.rentalStatus = true; }
+
+
+    // disable dealership's rental services
+    public void disableRentalService() {this.rentalStatus = false; }
+
+
+    /**
+     * Retrieves a vehicle from the sales inventory by its ID.
+     *
+     * @param vehicleID The ID of the vehicle to retrieve.
+     * @return The Vehicle object.
+     * @throws VehicleNotFoundException if the vehicle is not found.
+     */
+    public Vehicle getVehicleFromSalesInventory(String vehicleID) throws VehicleNotFoundException {
+        for (Vehicle vehicle : salesInventory) {
+            if (vehicle.getVehicleId()!= null && vehicle.getVehicleId().equals(vehicleID)) {
+                return vehicle;
             }
         }
-        this.vehicleInventory.add(newVehicle);
+        throw new VehicleNotFoundException("Vehicle with ID: " + vehicleID + " not found in sales inventory.");
     }
 
     /**
-     * Creates a new Vehicle object based on the given type.
-     * <p>
-     * This method acts as a factory for creating different types of vehicles.  It uses
-     * a switch statement to determine which concrete Vehicle class to instantiate
-     * based on the provided argument vehicleType
+     * Retrieves a vehicle from the rental inventory by its ID.
      *
-     * @param vehicleType The type of vehicle to create ("suv", "sedan", "pickup", "sports car").
-     * @param id          The ID of the vehicle. This is used in the error message if the
-     *                    vehicle type is not supported.
-     * @return A new {@link Vehicle} object of the specified type, or  null if
-     *         the vehicleType is not supported. If null is returned, a
-     *         message is printed to the console indicating the unsupported type and
-     *         the vehicle ID was not added.
+     * @param vehicleID The ID of the vehicle to retrieve.
+     * @return The Vehicle object.
+     * @throws VehicleNotFoundException if the vehicle is not found.
      */
-    private static Vehicle createNewVehicle(String vehicleType, String id) {
-        if (vehicleType == null) {vehicleType = "Null Vehicle Type";}
-        return switch (vehicleType.toLowerCase()) {
-            case "suv" -> new SUV();
-            case "sedan" -> new Sedan();
-            case "pickup" -> new Pickup();
-            case "sports car" -> new SportsCar();
-            default -> {
-                System.out.println("\"" + vehicleType +
-                        "\" is not a supported vehicle type. " +
-                        "Vehicle ID: " + id + "was not added");
-                yield null;
+    public Vehicle getVehicleFromRentalInventory(String vehicleID) throws VehicleNotFoundException {
+
+
+        for (Vehicle vehicle : rentalInventory) {
+            if (vehicle.getVehicleId()!= null && vehicle.getVehicleId().equals(vehicleID)) {
+                return vehicle;
             }
-        };
+        }
+        throw new VehicleNotFoundException("Vehicle with ID: " + vehicleID + " not found in rental inventory.");
     }
+
+
+
+    /**
+     * Checks if a vehicle is already present in the given inventory.
+     *
+     * @param newVehicle The vehicle to check for in the inventory.
+     * @param inventory The inventory (list) where the vehicle might be located.
+     * @return {@code true} if the vehicle is found in the inventory, {@code false} otherwise.
+     *
+     * @author Christopher Engelhart
+     */
+    private boolean isVehicleInInventory(Vehicle newVehicle, List<Vehicle> inventory)
+    {
+        for (Vehicle vehicle : inventory)
+        {
+            if (vehicle.getVehicleId().equals(newVehicle.getVehicleId()))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
+    /**
+     * Adds a new vehicle to the dealership's sales inventory.
+     * <p>
+     * This method checks if the dealership is currently accepting new vehicles and if the vehicle is already
+     * present in either the sales or rental inventory. If the dealership is not accepting new vehicles or if
+     * the vehicle already exists, an exception is thrown.
+     *
+     * @param newVehicle The {@link Vehicle} object to be added to the inventory.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
+     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
+     */
+    public void addIncomingVehicle(Vehicle newVehicle) throws DealershipNotAcceptingVehiclesException,
+            VehicleAlreadyExistsException
+    {
+        // Checks if the dealership is accepting new vehicles.
+        if (!receivingVehicle) {
+            throw new DealershipNotAcceptingVehiclesException("Dealership " + this.dealerId + " is not accepting new " +
+                    "vehicles at this time. " + "Vehicle ID: " + newVehicle.getVehicleId() +
+                    " was not added to Dealership: " + this.dealerId + ".");
+        }
+
+        if (isVehicleInInventory(newVehicle, salesInventory))
+        {
+            throw new VehicleAlreadyExistsException("This vehicle is already located in the sales inventory. Vehicle ID: "
+                    + newVehicle.getVehicleId() + " was not added to dealership " + this.dealerId + ".");
+        }
+
+        if (isVehicleInInventory(newVehicle, rentalInventory))
+        {
+            throw new VehicleAlreadyExistsException("This vehicle is already located in the rental inventory. Vehicle ID: "
+                    + newVehicle.getVehicleId() + " was not added to dealership " + this.dealerId + ".");
+        }
+
+
+        this.salesInventory.add(newVehicle);
+    }
+
+
 
     /**
      * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.
      *
      * @param map The data needed to create the new Vehicle.
+     * @throws InvalidVehicleTypeException If the vehicle type is not supported.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
+     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
      */
-    public void dataToInventory(Map<String, Object> map) {
-        Vehicle vehicle = createNewVehicle(
-                Key.VEHICLE_TYPE.getValString(map),
-                Key.VEHICLE_ID.getValString(map)
+    public void dataToInventory(Map<String, Object> map) throws InvalidVehicleTypeException,
+            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException {
+
+        Vehicle vehicle = vehicleFactory.createVehicle(
+                JSONIO.getTypeVal(map),
+                JSONIO.getVehicleIdVal(map)
         );
         if (vehicle == null) {
             return;
         }
-        vehicle.setVehicleId(Key.VEHICLE_ID.getValString(map));
-        vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getValString(map));
-        vehicle.setVehicleModel(Key.VEHICLE_MODEL.getValString(map));
-        vehicle.setVehiclePrice(Key.VEHICLE_PRICE.getValLong(map));
-        vehicle.setAcquisitionDate(Key.VEHICLE_ACQUISITION_DATE.getValLong(map));
+        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
+        vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
+        vehicle.setVehicleModel(JSONIO.getModelVal(map));
+        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
+        vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
+        vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
 
         addIncomingVehicle(vehicle);
     }
@@ -127,17 +209,15 @@ public class Dealership {
     /**
      * Adds a new vehicle to the dealership inventory based on the provided vehicle details.
      * This method creates a new vehicle based on the vehicle type and sets its attributes
-     * using the provided details. It then attempts to add the new vehicle to the dealership's
-     * inventory, but only if the vehicle type is valid. If the vehicle type is invalid, an error
-     * message is printed, and the vehicle is not added.
+     * using the provided parameters.
      *</p>
-     * {@link #createNewVehicle(String,String)} is used to create and validate the vehicle type.
+     * {@link VehicleFactory#createVehicle(String, String)} is used to create and validate the vehicle type.
      * If the vehicle type is unsupported, the method will print an error message and return without
      * making any changes to the inventory. If the vehicle is created successfully, it will be added
      * to the dealership's inventory using the {@link #addIncomingVehicle(Vehicle)} method.
      *
      *
-     * @param vehicleId The unique identifier for the vehicle.
+     * @param vehicleID The unique identifier for the vehicle.
      * @param vehicleManufacturer The manufacturer of the vehicle.
      * @param vehicleModel The model of the vehicle.
      * @param vehiclePrice The price of the vehicle. The price must be a positive value representing the
@@ -148,27 +228,24 @@ public class Dealership {
      * @param vehicleType The type of the vehicle. This should be one of the following types:
      *                    "suv", "sedan", "pickup", or "sports car". If an unsupported type is provided,
      *                    the method will not add the vehicle and will print an error message.
+     *  @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
+     *  @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
+     *  @throws InvalidVehicleTypeException If the vehicle type is not supported.
+     * @throws InvalidPriceException if the vehicle price is not a positive value
      *
+     * @author Christopher Engelhart
      */
-    public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, long vehiclePrice, long acquisitionDate, String vehicleType) {
+    public void manualVehicleAdd(String vehicleID, String vehicleManufacturer, String vehicleModel, long vehiclePrice,
+                                 long acquisitionDate, String vehicleType) throws InvalidVehicleTypeException,
+            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
 
         // Ensure the vehicle price is positive.
         if (vehiclePrice <= 0) {
-            System.out.println("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleId + " was not added.");
-            return;  // Exit the method if the price is not positive.
+            throw new InvalidPriceException("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleID + " was not added.");
         }
 
-        Vehicle newVehicle = createNewVehicle(vehicleType, vehicleId);
+        Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleID);
 
-        // Check if the vehicle creation was successful (newVehicle is not null).
-        if (newVehicle == null) {
-            // Handle the case where the vehicle type is unsupported.
-            System.out.println("Vehicle creation failed. Invalid vehicle type: " + vehicleType);
-            return;  // Exit the method if vehicle creation failed.
-        }
-
-
-        newVehicle.setVehicleId(vehicleId);
         newVehicle.setVehicleManufacturer(vehicleManufacturer);
         newVehicle.setVehicleModel(vehicleModel);
         newVehicle.setVehiclePrice(vehiclePrice);
@@ -177,6 +254,74 @@ public class Dealership {
 
         this.addIncomingVehicle(newVehicle);
     }
+
+
+    /**
+     * Adds a vehicle to the dealership's rental inventory.
+     *
+     * @param rental The vehicle to add to the rental inventory. Cannot be null.
+     *
+     * @throws IllegalArgumentException If the rental parameter is null.
+     * @throws VehicleAlreadyExistsException If the vehicle is already in the rental inventory.
+     * @throws DealershipNotRentingException If the dealership does not currently provide rental services.
+     * @throws VehicleNotRentableException If the vehicle is not currently rentable.
+     *
+     * @author Christopher Engelhart
+     */
+    public void addRentalVehicle(Vehicle rental) throws IllegalArgumentException,VehicleAlreadyExistsException,
+            DealershipNotRentingException, VehicleNotRentableException {
+
+        if (rental == null) {
+            throw new IllegalArgumentException("Rental vehicle is null.");
+        }
+
+        if (!this.getRentalStatus()) {
+            throw new DealershipNotRentingException("Dealership " + this.getDealerId() + " is not currently providing rental services.");
+        }
+
+        if (!rental.getRentalStatus()) {
+            throw new VehicleNotRentableException("Vehicle " + rental.getVehicleId() + " is not currently rentable.");
+        }
+
+        if (this.isVehicleInInventory(rental,this.rentalInventory)) {
+            throw new VehicleAlreadyExistsException("Vehicle " + rental.getVehicleId() + " is already in the rental inventory.");
+        }
+
+        this.rentalInventory.add(rental);
+    }
+
+
+
+
+    /**
+     * Removes a vehicle from the inventory. Returns true if vehicle is removed and false otherwise.
+     *
+     * @param targetVehicle The vehicle to remove. Cannot be null.
+     * @param inventory     The inventory from which to remove the vehicle.
+     * @return {@code true} if the vehicle was successfully removed, {@code false} otherwise.
+     * @throws IllegalArgumentException If the {@code targetVehicle} is null.
+     * @throws EmptyInventoryException  If the inventory is empty.
+     *
+     * @author Christopher Engelhart
+     */
+    public boolean tryRemoveVehicleFromInventory(Vehicle targetVehicle, ArrayList<Vehicle> inventory) throws IllegalArgumentException
+            ,EmptyInventoryException
+    {
+
+        if (targetVehicle == null) {
+            throw new IllegalArgumentException("target vehicle is null.");
+        }
+
+        if (inventory.isEmpty())
+        {
+            throw new EmptyInventoryException("Inventory is already empty " + " Could not remove vehicle" + targetVehicle.getVehicleId());
+        }
+
+        return inventory.remove(targetVehicle);
+
+    }
+
+
 
     /**
      * Retrieves Vehicle data for the Dealership.
@@ -191,9 +336,9 @@ public class Dealership {
      */
     public List<Map<String, Object>> getDataMap() {
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Vehicle vehicle: vehicleInventory) {
+        for (Vehicle vehicle: salesInventory) {
             Map<String, Object> map = new HashMap<>();
-            map.put(Key.DEALERSHIP_ID.getKey(), dealerId);
+            map.put(JSONIO.getDealIdKey(), dealerId);
             vehicle.getDataMap(map);
             list.add(map);
         }
@@ -203,22 +348,40 @@ public class Dealership {
     /**
      * Prints the inventory of Vehicles for the Dealership.
      * <p>
-     * This method iterates through the List of Vehicles in the Dealership.
+     * This method iterates through both the sales and rental inventory of vehicles in the Dealership.
      * It prints the Dealership ID followed by the inventory of Vehicles
      * separated by an empty line If a Dealership has no inventory,
      * a message indicating this is printed.
      */
     public void printInventory() {
-        System.out.println("Dealership: " + dealerId);
 
-        // if Dealership does not have any Vehicles, print message and return
-        if (vehicleInventory.isEmpty()) {
-            System.out.println(", Does not currently have any inventory\n");
+        if (salesInventory.isEmpty() && rentalInventory.isEmpty()) {
+            System.out.println("Dealership: " + dealerId);
+            System.out.println("Sales does not currently have any inventory");
+            System.out.println("Rental does not currently have any inventory\n");
             return;
         }
 
-        for (Vehicle vehicle : vehicleInventory) {
-            System.out.println("\n" + vehicle.toString());
+        System.out.println("Dealership: " + dealerId);
+        System.out.println("----------------------");
+
+        if (!salesInventory.isEmpty()) {
+            System.out.println("Sales: \n");
+            for (Vehicle vehicle : salesInventory) {
+                System.out.println("\n" + vehicle.toString());
+            }
+        } else {
+            System.out.println("Sales does not currently have any inventory\n");
+        }
+
+        if (!rentalInventory.isEmpty()) {
+            System.out.println("\nRental: \n");
+            for (Vehicle vehicle : rentalInventory) {
+                System.out.println("\n" + vehicle.toString());
+            }
+        } else {
+            System.out.println("\nRental does not currently have any inventory\n");
         }
     }
+
 }

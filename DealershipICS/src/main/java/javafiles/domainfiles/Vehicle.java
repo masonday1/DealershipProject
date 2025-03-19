@@ -1,10 +1,10 @@
 package javafiles.domainfiles;
 
-import javafiles.dataaccessfiles.Key;
-
+import javafiles.customexceptions.*;
+import javafiles.dataaccessfiles.JSONIO;
+import javafiles.rentalstrategies.*;
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  Vehicle is an abstract class that defines a set of common attributes
@@ -19,20 +19,37 @@ public abstract class Vehicle {
     private String vehicleId;
     private String vehicleManufacturer;
     private String vehicleModel;
-    private Long vehiclePrice;
-    private Long acquisitionDate;
+    private long vehiclePrice;
+    private long acquisitionDate;
     private final String vehicleType; // Common field to all vehicle
+    private boolean rental;
+    private final RentalStrategy rentalStrategy;
 
     /**
      * Constructor method to be used by Vehicle's child classes
-     * to specify the children's vehicle type for example, SUV, Sedan, Pickup, Sports car.
+     * to specify the children's vehicle type with default rental strategy
      *
      * @param vehicleType represents the specific vehicle type that the extending class is
      */
     public Vehicle(String vehicleType)
     {
         this.vehicleType = vehicleType;
+        this.rental = false;
+        this.rentalStrategy = new DefaultRentalStrategy();
+    }
 
+    /**
+     * Constructor method to be used by Vehicle's child classes
+     * to specify the children's vehicle type with  a specified rental strategy
+     *
+     *
+     * @param vehicleType the specific vehicle type that the extending class is
+     * @param rentalStrategy the rental strategy used for this vehicle
+     */
+    public Vehicle(String vehicleType, RentalStrategy rentalStrategy)
+    {
+        this.vehicleType = vehicleType;
+        this.rentalStrategy = rentalStrategy;
     }
 
     /**
@@ -63,22 +80,51 @@ public abstract class Vehicle {
     }
 
     /**
-     * Sets the vehicle price. If null, sets to max long.
+     * Sets the vehicle price.
      *
      * @param vehiclePrice the price of the vehicle
      */
-    public void setVehiclePrice(Long vehiclePrice) {
+    public void setVehiclePrice(long vehiclePrice) {
         this.vehiclePrice = vehiclePrice;
     }
 
     /**
-     * Sets the acquisition date of the vehicle. If null, sets to max long.
+     * Sets the acquisition date of the vehicle.
      *
      * @param acquisitionDate the date the vehicle was acquired
      */
-    public void setAcquisitionDate(Long acquisitionDate) {
-        // TODO: This may need to be handled differently (account for null)
-        this.acquisitionDate = acquisitionDate;
+    public void setAcquisitionDate(long acquisitionDate) { this.acquisitionDate = acquisitionDate;
+    }
+
+
+    /**
+     * Sets the rental state of the vehicle object.
+     *
+     * @param state {@code true} to enable rentals, {@code false} to disable.
+     */
+    public void setRental(boolean state) {this.rental = state; }
+
+
+
+    /**
+     * Enables rentals using the configured rental strategy.
+     *
+     * @throws RentalException If an error occurs during the rental enabling process.
+     */
+    public void enableRental() throws RentalException
+    {
+        rentalStrategy.enableRental(this);
+
+    }
+
+    /**
+     * Disables rentals using the configured rental strategy.
+     *
+     * @throws RentalException If an error occurs during the rental disabling process.
+     */
+    public void disableRental() throws RentalException
+    {
+        rentalStrategy.disableRental(this);
     }
 
     // Getter methods for shared attributes
@@ -88,6 +134,7 @@ public abstract class Vehicle {
     public long getVehiclePrice() {return vehiclePrice;}
     public long getAcquisitionDate() {return acquisitionDate;}
     public String getVehicleType() {return vehicleType;}
+    public boolean getRentalStatus() { return rental; }
 
     /**
      * Creates and returns a String representation of the Vehicle
@@ -97,24 +144,15 @@ public abstract class Vehicle {
      * @author Dylan Browne
      */
     public String toString() {
-        // TODO: This (Date) needs to be handled differently (account for null)
-        long tempAcquisitionDate;
-        tempAcquisitionDate = Objects.requireNonNullElse(acquisitionDate, -1L);
-        Date date = new Date(tempAcquisitionDate);
+        Date date = new Date(acquisitionDate);
         return  "Vehicle: " +  vehicleType +
                 "\nID: " + vehicleId +
-                "\nManufacturer: " + vehicleManufacturer +
+                "\nManufacturer " + vehicleManufacturer +
                 "\nModel: " + vehicleModel +
                 "\nPrice: $" + vehiclePrice +
                 "\nAcquired: " + date;
     }
 
-    private void putNonNull(Map<String, Object> map, String key, Object object) {
-        if (object != null) {
-            map.put(key, object);
-        }
-    }
-    
     /**
      * Retrieves Vehicle data for a given Dealership.
      * <p>
@@ -124,11 +162,11 @@ public abstract class Vehicle {
      * @param map The Map to be filled with data from the Vehicle
      */
     public void getDataMap(Map<String, Object> map) {
-        putNonNull(map, Key.VEHICLE_TYPE.getKey(), vehicleType);
-        putNonNull(map, Key.VEHICLE_MANUFACTURER.getKey(), vehicleManufacturer);
-        putNonNull(map, Key.VEHICLE_MODEL.getKey(), vehicleModel);
-        putNonNull(map, Key.VEHICLE_ID.getKey(), vehicleId);
-        putNonNull(map, Key.VEHICLE_PRICE.getKey(), vehiclePrice);
-        putNonNull(map, Key.VEHICLE_ACQUISITION_DATE.getKey(), acquisitionDate);
+        map.put(JSONIO.getTypeKey(), vehicleType);
+        map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
+        map.put(JSONIO.getModelKey(), vehicleModel);
+        map.put(JSONIO.getVehicleIdKey(), vehicleId);
+        map.put(JSONIO.getPriceKey(), vehiclePrice);
+        map.put(JSONIO.getDateKey(), acquisitionDate);
     }
 }
