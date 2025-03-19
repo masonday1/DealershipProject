@@ -2,6 +2,7 @@ package javaFiles;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  Vehicle is an abstract class that defines a set of common attributes
@@ -16,8 +17,8 @@ public abstract class Vehicle {
     private String vehicleId;
     private String vehicleManufacturer;
     private String vehicleModel;
-    private long vehiclePrice;
-    private long acquisitionDate;
+    private Long vehiclePrice;
+    private Long acquisitionDate;
     private final String vehicleType; // Common field to all vehicle
 
     /**
@@ -65,10 +66,6 @@ public abstract class Vehicle {
      * @param vehiclePrice the price of the vehicle
      */
     public void setVehiclePrice(Long vehiclePrice) {
-        if (vehiclePrice == null) {
-            this.vehiclePrice = Long.MAX_VALUE;
-            return;
-        }
         this.vehiclePrice = vehiclePrice;
     }
 
@@ -78,10 +75,7 @@ public abstract class Vehicle {
      * @param acquisitionDate the date the vehicle was acquired
      */
     public void setAcquisitionDate(Long acquisitionDate) {
-        if (acquisitionDate == null) {
-            this.acquisitionDate = Long.MAX_VALUE;
-            return;
-        }
+        // TODO: This may need to be handled differently (account for null)
         this.acquisitionDate = acquisitionDate;
     }
 
@@ -101,7 +95,10 @@ public abstract class Vehicle {
      * @author Dylan Browne
      */
     public String toString() {
-        Date date = new Date(acquisitionDate);
+        // TODO: This (Date) needs to be handled differently (account for null)
+        long tempAcquisitionDate;
+        tempAcquisitionDate = Objects.requireNonNullElse(acquisitionDate, -1L);
+        Date date = new Date(tempAcquisitionDate);
         return  "Vehicle: " +  vehicleType +
                 "\nID: " + vehicleId +
                 "\nManufacturer: " + vehicleManufacturer +
@@ -110,6 +107,12 @@ public abstract class Vehicle {
                 "\nAcquired: " + date;
     }
 
+    private void putNonNull(Map<String, Object> map, String key, Object object) {
+        if (object != null) {
+            map.put(key, object);
+        }
+    }
+    
     /**
      * Retrieves Vehicle data for a given Dealership.
      * <p>
@@ -119,11 +122,11 @@ public abstract class Vehicle {
      * @param map The Map to be filled with data from the Vehicle
      */
     public void getDataMap(Map<String, Object> map) {
-        map.put(Key.VEHICLE_TYPE.getKey(), vehicleType);
-        map.put(Key.VEHICLE_MANUFACTURER.getKey(), vehicleManufacturer);
-        map.put(Key.VEHICLE_MODEL.getKey(), vehicleModel);
-        map.put(Key.VEHICLE_ID.getKey(), vehicleId);
-        map.put(Key.VEHICLE_PRICE.getKey(), vehiclePrice);
-        map.put(Key.VEHICLE_ACQUISITION_DATE.getKey(), acquisitionDate);
+        putNonNull(map, Key.VEHICLE_TYPE.getKey(), vehicleType);
+        putNonNull(map, Key.VEHICLE_MANUFACTURER.getKey(), vehicleManufacturer);
+        putNonNull(map, Key.VEHICLE_MODEL.getKey(), vehicleModel);
+        putNonNull(map, Key.VEHICLE_ID.getKey(), vehicleId);
+        putNonNull(map, Key.VEHICLE_PRICE.getKey(), vehiclePrice);
+        putNonNull(map, Key.VEHICLE_ACQUISITION_DATE.getKey(), acquisitionDate);
     }
 }

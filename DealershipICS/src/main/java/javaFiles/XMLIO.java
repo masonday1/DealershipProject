@@ -13,6 +13,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+enum XMLKey {
+    D_ID (Key.DEALERSHIP_ID, "Dealer_id"),
+    PRICE (Key.VEHICLE_PRICE, "Vehicle_Price"),
+    TYPE (Key.VEHICLE_TYPE, "Vehicle_type"),
+    V_ID (Key.VEHICLE_ID, "Vehicle_id"),
+    MODEL (Key.VEHICLE_MODEL, "Vehicle_Model"),
+    MAKE (Key.VEHICLE_MANUFACTURER, "Vehicle_Make"),
+    PRICE_UNIT (Key.VEHICLE_PRICE_UNIT, "Vehicle_Price_unit"),
+    D_NAME (Key.DEALERSHIP_NAME, "Dealer_Name"),
+    DATE ( Key.VEHICLE_ACQUISITION_DATE, "Vehicle_Acquisition_Date");
+
+    private final Key KEY;
+    private final String NAME;
+
+    XMLKey(Key key, String xmlName) {
+        KEY = key;
+        NAME = xmlName;
+    }
+
+    public Key getKey() {
+        return KEY;
+    }
+
+    public String getName() {
+        return NAME;
+    }
+}
 
 /**
  * A class that reads and writes to XML files
@@ -28,18 +55,18 @@ public class XMLIO extends FileIO {
         }
     }
 
-    private boolean parseNode(Node node, String prefix, Map<String, String> map, boolean ignoreBody) {
+    private void parseNode(Node node, String prefix, Map<String, String> map, boolean ignoreBody) {
         if (prefix == null) {
             prefix = "";
         }
-        if (node.getNodeName().startsWith("#")) {
-            return false;
+        if (node == null || node.getNodeName().startsWith("#")) {
+            return;
         }
         String name = prefix + node.getNodeName();
         String value =  node.getTextContent();
 
         if (map.containsKey(name)) {
-            return false;
+            return;
         }
         if (!ignoreBody) {
             map.put(name, value);
@@ -56,32 +83,13 @@ public class XMLIO extends FileIO {
         for (int i = 0; i < nodes.getLength(); i++) {
             parseNode(nodes.item(i), name + "_", map, false);
         }
-
-        return true;
     }
 
-    private Map<String, Object> readXMLObject(Map<String, String> vehicleMap, Map<String, Object> map) {
-        Map<String, Key> mapKeys = new HashMap<>();
-        // Dealer Keys
-        mapKeys.put("Dealer_id", Key.DEALERSHIP_ID);
-
-        // Vehicle keys
-        mapKeys.put("Vehicle_Price", Key.VEHICLE_PRICE);
-        mapKeys.put("Vehicle_type", Key.VEHICLE_TYPE);
-        mapKeys.put("Vehicle_id", Key.VEHICLE_ID);
-        mapKeys.put("Vehicle_Model", Key.VEHICLE_MODEL);
-        mapKeys.put("Vehicle_Make", Key.VEHICLE_MANUFACTURER);
-
-        // Not in keys
-        mapKeys.put("Vehicle_Price_unit", null);
-        mapKeys.put("Dealer_Name", null);
-
-        // Not in data
-        mapKeys.put("Vehicle_Acquisition_Date", Key.VEHICLE_ACQUISITION_DATE);
-
-        for (String keyStr : mapKeys.keySet()) {
+    private void readXMLObject(Map<String, String> vehicleMap, Map<String, Object> map) {
+        for (XMLKey xmlKey : XMLKey.values()) {
+            String keyStr = xmlKey.getName();
             if (vehicleMap.containsKey(keyStr)) {
-                Key key = mapKeys.get(keyStr);
+                Key key = xmlKey.getKey();
                 if (key != null) {
                     Object val = vehicleMap.get(keyStr);
                     if (key.getClassName().equals(Long.class.getName())) {
@@ -92,8 +100,6 @@ public class XMLIO extends FileIO {
                 }
             }
         }
-
-        return map;
     }
 
     public List<Map<String, Object>> readInventory() throws ReadWriteException {
@@ -120,29 +126,32 @@ public class XMLIO extends FileIO {
 
         List<Map<String, Object>> maps = new ArrayList<>();
 
-        Element element = document.getDocumentElement();
-        NodeList dealers =  element.getElementsByTagName("Dealer");
+        Element documentElement = document.getDocumentElement();
+        NodeList dealers =  documentElement.getElementsByTagName("Dealer");
         for (int i = 0; i < dealers.getLength(); i++) {
-            Map<String, String> nameMap = new HashMap<>();
+            Map<String, String> dealerInfoMap = new HashMap<>();
 
             Node dealer = dealers.item(i);
-
-            Node dealerName = ((Element) dealer).getElementsByTagName("Name").item(0);
-            parseNode(dealerName, "Dealer_", nameMap, false);
-
-            Node dealerId = ((Element) dealer).getAttributeNode("id");
-            parseNode(dealerId, "Dealer_", nameMap, false);
 
             if (dealer.getNodeType() == Node.ELEMENT_NODE) {
                 Element e = (Element) dealer;
                 NodeList vehicles = e.getElementsByTagName("Vehicle");
-                for (int j = 0; j < vehicles.getLength(); j++) {
-                    Map<String, String> nameMapTemp = new HashMap<>(nameMap);
-                    Map<String, Object> map = new HashMap<>();
-                    if (parseNode(vehicles.item(j), null, nameMapTemp, true)) {
-                        maps.add(readXMLObject(nameMapTemp, map));
-                    }
 
+                Node dealerName = e.getElementsByTagName("Name").item(0);
+                parseNode(dealerName, "Dealer_", dealerInfoMap, false);
+
+                Node dealerId = e.getAttributeNode("id");
+                parseNode(dealerId, "Dealer_", dealerInfoMap, false);
+
+                for (int j = 0; j < vehicles.getLength(); j++) {
+                    Map<String, String> nameMap = new HashMap<>(dealerInfoMap);
+                    Map<String, Object> map = new HashMap<>();
+                    parseNode(vehicles.item(j), null, nameMap, true);
+                    readXMLObject(nameMap, map);
+
+                    if (validMap(map)) {
+                        maps.add(map);
+                    }
                 }
             }
 
@@ -153,15 +162,6 @@ public class XMLIO extends FileIO {
 
     public int writeInventory(List<Map<String, Object>> maps) throws ReadWriteException {
         System.out.println("Not implemented (writeInventory).");
-        return 0;
-    }
-
-    public List<Map<String, Object>> readDealerships() throws ReadWriteException {
-        System.out.println("Not implemented (readDealerships).");
-        return null;
-    }
-    public int writeDealerships(List<Map<String, Object>> maps) throws ReadWriteException {
-        System.out.println("Not implemented (writeDealerships).");
         return 0;
     }
 }

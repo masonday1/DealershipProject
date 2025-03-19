@@ -24,14 +24,14 @@ public class Company {
      * Takes a String representing a Dealership ID and returns the index of that
      * Dealership in this Company's listDealerships.
      *
-     * @param dealerID A String equal to the dealerID of the Dealership we are searching for.
+     * @param dealerId A String equal to the dealerId of the Dealership we are searching for.
      * @return The index of the searched for Dealership in listDealerships (-1 if absent).
      */
-    public int getDealershipIndex(String dealerID) {
+    public int getDealershipIndex(String dealerId) {
         Dealership dealership;
         for (int i = 0; i < listDealerships.size(); i++) {
             dealership = listDealerships.get(i);
-            if (dealership.getDealerId().equals(dealerID)) {
+            if (dealership.getDealerId().equals(dealerId)) {
                 return i;
             }
         }
@@ -42,12 +42,12 @@ public class Company {
      * Takes a String representing a Dealership ID and returns the given
      * Dealership in this Company's listDealerships.
      *
-     * @param dealerID A String equal to the dealerID of the Dealership we are searching for.
+     * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
      * @return The Dealership we are searching for in listDealerships (null if absent).
      */
-    private Dealership findDealership(String dealerID) {
+    private Dealership findDealership(String dealerId) {
         for (Dealership dealership : listDealerships) {
-            if (dealership.getDealerId().equals(dealerID)) {
+            if (dealership.getDealerId().equals(dealerId)) {
                 return dealership;
             }
         }

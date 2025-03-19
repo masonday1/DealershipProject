@@ -77,14 +77,14 @@ public class Dealership {
      * based on the provided argument vehicleType
      *
      * @param vehicleType The type of vehicle to create ("suv", "sedan", "pickup", "sports car").
-     * @param ID          The ID of the vehicle. This is used in the error message if the
+     * @param id          The ID of the vehicle. This is used in the error message if the
      *                    vehicle type is not supported.
      * @return A new {@link Vehicle} object of the specified type, or  null if
      *         the vehicleType is not supported. If null is returned, a
      *         message is printed to the console indicating the unsupported type and
      *         the vehicle ID was not added.
      */
-    private static Vehicle createNewVehicle(String vehicleType, String ID) {
+    private static Vehicle createNewVehicle(String vehicleType, String id) {
         if (vehicleType == null) {vehicleType = "Null Vehicle Type";}
         return switch (vehicleType.toLowerCase()) {
             case "suv" -> new SUV();
@@ -94,7 +94,7 @@ public class Dealership {
             default -> {
                 System.out.println("\"" + vehicleType +
                         "\" is not a supported vehicle type. " +
-                        "Vehicle ID: " + ID + "was not added");
+                        "Vehicle ID: " + id + "was not added");
                 yield null;
             }
         };
@@ -116,7 +116,6 @@ public class Dealership {
         vehicle.setVehicleId(Key.VEHICLE_ID.getValString(map));
         vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getValString(map));
         vehicle.setVehicleModel(Key.VEHICLE_MODEL.getValString(map));
-        //vehicle.setVehicleId(Key.VEHICLE_ID.getValString(map));
         vehicle.setVehiclePrice(Key.VEHICLE_PRICE.getValLong(map));
         vehicle.setAcquisitionDate(Key.VEHICLE_ACQUISITION_DATE.getValLong(map));
 
@@ -136,7 +135,7 @@ public class Dealership {
      * to the dealership's inventory using the {@link #addIncomingVehicle(Vehicle)} method.
      *
      *
-     * @param vehicleID The unique identifier for the vehicle.
+     * @param vehicleId The unique identifier for the vehicle.
      * @param vehicleManufacturer The manufacturer of the vehicle.
      * @param vehicleModel The model of the vehicle.
      * @param vehiclePrice The price of the vehicle. The price must be a positive value representing the
@@ -149,15 +148,15 @@ public class Dealership {
      *                    the method will not add the vehicle and will print an error message.
      *
      */
-    public void manualVehicleAdd(String vehicleID, String vehicleManufacturer, String vehicleModel, long vehiclePrice, long acquisitionDate, String vehicleType) {
+    public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, long vehiclePrice, long acquisitionDate, String vehicleType) {
 
         // Ensure the vehicle price is positive.
         if (vehiclePrice <= 0) {
-            System.out.println("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleID + " was not added.");
+            System.out.println("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleId + " was not added.");
             return;  // Exit the method if the price is not positive.
         }
 
-        Vehicle newVehicle = createNewVehicle(vehicleType, vehicleID);
+        Vehicle newVehicle = createNewVehicle(vehicleType, vehicleId);
 
         // Check if the vehicle creation was successful (newVehicle is not null).
         if (newVehicle == null) {
@@ -167,7 +166,7 @@ public class Dealership {
         }
 
 
-        newVehicle.setVehicleId(vehicleID);
+        newVehicle.setVehicleId(vehicleId);
         newVehicle.setVehicleManufacturer(vehicleManufacturer);
         newVehicle.setVehicleModel(vehicleModel);
         newVehicle.setVehiclePrice(vehiclePrice);

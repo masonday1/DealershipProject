@@ -10,9 +10,6 @@ public abstract class FileIO {
     abstract List<Map<String, Object>> readInventory() throws ReadWriteException;
     abstract int writeInventory(List<Map<String, Object>> maps) throws ReadWriteException;
 
-    abstract List<Map<String, Object>> readDealerships() throws ReadWriteException;
-    abstract int writeDealerships(List<Map<String, Object>> maps) throws ReadWriteException;
-
     /**
      * Creates or opens a {@link File} with name path in read ('r') or write ('w') mode.
      * Read mode allows the reading, but not writing of {@link File}s, write mode allows for the
@@ -63,6 +60,19 @@ public abstract class FileIO {
             }
         }
         return false;
+    }
+
+    protected boolean validMap(Map<String, Object> map) {
+        for (Key key : Key.values()) {
+            if (    key.getNeeded()
+                    && !map.containsKey(key.getKey())
+                    || !key.validObjectType(map)) {
+
+                return false;
+            }
+        }
+        return  map.containsKey(Key.DEALERSHIP_ID.getKey()) ||
+                map.containsKey(Key.DEALERSHIP_NAME.getKey());
     }
 
     @Override

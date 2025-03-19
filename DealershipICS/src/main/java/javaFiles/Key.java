@@ -3,23 +3,31 @@ package javaFiles;
 import java.util.Map;
 
 public enum Key {
-        DEALERSHIP_ID ("dealership_id", String.class),
-        VEHICLE_TYPE ("vehicle_type", String.class),
-        VEHICLE_MANUFACTURER ("vehicle_manufacturer", String.class),
-        VEHICLE_MODEL ("vehicle_model", String.class),
-        VEHICLE_ID ("vehicle_id", String.class),
-        VEHICLE_PRICE ("price", Long.class),
-        VEHICLE_ACQUISITION_DATE ("acquisition_date", Long.class);
+    DEALERSHIP_ID ("dealership_id", String.class, false),
+    DEALERSHIP_NAME ("dealership_name", String.class, false),
+    DEALERSHIP_RENTAL_STATUS ("dealership_rental_status", String.class, false),
 
-    private static String[] keys = null;
-    private final String KEY;
+    VEHICLE_TYPE ("vehicle_type", String.class, true),
+    VEHICLE_MANUFACTURER ("vehicle_manufacturer", String.class, false),
+    VEHICLE_MODEL ("vehicle_model", String.class, true),
+
+    VEHICLE_ID ("vehicle_id", String.class, true),
+    VEHICLE_RENTAL_STATUS ("vehicle_rental_status", String.class, false),
+
+    VEHICLE_PRICE ("price", Long.class, true),
+    VEHICLE_PRICE_UNIT ("price_unit", String.class, false),
+
+    VEHICLE_ACQUISITION_DATE ("acquisition_date", Long.class, false);
+
+    private final String KEY; // should be the same as JSONIO key
     private final Class<?> CLASS;
     // ^would love to make it a generic instead, but can't seem to do that with enum
+    private final boolean needed;
 
-
-    Key(String key, Class<?> c) {
+    Key(String key, Class<?> c, boolean needed) {
         KEY = key;
         CLASS = c;
+        this.needed = needed;
     }
 
     // Getters and Setters (only one true Getter / Setter);
@@ -53,14 +61,20 @@ public enum Key {
         return null;
     }
 
+    public boolean getNeeded() {
+        return needed;
+    }
+
     /**
-     * Confirms that the given Object is an instance of the correct type.
+     * Confirms that the Object in map at KEY is an instance of the correct type.
      * (As given by CLASS)
      *
-     * @param object The Object whose type is being checked
+     * @param map The {@link Map} whose contents type is being checked
      * @return Whether object is of the correct type.
      */
-    public boolean validObjectType(Object object) {
+    public boolean validObjectType(Map<String, Object> map) {
+        if (!map.containsKey(KEY)) {return true;}
+        Object object = map.get(KEY);
         if (CLASS.equals(Long.class)) {
             return object instanceof Long;
         }
@@ -73,21 +87,5 @@ public enum Key {
 
     public String getClassName() {
         return CLASS.getName();
-    }
-
-    /**
-     * Returns a String[] of all KEY values in Key.
-     *
-     * @return A String[] of all KEY values in Key
-     */
-    public static String[] getKeys() {
-        if (keys == null) {
-            Key[] keyEnums = Key.values();
-            keys = new String[keyEnums.length];
-            for (int i = 0; i < keys.length; i++) {
-                keys[i] = keyEnums[i].getKey();
-            }
-        }
-        return keys;
     }
 }

@@ -44,15 +44,7 @@ public class JSONIO extends FileIO {
             String keyStr = key.getKey();
 
             Object dataPoint = jObj.get(keyStr);
-            if (dataPoint == null) {return null;}
-
-            if (!key.validObjectType(dataPoint)) {
-                System.out.println("Key \"" + keyStr + "\" with value (" + dataPoint + ")" +
-                        " is the wrong type of Object.\n" +
-                        "(Long for price or acquisition date and String otherwise).\n" +
-                        "Vehicle not added to inventory.\n");
-                return null;
-            }
+            if (dataPoint == null) {continue;}
             map.put(keyStr, dataPoint);
 
         }
@@ -91,7 +83,7 @@ public class JSONIO extends FileIO {
 
         for (Object jObj : jArray) {
             Map<String, Object> map = readJSONObject((JSONObject) jObj);
-            if (map != null) {maps.add(map);}
+            if (validMap(map)) {maps.add(map);}
         }
 
         return maps;
@@ -107,10 +99,11 @@ public class JSONIO extends FileIO {
      */
     private JSONObject makeJSONObject(Map<String, Object> data) {
         JSONObject jObj = new JSONObject();
-        for (String key : Key.getKeys()) {
-            Object dataPoint = data.get(key);
-            if (dataPoint == null) {return null;}
-            jObj.put(key, dataPoint);
+        for (Key key : Key.values()) {
+            String keyStr = key.getKey();
+            Object dataPoint = data.get(keyStr);
+            if (dataPoint == null) {continue;}
+            jObj.put(keyStr, dataPoint);
         }
         return jObj;
     }
@@ -131,16 +124,12 @@ public class JSONIO extends FileIO {
 
         JSONArray jArray = new JSONArray();
         for (Map<String, Object> carData : data) {
-            if (carData.size() == Key.getKeys().length) {
+            if (validMap(carData)) {
                 JSONObject jObj = makeJSONObject(carData);
-                if (jObj != null) {
-                    jArray.add(jObj);
-                    added++;
-                } else {
-                    System.out.println("Did not add. (invalid key)");
-                }
+                jArray.add(jObj);
+                added++;
             } else {
-                System.out.println("Did not add. " + carData.size() + " != " + Key.getKeys().length);
+                System.out.println("Did not add. (invalid key)");
             }
         }
 
@@ -156,17 +145,5 @@ public class JSONIO extends FileIO {
         }
 
         return added;
-    }
-
-    @Override
-    public List<Map<String, Object>> readDealerships() {
-        System.out.println("Not implemented (readDealerships).");
-        return null;
-    }
-
-    @Override
-    public int writeDealerships(List<Map<String, Object>> maps) {
-        System.out.println("Not implemented (writeDealerships).");
-        return 0;
     }
 }
