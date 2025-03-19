@@ -178,33 +178,33 @@ public class Dealership {
 
 
 
-    /**
-     * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.
-     *
-     * @param map The data needed to create the new Vehicle.
-     * @throws InvalidVehicleTypeException If the vehicle type is not supported.
-     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
-     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
-     */
-    public void dataToInventory(Map<String, Object> map) throws InvalidVehicleTypeException,
-            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException {
-
-        Vehicle vehicle = vehicleFactory.createVehicle(
-                JSONIO.getTypeVal(map),
-                JSONIO.getVehicleIdVal(map)
-        );
-        if (vehicle == null) {
-            return;
-        }
-        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
-        vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
-        vehicle.setVehicleModel(JSONIO.getModelVal(map));
-        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
-        vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
-        vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
-
-        addIncomingVehicle(vehicle);
-    }
+//    /**
+//     * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.
+//     *
+//     * @param map The data needed to create the new Vehicle.
+//     * @throws InvalidVehicleTypeException If the vehicle type is not supported.
+//     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
+//     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
+//     */
+//    public void dataToInventory(Map<String, Object> map) throws InvalidVehicleTypeException,
+//            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException {
+//
+//        Vehicle vehicle = vehicleFactory.createVehicle(
+//                JSONIO.getTypeVal(map),
+//                JSONIO.getVehicleIdVal(map)
+//        );
+//        if (vehicle == null) {
+//            return;
+//        }
+//        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
+//        vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
+//        vehicle.setVehicleModel(JSONIO.getModelVal(map));
+//        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
+//        vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
+//        vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
+//
+//        addIncomingVehicle(vehicle);
+//    }
 
     /**
      * Adds a new vehicle to the dealership inventory based on the provided vehicle details.
@@ -323,27 +323,27 @@ public class Dealership {
 
 
 
-    /**
-     * Retrieves Vehicle data for the Dealership.
-     * <p>
-     * This method generates a List of Maps, where each Map represents a Vehicle
-     * in the specified Dealership's inventory. Each Map contains key-value pairs
-     * representing the vehicle's attributes.
-     *
-     *@return {@link List} of {@link Map} Objects where each Map object holds a specific vehicle
-     *         and its data.(dealership ID, vehicle type, manufacturer, model,
-     *         vehicle ID, price, and acquisition date) as key-value pairs.
-     */
-    public List<Map<String, Object>> getDataMap() {
-        List<Map<String, Object>> list = new ArrayList<>();
-        for (Vehicle vehicle: salesInventory) {
-            Map<String, Object> map = new HashMap<>();
-            map.put(JSONIO.getDealIdKey(), dealerId);
-            vehicle.getDataMap(map);
-            list.add(map);
-        }
-        return list;
-    }
+//    /**
+//     * Retrieves Vehicle data for the Dealership.
+//     * <p>
+//     * This method generates a List of Maps, where each Map represents a Vehicle
+//     * in the specified Dealership's inventory. Each Map contains key-value pairs
+//     * representing the vehicle's attributes.
+//     *
+//     *@return {@link List} of {@link Map} Objects where each Map object holds a specific vehicle
+//     *         and its data.(dealership ID, vehicle type, manufacturer, model,
+//     *         vehicle ID, price, and acquisition date) as key-value pairs.
+//     */
+//    public List<Map<String, Object>> getDataMap() {
+//        List<Map<String, Object>> list = new ArrayList<>();
+//        for (Vehicle vehicle: salesInventory) {
+//            Map<String, Object> map = new HashMap<>();
+//            map.put(JSONIO.getDealIdKey(), dealerId);
+//            vehicle.getDataMap(map);
+//            list.add(map);
+//        }
+//        return list;
+//    }
 
     /**
      * Prints the inventory of Vehicles for the Dealership.

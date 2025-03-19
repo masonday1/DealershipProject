@@ -152,20 +152,20 @@ public abstract class Vehicle {
                 "\nAcquired: " + date;
     }
 
-    /**
-     * Retrieves Vehicle data for a given Dealership.
-     * <p>
-     * This method fills a Map where each key-value pairs
-     * represents the vehicle's attributes.
-     *
-     * @param map The Map to be filled with data from the Vehicle
-     */
-    public void getDataMap(Map<String, Object> map) {
-        map.put(JSONIO.getTypeKey(), vehicleType);
-        map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
-        map.put(JSONIO.getModelKey(), vehicleModel);
-        map.put(JSONIO.getVehicleIdKey(), vehicleId);
-        map.put(JSONIO.getPriceKey(), vehiclePrice);
-        map.put(JSONIO.getDateKey(), acquisitionDate);
-    }
+//    /**
+//     * Retrieves Vehicle data for a given Dealership.
+//     * <p>
+//     * This method fills a Map where each key-value pairs
+//     * represents the vehicle's attributes.
+//     *
+//     * @param map The Map to be filled with data from the Vehicle
+//     */
+//    public void getDataMap(Map<String, Object> map) {
+//        map.put(JSONIO.getTypeKey(), vehicleType);
+//        map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
+//        map.put(JSONIO.getModelKey(), vehicleModel);
+//        map.put(JSONIO.getVehicleIdKey(), vehicleId);
+//        map.put(JSONIO.getPriceKey(), vehiclePrice);
+//        map.put(JSONIO.getDateKey(), acquisitionDate);
+//    }
 }
