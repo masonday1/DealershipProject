@@ -32,23 +32,6 @@ public class JSONIO extends FileIO {
     }
 
     /**
-     * Confirms that the given Object is an instance of the correct type.
-     * (Long for price and acquisition date, String otherwise)
-     * Assumes that the key is a valid key (should be confirmed before calling).
-     *
-     * @param key The key value of the object in the data Map
-     * @param object The Object whose type is being checked
-     * @return Whether object is of the correct type.
-     */
-    private boolean validJSONObjectType(String key, Object object) {
-        if (key.equals(Key.VEHICLE_ACQUISITION_DATE.getKey()) ||
-                key.equals(Key.VEHICLE_PRICE.getKey())) {
-            return object instanceof Long;
-        }
-        return object instanceof String;
-    }
-
-    /**
      * Takes a JSONObject and creates and returns a Map. Fills the Map with the
      * data from the JSONObject with the same keys as keys. If any keys are absent,
      * null is returned.
@@ -58,17 +41,20 @@ public class JSONIO extends FileIO {
     private Map<String, Object> readJSONObject(JSONObject jObj) {
         Map<String, Object> map = new HashMap<>();
 
-        for (String key : Key.getKeys()) {
-            Object dataPoint = jObj.get(key);
+        for (Key key : Key.values()) {
+            String keyStr = key.getKey();
+
+            Object dataPoint = jObj.get(keyStr);
             if (dataPoint == null) {return null;}
-            if (!validJSONObjectType(key, dataPoint)) {
-                System.out.println("Key \"" + key + "\" with value (" + dataPoint + ")" +
+
+            if (!key.validObjectType(dataPoint)) {
+                System.out.println("Key \"" + keyStr + "\" with value (" + dataPoint + ")" +
                         " is the wrong type of Object.\n" +
                         "(Long for price or acquisition date and String otherwise).\n" +
                         "Vehicle not added to inventory.\n");
                 return null;
             }
-            map.put(key, dataPoint);
+            map.put(keyStr, dataPoint);
 
         }
         return map;

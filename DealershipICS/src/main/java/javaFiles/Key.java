@@ -54,6 +54,28 @@ public enum Key {
     }
 
     /**
+     * Confirms that the given Object is an instance of the correct type.
+     * (As given by CLASS)
+     *
+     * @param object The Object whose type is being checked
+     * @return Whether object is of the correct type.
+     */
+    public boolean validObjectType(Object object) {
+        if (CLASS.equals(Long.class)) {
+            return object instanceof Long;
+        }
+        if (CLASS.equals(String.class)){
+            return object instanceof String;
+        }
+
+        return false;
+    }
+
+    public String getClassName() {
+        return CLASS.getName();
+    }
+
+    /**
      * Returns a String[] of all KEY values in Key.
      *
      * @return A String[] of all KEY values in Key

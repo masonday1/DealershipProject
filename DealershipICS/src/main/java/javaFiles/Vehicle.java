@@ -60,26 +60,26 @@ public abstract class Vehicle {
     }
 
     /**
-     * Sets the vehicle price.
+     * Sets the vehicle price. If null, sets to max long.
      *
      * @param vehiclePrice the price of the vehicle
      */
     public void setVehiclePrice(Long vehiclePrice) {
         if (vehiclePrice == null) {
-            System.out.println("vehiclePrice = null");
+            this.vehiclePrice = Long.MAX_VALUE;
             return;
         }
         this.vehiclePrice = vehiclePrice;
     }
 
     /**
-     * Sets the acquisition date of the vehicle.
+     * Sets the acquisition date of the vehicle. If null, sets to max long.
      *
      * @param acquisitionDate the date the vehicle was acquired
      */
     public void setAcquisitionDate(Long acquisitionDate) {
         if (acquisitionDate == null) {
-            System.out.println("acquisitionDate = null");
+            this.acquisitionDate = Long.MAX_VALUE;
             return;
         }
         this.acquisitionDate = acquisitionDate;
@@ -104,7 +104,7 @@ public abstract class Vehicle {
         Date date = new Date(acquisitionDate);
         return  "Vehicle: " +  vehicleType +
                 "\nID: " + vehicleId +
-                "\nManufacturer " + vehicleManufacturer +
+                "\nManufacturer: " + vehicleManufacturer +
                 "\nModel: " + vehicleModel +
                 "\nPrice: $" + vehiclePrice +
                 "\nAcquired: " + date;

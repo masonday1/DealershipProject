@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args)  throws  ReadWriteException {
+    public static void main(String[] args) throws ReadWriteException {
         Scanner scanner = new Scanner(System.in);
         String userInput;
         Company company = new Company("c_ID", "c_Name");
@@ -214,6 +214,7 @@ public class Main {
      *            selection and retry prompts.
      */
     private static List<Map<String, Object>> readData(Scanner sc) {
+        // TODO: Check if data list is still needed, or if only readInventory is needed
         List<Map<String, Object>> data = new ArrayList<>();
         FileIO fileIO = openFile('r', sc);
         if (fileIO == null) {return null;}
