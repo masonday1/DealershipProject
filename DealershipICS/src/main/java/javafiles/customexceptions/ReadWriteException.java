@@ -1,4 +1,4 @@
-package javafiles;
+package javafiles.customexceptions;
 
 /**
  * An Exception indicating that a JSONIO Object is invalid or unable

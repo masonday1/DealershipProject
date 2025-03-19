@@ -1,5 +1,7 @@
 package javafiles;
 
+import javafiles.customexceptions.ReadWriteException;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;

@@ -1,5 +1,6 @@
 package javafiles;
 
+import javafiles.customexceptions.ReadWriteException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 

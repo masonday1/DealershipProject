@@ -1,4 +1,6 @@
-package javafiles;
+package javafiles.domainfiles;
+
+import javafiles.Key;
 
 import java.util.ArrayList;
 import java.util.List;

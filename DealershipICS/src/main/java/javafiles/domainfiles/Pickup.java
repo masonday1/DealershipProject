@@ -1,4 +1,4 @@
-package javafiles;
+package javafiles.domainfiles;
 
 /**
  * Pickup is a child class of Vehicle, it calls Vehicle class's constructor
