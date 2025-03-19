@@ -60,20 +60,29 @@ public abstract class Vehicle {
     }
 
     /**
-     * Sets the vehicle price.
+     * Sets the vehicle price. If null, sets to max long.
      *
      * @param vehiclePrice the price of the vehicle
      */
-    public void setVehiclePrice(long vehiclePrice) {
+    public void setVehiclePrice(Long vehiclePrice) {
+        if (vehiclePrice == null) {
+            this.vehiclePrice = Long.MAX_VALUE;
+            return;
+        }
         this.vehiclePrice = vehiclePrice;
     }
 
     /**
-     * Sets the acquisition date of the vehicle.
+     * Sets the acquisition date of the vehicle. If null, sets to max long.
      *
      * @param acquisitionDate the date the vehicle was acquired
      */
-    public void setAcquisitionDate(long acquisitionDate) { this.acquisitionDate = acquisitionDate;
+    public void setAcquisitionDate(Long acquisitionDate) {
+        if (acquisitionDate == null) {
+            this.acquisitionDate = Long.MAX_VALUE;
+            return;
+        }
+        this.acquisitionDate = acquisitionDate;
     }
 
     // Getter methods for shared attributes
@@ -95,7 +104,7 @@ public abstract class Vehicle {
         Date date = new Date(acquisitionDate);
         return  "Vehicle: " +  vehicleType +
                 "\nID: " + vehicleId +
-                "\nManufacturer " + vehicleManufacturer +
+                "\nManufacturer: " + vehicleManufacturer +
                 "\nModel: " + vehicleModel +
                 "\nPrice: $" + vehiclePrice +
                 "\nAcquired: " + date;
@@ -110,11 +119,11 @@ public abstract class Vehicle {
      * @param map The Map to be filled with data from the Vehicle
      */
     public void getDataMap(Map<String, Object> map) {
-        map.put(JSONIO.getTypeKey(), vehicleType);
-        map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
-        map.put(JSONIO.getModelKey(), vehicleModel);
-        map.put(JSONIO.getVehicleIdKey(), vehicleId);
-        map.put(JSONIO.getPriceKey(), vehiclePrice);
-        map.put(JSONIO.getDateKey(), acquisitionDate);
+        map.put(Key.VEHICLE_TYPE.getKey(), vehicleType);
+        map.put(Key.VEHICLE_MANUFACTURER.getKey(), vehicleManufacturer);
+        map.put(Key.VEHICLE_MODEL.getKey(), vehicleModel);
+        map.put(Key.VEHICLE_ID.getKey(), vehicleId);
+        map.put(Key.VEHICLE_PRICE.getKey(), vehiclePrice);
+        map.put(Key.VEHICLE_ACQUISITION_DATE.getKey(), acquisitionDate);
     }
 }

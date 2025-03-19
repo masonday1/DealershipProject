@@ -20,20 +20,34 @@ public class Company {
 
     public ArrayList<Dealership> getListDealerships() {return listDealerships;}
 
-    public int getDealershipIndex(String dealerId) {
+    /**
+     * Takes a String representing a Dealership ID and returns the index of that
+     * Dealership in this Company's listDealerships.
+     *
+     * @param dealerID A String equal to the dealerID of the Dealership we are searching for.
+     * @return The index of the searched for Dealership in listDealerships (-1 if absent).
+     */
+    public int getDealershipIndex(String dealerID) {
         Dealership dealership;
         for (int i = 0; i < listDealerships.size(); i++) {
             dealership = listDealerships.get(i);
-            if (dealership.getDealerId().equals(dealerId)) {
+            if (dealership.getDealerId().equals(dealerID)) {
                 return i;
             }
         }
         return -1;
     }
 
-    private Dealership findDealership(String dealerId) {
+    /**
+     * Takes a String representing a Dealership ID and returns the given
+     * Dealership in this Company's listDealerships.
+     *
+     * @param dealerID A String equal to the dealerID of the Dealership we are searching for.
+     * @return The Dealership we are searching for in listDealerships (null if absent).
+     */
+    private Dealership findDealership(String dealerID) {
         for (Dealership dealership : listDealerships) {
-            if (dealership.getDealerId().equals(dealerId)) {
+            if (dealership.getDealerId().equals(dealerID)) {
                 return dealership;
             }
         }
@@ -44,12 +58,18 @@ public class Company {
 
     public String getCompanyName() {return companyName;}
 
+    /**
+     * Takes a List of Map<String, Object>s representing a List of Vehicle information
+     * and writes the data in each map to the corresponding Dealership.
+     *
+     * @param data The List of Maps containing Vehicle information to be added to inventory.
+     */
     public void dataToInventory(List<Map<String, Object>> data) {
         if (data == null) {return;}
         for (Map<String, Object> map: data) {
-            Dealership dealership = findDealership(JSONIO.getDealIdVal(map));
+            Dealership dealership = findDealership(Key.DEALERSHIP_ID.getValString(map));
             if (dealership == null) {
-                dealership = new Dealership(JSONIO.getDealIdVal(map));
+                dealership = new Dealership(Key.DEALERSHIP_ID.getValString(map));
                 addDealership(dealership);
             }
             dealership.dataToInventory(map);
@@ -87,8 +107,7 @@ public class Company {
      * indicating this is printed. If the Company has no Dealerships, a message is
      * printed to the console.
      */
-    public void printInventory()
-    {
+    public void printInventory() {
         // if company does not have any dealerships, print message and return to menu
         if(listDealerships.isEmpty())
         {
@@ -131,6 +150,13 @@ public class Company {
         return output.toString();
     }
 
+    /**
+     * Returns a String displaying the current receiving status of the
+     * Dealership at index dealerIndex in listDealerships.
+     *
+     * @param dealerIndex The index of the dealership that is being evaluated
+     * @return A String displaying the receiving status of the Dealership.
+     */
     public String changeReceivingStatusIntroString(int dealerIndex) {
         Dealership dealer = listDealerships.get(dealerIndex);
         return "Enable or disable vehicle receiving status for dealership "
@@ -138,6 +164,14 @@ public class Company {
                 "Currently enabled? (" + dealer.getStatusAcquiringVehicle() + ")";
     }
 
+    /**
+     * Updates the Dealership receiving status for Vehicles and prints the appropriate
+     * message for that update based on what the userInput read from the user.
+     *
+     * @param dealerIndex The index of the Dealership to be updated in listDealerships.
+     * @param userInput The input provided by the user that is being processed.
+     * @return Whether the input is invalid, true if it is invalid, false otherwise.
+     */
     public boolean changeReceivingStatus(int dealerIndex, String userInput) {
         Dealership dealer = listDealerships.get(dealerIndex);
         if (userInput.equalsIgnoreCase("enable")) {

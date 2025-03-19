@@ -85,6 +85,7 @@ public class Dealership {
      *         the vehicle ID was not added.
      */
     private static Vehicle createNewVehicle(String vehicleType, String ID) {
+        if (vehicleType == null) {vehicleType = "Null Vehicle Type";}
         return switch (vehicleType.toLowerCase()) {
             case "suv" -> new SUV();
             case "sedan" -> new Sedan();
@@ -106,18 +107,18 @@ public class Dealership {
      */
     public void dataToInventory(Map<String, Object> map) {
         Vehicle vehicle = createNewVehicle(
-                JSONIO.getTypeVal(map),
-                JSONIO.getVehicleIdVal(map)
+                Key.VEHICLE_TYPE.getValString(map),
+                Key.VEHICLE_ID.getValString(map)
         );
         if (vehicle == null) {
             return;
         }
-        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
-        vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
-        vehicle.setVehicleModel(JSONIO.getModelVal(map));
-        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
-        vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
-        vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
+        vehicle.setVehicleId(Key.VEHICLE_ID.getValString(map));
+        vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getValString(map));
+        vehicle.setVehicleModel(Key.VEHICLE_MODEL.getValString(map));
+        //vehicle.setVehicleId(Key.VEHICLE_ID.getValString(map));
+        vehicle.setVehiclePrice(Key.VEHICLE_PRICE.getValLong(map));
+        vehicle.setAcquisitionDate(Key.VEHICLE_ACQUISITION_DATE.getValLong(map));
 
         addIncomingVehicle(vehicle);
     }
@@ -191,7 +192,7 @@ public class Dealership {
         List<Map<String, Object>> list = new ArrayList<>();
         for (Vehicle vehicle: vehicleInventory) {
             Map<String, Object> map = new HashMap<>();
-            map.put(JSONIO.getDealIdKey(), dealerId);
+            map.put(Key.DEALERSHIP_ID.getKey(), dealerId);
             vehicle.getDataMap(map);
             list.add(map);
         }

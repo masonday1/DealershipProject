@@ -4,10 +4,12 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ReadWriteException {
         Scanner scanner = new Scanner(System.in);
         String userInput;
         Company company = new Company("c_ID", "c_Name");
+
+        FileIOBuilder.setupFileIOBuilders();
 
         company.dataToInventory(readData(scanner));
 
@@ -128,13 +130,15 @@ public class Main {
         return dealerIndex;
     }
 
-    /** TODO: Update description
-     * Changes the vehicle receiving status of a dealership.
+    /**
+     * Changes the Vehicle receiving status of a Dealership.
      * <p>
-     * This method prompts the user to either enable or disable the vehicle receiving
-     * status for the specified dealership.  It checks the current status and
+     * This method prompts the user to either enable or disable the Vehicle receiving
+     * status for the specified Dealership.  It checks the current status and
      * provides feedback to the user.
      *
+     * @param company The {@link Company} object that contains the dealerships.
+     * @param dealerIndex The index of the Dealership in company's list_dealerships list
      * @param scanner The {@link Scanner} object used to read user input.
      */
     private static void changeReceivingStatus(Company company, int dealerIndex, Scanner scanner) {
@@ -153,20 +157,20 @@ public class Main {
      * <p>
      * This method allows the user to choose a JSON file and opens it in the specified mode (read or write).
      * It will validate the file path and mode, and repeatedly prompt the user for a new path if an invalid path is entered.
-     * If a valid file path is found, a {@link JSONIO} instance is created with the path and mode passed to it and returned. If the user cancels the file chooser or
+     * If a valid file path is found, a {@link FileIO} instance is created with the path and mode passed to it and returned. If the user cancels the file chooser or
      * enters an invalid path multiple times, the method returns null.
      *
      * @param mode A character representing the mode in which the file should be opened ('r' for read, 'w' for write).
      * @param sc   A {@link Scanner} object used to read user input from the console for path selection and retry prompts.
-     * @return     A {@link JSONIO} object representing the opened file, or null if no valid file path is selected.
+     * @return     A {@link FileIO} object representing the opened file, or null if no valid file path is selected.
      */
-    private static JSONIO openFile(char mode, Scanner sc) {
+    private static FileIO openFile(char mode, Scanner sc) {
         String path;
-        JSONIO jsonio = null;
+        FileIO fileIO = null;
         char userInput;
 
         try {
-            mode = JSONIO.getMode(mode);
+            mode = FileIO.getLowercaseMode(mode);
         } catch (ReadWriteException e) {
             System.out.println("Mode '" + mode + "' is not valid, returning null.");
             return null;
@@ -174,18 +178,17 @@ public class Main {
 
         do {
             System.out.print("Choose Path: ");
-            path = JSONIO.selectJsonFilePath();
+            path = FileIOBuilder.selectFilePath();
             try {
                 if (path != null) {
                     System.out.println(path + "\n");
-                    jsonio = new JSONIO(path, mode);
+                    fileIO = FileIOBuilder.buildNewFileIO(path, mode);
                 } else {
                     System.out.println("File chooser closed. No file opened.");
                     return null;
                 }
             } catch (ReadWriteException e) {
-                System.out.print("Path \"" + path + "\" is not a valid path.\n" +
-                        "Enter new path ('y' / 'n'): ");
+                System.out.print(e.getMessage() + "\n\nEnter new path ('y' / 'n'): ");
                 userInput = Character.toLowerCase(sc.next().charAt(0));
                 while (userInput != 'y' && userInput != 'n') {
                     System.out.println("Invalid input, try again (only 'y' or 'n' valid): ");
@@ -193,11 +196,11 @@ public class Main {
                 }
                 if (userInput == 'n') {return null;}
             }
-        } while (jsonio == null);
-        return jsonio;
+        } while (fileIO == null);
+        return fileIO;
     }
 
-    /** 
+    /**
      * Reads data from a JSON file and populates an inventory.
      * <p>
      * This method opens a JSON file in "read" mode ('r') using the provided {@link Scanner}
@@ -211,11 +214,12 @@ public class Main {
      *            selection and retry prompts.
      */
     private static List<Map<String, Object>> readData(Scanner sc) {
+        // TODO: Check if data list is still needed, or if only readInventory is needed
         List<Map<String, Object>> data = new ArrayList<>();
-        JSONIO jsonio = openFile('r', sc);
-        if (jsonio == null) {return null;}
+        FileIO fileIO = openFile('r', sc);
+        if (fileIO == null) {return null;}
         try {
-            data.addAll(jsonio.read());
+            data.addAll(fileIO.readInventory());
         } catch (ReadWriteException e) {
             System.out.println(e.getMessage());
         }
@@ -245,10 +249,10 @@ public class Main {
             System.out.println("No data to write.");
             return 0;
         }
-        JSONIO jsonio = openFile('w', sc);
-        if (jsonio == null) {return 0;}
+        FileIO fileIO = openFile('w', sc);
+        if (fileIO == null) {return 0;}
         try {
-            return jsonio.write(data);
+            return fileIO.writeInventory(data);
         } catch (ReadWriteException e) {
             System.out.println(e.getMessage());
         }
@@ -282,6 +286,4 @@ public class Main {
         // that prints out all of the
         System.out.println("Likely to be removed (as pending removed), not functional at the moment."  + company);
     }
-
-
 }
