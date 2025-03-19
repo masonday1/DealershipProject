@@ -2,8 +2,13 @@ package company.gui;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Controller for the inventory management screen.
@@ -33,6 +38,19 @@ public class InventoryScreenController {
     private void handleAddVehicleToDealership() {
         // logic to add vehicle
         System.out.println("Add vehicle clicked");
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoadInventory.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Add Inventory");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     /**

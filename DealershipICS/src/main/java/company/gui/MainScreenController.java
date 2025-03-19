@@ -79,7 +79,16 @@ public class MainScreenController {
     @FXML
     private void handleManageCompanyProfile(ActionEvent event) {
         System.out.println("Modify Dealership Profile button clicked");
-        // add logic
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProfileManagement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Inventory Management");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -89,8 +98,20 @@ public class MainScreenController {
      * @param event The action event triggered by the button click.
      */
     @FXML
-    private void handleLoadInventory(ActionEvent event) {
+    private void handleLoadInventory(ActionEvent event)
+    {
         System.out.println("Load Inventory button was clicked");
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoadInventory.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Inventory Management");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
