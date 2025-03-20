@@ -9,8 +9,8 @@ public abstract class FileIO {
     protected File file;
     protected char mode;
 
-    abstract List<Map<String, Object>> readInventory() throws ReadWriteException;
-    abstract int writeInventory(List<Map<String, Object>> maps) throws ReadWriteException;
+    public abstract List<Map<String, Object>> readInventory() throws ReadWriteException;
+    public abstract int writeInventory(List<Map<String, Object>> maps) throws ReadWriteException;
 
     /**
      * Creates or opens a {@link File} with name path in read ('r') or write ('w') mode.

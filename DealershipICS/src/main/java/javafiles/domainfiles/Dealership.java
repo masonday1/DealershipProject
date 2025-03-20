@@ -1,8 +1,7 @@
 package javafiles.domainfiles;
 
 import javafiles.customexceptions.*;
-import javafiles.dataaccessfiles.JSONIO;
-
+import javafiles.dataaccessfiles.Key;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,8 +123,8 @@ public class Dealership {
      *
      * @author Christopher Engelhart
      */
-    private boolean isVehicleInInventory(Vehicle newVehicle, List<Vehicle> inventory)
-    {
+    private boolean isVehicleInInventory(Vehicle newVehicle, List<Vehicle> inventory) {
+        // TODO: Check if getting the inventory vs. checking Dealership inventory is correct.
         for (Vehicle vehicle : inventory)
         {
             if (vehicle.getVehicleId().equals(newVehicle.getVehicleId()))
@@ -176,35 +175,35 @@ public class Dealership {
         this.salesInventory.add(newVehicle);
     }
 
+    /**
+     * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.
+     *
+     * @param map The data needed to create the new Vehicle.
+     */
+    public void dataToInventory(Map<String, Object> map) {
+        Vehicle vehicle;
+        try {
+            vehicle = vehicleFactory.createVehicle(
+                    Key.VEHICLE_TYPE.getValString(map),
+                    Key.VEHICLE_ID.getValString(map)
+            );
+        } catch (InvalidVehicleTypeException e) {
+            // TODO: add this as a reason for not adding a vehicle instead of throwing exception
+            throw new RuntimeException(e);
+        }
+        vehicle.setVehicleId(Key.VEHICLE_ID.getValString(map));
+        vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getValString(map));
+        vehicle.setVehicleModel(Key.VEHICLE_MODEL.getValString(map));
+        vehicle.setVehiclePrice(Key.VEHICLE_PRICE.getValLong(map));
+        vehicle.setAcquisitionDate(Key.VEHICLE_ACQUISITION_DATE.getValLong(map));
 
-
-//    /**
-//     * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.
-//     *
-//     * @param map The data needed to create the new Vehicle.
-//     * @throws InvalidVehicleTypeException If the vehicle type is not supported.
-//     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
-//     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
-//     */
-//    public void dataToInventory(Map<String, Object> map) throws InvalidVehicleTypeException,
-//            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException {
-//
-//        Vehicle vehicle = vehicleFactory.createVehicle(
-//                JSONIO.getTypeVal(map),
-//                JSONIO.getVehicleIdVal(map)
-//        );
-//        if (vehicle == null) {
-//            return;
-//        }
-//        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
-//        vehicle.setVehicleManufacturer(JSONIO.getManufacturerVal(map));
-//        vehicle.setVehicleModel(JSONIO.getModelVal(map));
-//        vehicle.setVehicleId(JSONIO.getVehicleIdVal(map));
-//        vehicle.setVehiclePrice(JSONIO.getPriceVal(map));
-//        vehicle.setAcquisitionDate(JSONIO.getDateVal(map));
-//
-//        addIncomingVehicle(vehicle);
-//    }
+        try {
+            addIncomingVehicle(vehicle);
+        } catch (VehicleAlreadyExistsException | DealershipNotAcceptingVehiclesException e) {
+            // TODO: add this as a reason for not adding a vehicle instead of throwing exception
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Adds a new vehicle to the dealership inventory based on the provided vehicle details.
@@ -217,7 +216,7 @@ public class Dealership {
      * to the dealership's inventory using the {@link #addIncomingVehicle(Vehicle)} method.
      *
      *
-     * @param vehicleID The unique identifier for the vehicle.
+     * @param vehicleId The unique identifier for the vehicle.
      * @param vehicleManufacturer The manufacturer of the vehicle.
      * @param vehicleModel The model of the vehicle.
      * @param vehiclePrice The price of the vehicle. The price must be a positive value representing the
@@ -228,23 +227,23 @@ public class Dealership {
      * @param vehicleType The type of the vehicle. This should be one of the following types:
      *                    "suv", "sedan", "pickup", or "sports car". If an unsupported type is provided,
      *                    the method will not add the vehicle and will print an error message.
-     *  @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
-     *  @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
-     *  @throws InvalidVehicleTypeException If the vehicle type is not supported.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
+     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
+     * @throws InvalidVehicleTypeException If the vehicle type is not supported.
      * @throws InvalidPriceException if the vehicle price is not a positive value
      *
      * @author Christopher Engelhart
      */
-    public void manualVehicleAdd(String vehicleID, String vehicleManufacturer, String vehicleModel, long vehiclePrice,
-                                 long acquisitionDate, String vehicleType) throws InvalidVehicleTypeException,
+    public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, Long vehiclePrice,
+                                 Long acquisitionDate, String vehicleType) throws InvalidVehicleTypeException,
             VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
 
         // Ensure the vehicle price is positive.
         if (vehiclePrice <= 0) {
-            throw new InvalidPriceException("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleID + " was not added.");
+            throw new InvalidPriceException("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleId + " was not added.");
         }
 
-        Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleID);
+        Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleId);
 
         newVehicle.setVehicleManufacturer(vehicleManufacturer);
         newVehicle.setVehicleModel(vehicleModel);
@@ -294,6 +293,32 @@ public class Dealership {
 
 
     /**
+     * Retrieves Vehicle data for the Dealership.
+     * <p>
+     * This method generates a List of Maps, where each Map represents a Vehicle
+     * in the specified Dealership's inventory. Each Map contains key-value pairs
+     * representing the vehicle's attributes.
+     *
+     *@return {@link List} of {@link Map} Objects where each Map object holds a specific vehicle
+     *         and its data.(dealership ID, vehicle type, manufacturer, model,
+     *         vehicle ID, price, and acquisition date) as key-value pairs.
+     */
+    public List<Map<String, Object>> getDataMap() {
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        List<Vehicle> fullInventory = new ArrayList<>(salesInventory);
+        fullInventory.addAll(rentalInventory);
+
+        for (Vehicle vehicle: fullInventory) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(Key.DEALERSHIP_ID.getKey(), dealerId);
+            vehicle.getDataMap(map);
+            list.add(map);
+        }
+        return list;
+    }
+
+    /**
      * Removes a vehicle from the inventory. Returns true if vehicle is removed and false otherwise.
      *
      * @param targetVehicle The vehicle to remove. Cannot be null.
@@ -320,30 +345,6 @@ public class Dealership {
         return inventory.remove(targetVehicle);
 
     }
-
-
-
-//    /**
-//     * Retrieves Vehicle data for the Dealership.
-//     * <p>
-//     * This method generates a List of Maps, where each Map represents a Vehicle
-//     * in the specified Dealership's inventory. Each Map contains key-value pairs
-//     * representing the vehicle's attributes.
-//     *
-//     *@return {@link List} of {@link Map} Objects where each Map object holds a specific vehicle
-//     *         and its data.(dealership ID, vehicle type, manufacturer, model,
-//     *         vehicle ID, price, and acquisition date) as key-value pairs.
-//     */
-//    public List<Map<String, Object>> getDataMap() {
-//        List<Map<String, Object>> list = new ArrayList<>();
-//        for (Vehicle vehicle: salesInventory) {
-//            Map<String, Object> map = new HashMap<>();
-//            map.put(JSONIO.getDealIdKey(), dealerId);
-//            vehicle.getDataMap(map);
-//            list.add(map);
-//        }
-//        return list;
-//    }
 
     /**
      * Prints the inventory of Vehicles for the Dealership.
@@ -383,5 +384,4 @@ public class Dealership {
             System.out.println("\nRental does not currently have any inventory\n");
         }
     }
-
 }

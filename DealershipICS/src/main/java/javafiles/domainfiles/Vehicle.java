@@ -1,9 +1,11 @@
 package javafiles.domainfiles;
 
 import javafiles.customexceptions.*;
-import javafiles.dataaccessfiles.JSONIO;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
+
+import javafiles.dataaccessfiles.Key;
 
 /**
  Vehicle is an abstract class that defines a set of common attributes
@@ -18,8 +20,8 @@ public abstract class Vehicle {
     private String vehicleId;
     private String vehicleManufacturer;
     private String vehicleModel;
-    private long vehiclePrice;
-    private long acquisitionDate;
+    private Long vehiclePrice;
+    private Long acquisitionDate;
     private final String vehicleType; // Common field to all vehicle
     private boolean rental;
     private final RentalStrategy rentalStrategy;
@@ -83,7 +85,7 @@ public abstract class Vehicle {
      *
      * @param vehiclePrice the price of the vehicle
      */
-    public void setVehiclePrice(long vehiclePrice) {
+    public void setVehiclePrice(Long vehiclePrice) {
         this.vehiclePrice = vehiclePrice;
     }
 
@@ -92,7 +94,7 @@ public abstract class Vehicle {
      *
      * @param acquisitionDate the date the vehicle was acquired
      */
-    public void setAcquisitionDate(long acquisitionDate) { this.acquisitionDate = acquisitionDate;
+    public void setAcquisitionDate(Long acquisitionDate) { this.acquisitionDate = acquisitionDate;
     }
 
 
@@ -130,8 +132,8 @@ public abstract class Vehicle {
     public String getVehicleId() {return vehicleId;}
     public String getVehicleManufacturer() {return vehicleManufacturer;}
     public String getVehicleModel() {return vehicleModel;}
-    public long getVehiclePrice() {return vehiclePrice;}
-    public long getAcquisitionDate() {return acquisitionDate;}
+    public Long getVehiclePrice() {return vehiclePrice;}
+    public Long getAcquisitionDate() {return acquisitionDate;}
     public String getVehicleType() {return vehicleType;}
     public boolean getRentalStatus() { return rental; }
 
@@ -143,29 +145,40 @@ public abstract class Vehicle {
      * @author Dylan Browne
      */
     public String toString() {
-        Date date = new Date(acquisitionDate);
+        // TODO: This (Date) needs to be handled differently (account for null)
+        long tempAcquisitionDate;
+        tempAcquisitionDate = Objects.requireNonNullElse(acquisitionDate, Long.MAX_VALUE);
+
+        Date date = new Date(tempAcquisitionDate);
+
         return  "Vehicle: " +  vehicleType +
                 "\nID: " + vehicleId +
-                "\nManufacturer " + vehicleManufacturer +
+                "\nManufacturer: " + vehicleManufacturer +
                 "\nModel: " + vehicleModel +
                 "\nPrice: $" + vehiclePrice +
                 "\nAcquired: " + date;
     }
 
-//    /**
-//     * Retrieves Vehicle data for a given Dealership.
-//     * <p>
-//     * This method fills a Map where each key-value pairs
-//     * represents the vehicle's attributes.
-//     *
-//     * @param map The Map to be filled with data from the Vehicle
-//     */
-//    public void getDataMap(Map<String, Object> map) {
-//        map.put(JSONIO.getTypeKey(), vehicleType);
-//        map.put(JSONIO.getManufacturerKey(), vehicleManufacturer);
-//        map.put(JSONIO.getModelKey(), vehicleModel);
-//        map.put(JSONIO.getVehicleIdKey(), vehicleId);
-//        map.put(JSONIO.getPriceKey(), vehiclePrice);
-//        map.put(JSONIO.getDateKey(), acquisitionDate);
-//    }
+    private void putNonNull(Map<String, Object> map, String key, Object object) {
+        if (object != null) {
+            map.put(key, object);
+        }
+    }
+
+    /**
+     * Retrieves Vehicle data for a given Dealership.
+     * <p>
+     * This method fills a Map where each key-value pairs
+     * represents the vehicle's attributes.
+     *
+     * @param map The Map to be filled with data from the Vehicle
+     */
+    public void getDataMap(Map<String, Object> map) {
+        putNonNull(map, Key.VEHICLE_TYPE.getKey(), vehicleType);
+        putNonNull(map, Key.VEHICLE_MANUFACTURER.getKey(), vehicleManufacturer);
+        putNonNull(map, Key.VEHICLE_MODEL.getKey(), vehicleModel);
+        putNonNull(map, Key.VEHICLE_ID.getKey(), vehicleId);
+        putNonNull(map, Key.VEHICLE_PRICE.getKey(), vehiclePrice);
+        putNonNull(map, Key.VEHICLE_ACQUISITION_DATE.getKey(), acquisitionDate);
+    }
 }
