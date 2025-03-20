@@ -26,7 +26,7 @@ public class GuiUtility {
      * @param event The ActionEvent triggered by the navigation action (button click).
      * @param fxmlPath The path to the FXML file for the screen to navigate to.
      */
-    public static void navigateToScreen(ActionEvent event, String fxmlPath) {
+    public static FXMLLoader navigateToScreen(ActionEvent event, String fxmlPath) {
         try {
             // Load the FXML for the new screen
             FXMLLoader loader = new FXMLLoader(GuiUtility.class.getResource(fxmlPath));
@@ -40,9 +40,10 @@ public class GuiUtility {
             // Set the title of the new window
             stage.setTitle(getScreenTitle(fxmlPath));
             setScreenSize(stage,0.6,0.6);
+            return loader;
         } catch (IOException e) {
             e.printStackTrace();
-
+            return null;
         }
     }
 

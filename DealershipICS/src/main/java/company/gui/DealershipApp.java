@@ -24,16 +24,20 @@ import javafiles.dataaccessfiles.FileIO;
 public class DealershipApp extends Application {
     private static boolean initialLaunch = true;
     private static String masterInventoryFile = "masterinventory.json"; // Default load location
+    private static Company company = new Company("c_ID", "c_Name");
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Company company = new Company("c_ID", "c_Name");
 
         FileIOBuilder.setupFileIOBuilders();
         loadInitialFiles(company);
-        
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainScreen.fxml"));
         Parent root = loader.load();
+
+        MainScreenController controller = loader.getController();
+        controller.setCompany(company);
+
         Scene scene = new Scene(root);
         primaryStage.setTitle("Main Menu");
         primaryStage.setScene(scene);
@@ -41,6 +45,10 @@ public class DealershipApp extends Application {
         
     }
     
+    public static Company getCompany() {
+        return company;
+    }
+
     private static void loadInitialFiles(Company company) {
         try { 
             Scanner scanner = new Scanner(new File(masterInventoryFile)); 

@@ -11,9 +11,6 @@ import javafx.event.ActionEvent;
 public class InventoryScreenController
 {
 
-
-
-
     @FXML
     private void handleBack(ActionEvent event) {
         GuiUtility.navigateToScreen(event,"/MainScreen.fxml");

@@ -2,7 +2,10 @@ package company.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafiles.domainfiles.Company;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 
 
 /**
@@ -12,12 +15,22 @@ import javafx.event.ActionEvent;
 public class MainScreenController {
 
     @FXML
+    private Menu menuLabel;
+    @FXML
     private Button manageCompanyInventoryButton;
     @FXML
     private Button ManageCompanyProfileButton;
     @FXML
     private Button LoadInventoryButton;
 
+    private Company company;
+
+    
+
+    public void setCompany(Company company) {
+        this.company = company;
+        System.out.println("Company object set in MainScreenController.");
+    }
 
 
 
@@ -29,7 +42,10 @@ public class MainScreenController {
 
     @FXML
     private void handleManageCompanyProfile(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/ProfileManagement.fxml");
+        FXMLLoader loader = GuiUtility.navigateToScreen(event,"/ProfileManagement.fxml");
+        ProfileManagementController controller = loader.getController();
+        controller.setCompany(this.company); // Pass the Company object to the ProfileManagementController
+
     }
 
     @FXML
