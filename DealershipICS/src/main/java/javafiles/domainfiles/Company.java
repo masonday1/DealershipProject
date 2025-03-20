@@ -3,18 +3,14 @@ package javafiles.domainfiles;
 import javafiles.dataaccessfiles.Key;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Company {
-    private String companyId;
-    private String companyName;
     private ArrayList<Dealership> listDealerships;
 
-
-    public Company(String companyId, String companyName) {
-        this.companyId = companyId;
-        this.companyName = companyName;
+    public Company() {
         this.listDealerships = new ArrayList<>();
     }
 
@@ -56,25 +52,39 @@ public class Company {
         return null;
     }
 
-    public String getCompanyId() {return companyId;}
-
-    public String getCompanyName() {return companyName;}
-
     /**
      * Takes a List of Map<String, Object>s representing a List of Vehicle information
      * and writes the data in each map to the corresponding Dealership.
      *
      * @param data The List of Maps containing Vehicle information to be added to inventory.
      */
-    public void dataToInventory(List<Map<String, Object>> data) {
+    public void dataToInventory(List<Map<Key, Object>> data) {
         if (data == null) {return;}
-        for (Map<String, Object> map: data) {
-            Dealership dealership = findDealership(Key.DEALERSHIP_ID.getValString(map));
+
+        // Used to ensure that the cars for new Dealerships are
+        // added before considering rental or receiving statuses.
+        // Assumes that all Vehicles from the same dealership have
+        // the same rental and receiving statuses.
+        Map<Dealership, Map<Key, Object>> newDealershipStat = new HashMap<>();
+
+        for (Map<Key, Object> map: data) {
+            Dealership dealership = findDealership(Key.DEALERSHIP_ID.getVal(map, String.class));
             if (dealership == null) {
-                dealership = new Dealership(Key.DEALERSHIP_ID.getValString(map));
+                String id = Key.DEALERSHIP_ID.getVal(map, String.class);
+                String name = Key.DEALERSHIP_NAME.getVal(map, String.class);
+
+                dealership = new Dealership(id, name);
                 addDealership(dealership);
+
+                newDealershipStat.put(dealership, map);
             }
             dealership.dataToInventory(map);
+        }
+
+        for (Dealership dealership : newDealershipStat.keySet()) {
+            Map<Key, Object> map = newDealershipStat.get(dealership);
+            dealership.setReceivingVehicle(Key.DEALERSHIP_RECEIVING_STATUS.getVal(map, Boolean.class));
+            dealership.setRentingVehicles(Key.DEALERSHIP_RENTING_STATUS.getVal(map, Boolean.class));
         }
     }
 
@@ -91,8 +101,8 @@ public class Company {
      *         Dealership in the Company. Returns an empty list if the Company has no Dealerships
      *         or if none of the Dealerships have any Vehicles.
      */
-    public List<Map<String, Object>> getDataMap() {
-        List<Map<String, Object>> list = new ArrayList<>();
+    public List<Map<Key, Object>> getDataMap() {
+        List<Map<Key, Object>> list = new ArrayList<>();
         for (Dealership dealership : listDealerships) {
             list.addAll(dealership.getDataMap());
         }
@@ -182,7 +192,7 @@ public class Company {
                 System.out.println("Dealership " + dealer.getDealerId() + " is already set to receive vehicles.");
             } else {
                 // Enable vehicle receiving for the dealership
-                dealer.enableReceivingVehicle();
+                dealer.setReceivingVehicle(true);
                 System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been enabled.");
             }
             return false;
@@ -191,7 +201,7 @@ public class Company {
             if (!dealer.getStatusAcquiringVehicle()) {
                 System.out.println("Dealership " + dealer.getDealerId() + " is already set to not receive vehicles.");
             } else {
-                dealer.disableReceivingVehicle();
+                dealer.setReceivingVehicle(false);
                 System.out.println("Vehicle receiving status for dealership " + dealer.getDealerId() + " has been disabled.");
             }
             return false;

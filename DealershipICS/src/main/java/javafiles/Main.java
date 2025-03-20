@@ -3,6 +3,7 @@ package javafiles;
 import javafiles.customexceptions.ReadWriteException;
 import javafiles.dataaccessfiles.FileIO;
 import javafiles.dataaccessfiles.FileIOBuilder;
+import javafiles.dataaccessfiles.Key;
 import javafiles.domainfiles.Company;
 
 import java.util.*;
@@ -12,7 +13,7 @@ public class Main {
       public static void main(String[] args) {
           Scanner scanner = new Scanner(System.in);
           String userInput;
-          Company company = new Company("c_ID", "c_Name");
+          Company company = new Company();
 
           FileIOBuilder.setupFileIOBuilders();
 
@@ -218,9 +219,9 @@ public class Main {
        * @param sc  A {@link Scanner} object used by {@link #openFile(char, Scanner)} to read user input from the console for path
        *            selection and retry prompts.
        */
-      private static List<Map<String, Object>> readData(Scanner sc) {
+      private static List<Map<Key, Object>> readData(Scanner sc) {
           // TODO: Check if data list is still needed, or if only readInventory is needed
-          List<Map<String, Object>> data = new ArrayList<>();
+          List<Map<Key, Object>> data = new ArrayList<>();
           FileIO fileIO = openFile('r', sc);
           if (fileIO == null) {return null;}
           try {
@@ -249,7 +250,7 @@ public class Main {
        * @return The number of items successfully written to the file. Returns 0 if no data
        *  *         is provided, the file cannot be opened, or an error occurs during writing.
        */
-      private static int writeData(List<Map<String, Object>> data, Scanner sc) {
+      private static int writeData(List<Map<Key, Object>> data, Scanner sc) {
           if (data == null) {
               System.out.println("No data to write.");
               return 0;
@@ -257,7 +258,8 @@ public class Main {
           FileIO fileIO = openFile('w', sc);
           if (fileIO == null) {return 0;}
           try {
-              return fileIO.writeInventory(data);
+              fileIO.writeInventory(data);
+              return data.size();
           } catch (ReadWriteException e) {
               System.out.println(e.getMessage());
           }

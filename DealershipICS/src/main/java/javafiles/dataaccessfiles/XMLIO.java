@@ -1,6 +1,7 @@
 package javafiles.dataaccessfiles;
 
 import javafiles.customexceptions.ReadWriteException;
+
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -9,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +18,16 @@ import java.util.Map;
 
 enum XMLKey {
     D_ID (Key.DEALERSHIP_ID, "Dealer_id"),
-    PRICE (Key.VEHICLE_PRICE, "Vehicle_Price"),
+    D_NAME (Key.DEALERSHIP_NAME, "Dealer_Name"),
+
     TYPE (Key.VEHICLE_TYPE, "Vehicle_type"),
     V_ID (Key.VEHICLE_ID, "Vehicle_id"),
-    MODEL (Key.VEHICLE_MODEL, "Vehicle_Model"),
-    MAKE (Key.VEHICLE_MANUFACTURER, "Vehicle_Make"),
+
     PRICE_UNIT (Key.VEHICLE_PRICE_UNIT, "Vehicle_Price_unit"),
-    D_NAME (Key.DEALERSHIP_NAME, "Dealer_Name"),
-    DATE ( Key.VEHICLE_ACQUISITION_DATE, "Vehicle_Acquisition_Date");
+    PRICE (Key.VEHICLE_PRICE, "Vehicle_Price"),
+
+    MODEL (Key.VEHICLE_MODEL, "Vehicle_Model"),
+    MAKE (Key.VEHICLE_MANUFACTURER, "Vehicle_Make");
 
     private final Key KEY;
     private final String NAME;
@@ -33,13 +37,8 @@ enum XMLKey {
         NAME = xmlName;
     }
 
-    public Key getKey() {
-        return KEY;
-    }
-
-    public String getName() {
-        return NAME;
-    }
+    public Key getKey() {return KEY;}
+    public String getName() {return NAME;}
 }
 
 /**
@@ -86,7 +85,7 @@ public class XMLIO extends FileIO {
         }
     }
 
-    private void readXMLObject(Map<String, String> vehicleMap, Map<String, Object> map) {
+    private void readXMLObject(Map<String, String> vehicleMap, Map<Key, Object> map) {
         for (XMLKey xmlKey : XMLKey.values()) {
             String keyStr = xmlKey.getName();
             if (vehicleMap.containsKey(keyStr)) {
@@ -96,14 +95,13 @@ public class XMLIO extends FileIO {
                     if (key.getClassName().equals(Long.class.getName())) {
                         val = Long.valueOf((String) val);
                     }
-                    map.put(key.getKey(), val);
-
+                    map.put(key, val);
                 }
             }
         }
     }
 
-    public List<Map<String, Object>> readInventory() throws ReadWriteException {
+    public List<Map<Key, Object>> readInventory() throws ReadWriteException {
         if (mode != 'r') {
             throw new ReadWriteException("Must be mode 'r', not mode '" + mode + "'.");
         }
@@ -125,7 +123,7 @@ public class XMLIO extends FileIO {
             throw new RuntimeException(e);
         }
 
-        List<Map<String, Object>> maps = new ArrayList<>();
+        List<Map<Key, Object>> maps = new ArrayList<>();
 
         Element documentElement = document.getDocumentElement();
         NodeList dealers =  documentElement.getElementsByTagName("Dealer");
@@ -146,7 +144,7 @@ public class XMLIO extends FileIO {
 
                 for (int j = 0; j < vehicles.getLength(); j++) {
                     Map<String, String> nameMap = new HashMap<>(dealerInfoMap);
-                    Map<String, Object> map = new HashMap<>();
+                    Map<Key, Object> map = new HashMap<>();
                     parseNode(vehicles.item(j), null, nameMap, true);
                     readXMLObject(nameMap, map);
 
@@ -161,8 +159,7 @@ public class XMLIO extends FileIO {
         return maps;
     }
 
-    public int writeInventory(List<Map<String, Object>> maps) throws ReadWriteException {
+    public void writeInventory(List<Map<Key, Object>> maps) throws ReadWriteException {
         System.out.println("Not implemented (writeInventory).");
-        return 0;
     }
 }

@@ -3,10 +3,7 @@ package javafiles.domainfiles;
 import javafiles.customexceptions.*;
 import javafiles.dataaccessfiles.Key;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a dealership that manages vehicle sales and rentals.
@@ -23,60 +20,38 @@ import java.util.Map;
 
 public class Dealership {
     private final String dealerId;
+    private String name;
     private final ArrayList<Vehicle> salesInventory;
     private final ArrayList<Vehicle> rentalInventory;
     private static final VehicleFactory vehicleFactory = VehicleCreator.getInstance(); // Singleton
     private boolean receivingVehicle;
-    private boolean rentalStatus;
+    private boolean rentingVehicles;
 
     // Instantiation requires dealer_ID
-    public Dealership(String dealerId) {
+    public Dealership(String dealerId, String name) {
         this.dealerId = dealerId;
+        this.name = name;
         this.receivingVehicle = true;
-        this.rentalStatus = false;
+        this.rentingVehicles = true;
         salesInventory = new ArrayList<>();
         rentalInventory = new ArrayList<>();
     }
 
-    // Returns Dealer ID
-    public String getDealerId () {
-        return dealerId;
+    // Getters:
+    public String getDealerId () {return dealerId;}
+    public boolean getStatusAcquiringVehicle() {return receivingVehicle;}
+    public boolean getRentingVehicles() {return rentingVehicles;}
+    public ArrayList<Vehicle> getSaleVehicles() {return salesInventory;}
+    public ArrayList<Vehicle> getRentalVehicles() {return rentalInventory;}
+
+    // Setters:
+    public void setName(String name) {this.name = name;}
+    public void setReceivingVehicle(Boolean status) {
+        receivingVehicle = Objects.requireNonNullElse(status, true);
     }
-
-    // Provides vehicle acquisition status
-    public Boolean getStatusAcquiringVehicle() {
-        return receivingVehicle;
+    public void setRentingVehicles(Boolean status) {
+        rentingVehicles = Objects.requireNonNullElse(status, false);
     }
-
-    public Boolean getRentalStatus() { return rentalStatus; }
-
-    // Provides list of vehicles at the dealership
-    public ArrayList<Vehicle> getSaleVehicles() {
-        return salesInventory;
-    }
-
-    public ArrayList<Vehicle> getRentalVehicles() {
-        return rentalInventory;
-    }
-
-    // ENABLES vehicle acquisition.
-    public void enableReceivingVehicle() {
-        this.receivingVehicle = true;
-    }
-
-    // DISABLES vehicle acquisition.
-    public void disableReceivingVehicle() {
-        this.receivingVehicle = false;
-    }
-
-
-    // enable dealership to perform rental services
-    public void enableRentalService(){this.rentalStatus = true; }
-
-
-    // disable dealership's rental services
-    public void disableRentalService() {this.rentalStatus = false; }
-
 
     /**
      * Retrieves a vehicle from the sales inventory by its ID.
@@ -180,22 +155,22 @@ public class Dealership {
      *
      * @param map The data needed to create the new Vehicle.
      */
-    public void dataToInventory(Map<String, Object> map) {
+    public void dataToInventory(Map<Key, Object> map) {
         Vehicle vehicle;
         try {
             vehicle = vehicleFactory.createVehicle(
-                    Key.VEHICLE_TYPE.getValString(map),
-                    Key.VEHICLE_ID.getValString(map)
+                    Key.VEHICLE_TYPE.getVal(map, String.class),
+                    Key.VEHICLE_ID.getVal(map, String.class)
             );
         } catch (InvalidVehicleTypeException e) {
             // TODO: add this as a reason for not adding a vehicle instead of throwing exception
             throw new RuntimeException(e);
         }
-        vehicle.setVehicleId(Key.VEHICLE_ID.getValString(map));
-        vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getValString(map));
-        vehicle.setVehicleModel(Key.VEHICLE_MODEL.getValString(map));
-        vehicle.setVehiclePrice(Key.VEHICLE_PRICE.getValLong(map));
-        vehicle.setAcquisitionDate(Key.VEHICLE_ACQUISITION_DATE.getValLong(map));
+        vehicle.setVehicleId(Key.VEHICLE_ID.getVal(map, String.class));
+        vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getVal(map, String.class));
+        vehicle.setVehicleModel(Key.VEHICLE_MODEL.getVal(map, String.class));
+        vehicle.setVehiclePrice(Key.VEHICLE_PRICE.getVal(map, Long.class));
+        vehicle.setAcquisitionDate(Key.VEHICLE_ACQUISITION_DATE.getVal(map, Long.class));
 
         try {
             addIncomingVehicle(vehicle);
@@ -274,7 +249,7 @@ public class Dealership {
             throw new IllegalArgumentException("Rental vehicle is null.");
         }
 
-        if (!this.getRentalStatus()) {
+        if (!this.getRentingVehicles()) {
             throw new DealershipNotRentingException("Dealership " + this.getDealerId() + " is not currently providing rental services.");
         }
 
@@ -303,15 +278,18 @@ public class Dealership {
      *         and its data.(dealership ID, vehicle type, manufacturer, model,
      *         vehicle ID, price, and acquisition date) as key-value pairs.
      */
-    public List<Map<String, Object>> getDataMap() {
-        List<Map<String, Object>> list = new ArrayList<>();
+    public List<Map<Key, Object>> getDataMap() {
+        List<Map<Key, Object>> list = new ArrayList<>();
 
         List<Vehicle> fullInventory = new ArrayList<>(salesInventory);
         fullInventory.addAll(rentalInventory);
 
         for (Vehicle vehicle: fullInventory) {
-            Map<String, Object> map = new HashMap<>();
-            map.put(Key.DEALERSHIP_ID.getKey(), dealerId);
+            Map<Key, Object> map = new HashMap<>();
+            Key.DEALERSHIP_ID.putNonNull(map, dealerId);
+            Key.DEALERSHIP_NAME.putNonNull(map, name);
+            Key.DEALERSHIP_RECEIVING_STATUS.putNonNull(map, receivingVehicle);
+            Key.DEALERSHIP_RENTING_STATUS.putNonNull(map, rentingVehicles);
             vehicle.getDataMap(map);
             list.add(map);
         }

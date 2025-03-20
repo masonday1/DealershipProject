@@ -159,12 +159,6 @@ public abstract class Vehicle {
                 "\nAcquired: " + date;
     }
 
-    private void putNonNull(Map<String, Object> map, String key, Object object) {
-        if (object != null) {
-            map.put(key, object);
-        }
-    }
-
     /**
      * Retrieves Vehicle data for a given Dealership.
      * <p>
@@ -173,12 +167,13 @@ public abstract class Vehicle {
      *
      * @param map The Map to be filled with data from the Vehicle
      */
-    public void getDataMap(Map<String, Object> map) {
-        putNonNull(map, Key.VEHICLE_TYPE.getKey(), vehicleType);
-        putNonNull(map, Key.VEHICLE_MANUFACTURER.getKey(), vehicleManufacturer);
-        putNonNull(map, Key.VEHICLE_MODEL.getKey(), vehicleModel);
-        putNonNull(map, Key.VEHICLE_ID.getKey(), vehicleId);
-        putNonNull(map, Key.VEHICLE_PRICE.getKey(), vehiclePrice);
-        putNonNull(map, Key.VEHICLE_ACQUISITION_DATE.getKey(), acquisitionDate);
+    public void getDataMap(Map<Key, Object> map) {
+        Key.VEHICLE_ID.putNonNull(map, vehicleId);
+        Key.VEHICLE_MANUFACTURER.putNonNull(map, vehicleManufacturer);
+        Key.VEHICLE_MODEL.putNonNull(map, vehicleModel);
+        Key.VEHICLE_PRICE.putNonNull(map, vehiclePrice);
+        Key.VEHICLE_ACQUISITION_DATE.putNonNull(map, acquisitionDate);
+        Key.VEHICLE_TYPE.putNonNull(map, vehicleType);
+        Key.VEHICLE_RENTAL_STATUS.putNonNull(map, rental);
     }
 }

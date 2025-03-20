@@ -9,8 +9,8 @@ public abstract class FileIO {
     protected File file;
     protected char mode;
 
-    public abstract List<Map<String, Object>> readInventory() throws ReadWriteException;
-    public abstract int writeInventory(List<Map<String, Object>> maps) throws ReadWriteException;
+    public abstract List<Map<Key, Object>> readInventory() throws ReadWriteException;
+    public abstract void writeInventory(List<Map<Key, Object>> maps) throws ReadWriteException;
 
     /**
      * Creates or opens a {@link File} with name path in read ('r') or write ('w') mode.
@@ -64,17 +64,13 @@ public abstract class FileIO {
         return false;
     }
 
-    protected boolean validMap(Map<String, Object> map) {
+    protected boolean validMap(Map<Key, Object> map) {
         for (Key key : Key.values()) {
-            if (    key.getNeeded()
-                    && !map.containsKey(key.getKey())
-                    || !key.validObjectType(map)) {
-
+            if (key.getNeeded() && ( !map.containsKey(key) || !key.validObjectType(map)) ) {
                 return false;
             }
         }
-        return  map.containsKey(Key.DEALERSHIP_ID.getKey()) ||
-                map.containsKey(Key.DEALERSHIP_NAME.getKey());
+        return true;
     }
 
     @Override
