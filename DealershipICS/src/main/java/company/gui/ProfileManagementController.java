@@ -2,17 +2,16 @@ package company.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.stage.Stage;
 
-public class ProfileManagementController {
+
+public class ProfileManagementController
+{
 
     @FXML
     private void handleBack(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
+        GuiUtility.navigateToScreen(event,"/MainScreen.fxml");
 
+    }
     @FXML
     private void handleEditDealershipName(ActionEvent event) {
         System.out.println("Edit Dealership Name button clicked");
