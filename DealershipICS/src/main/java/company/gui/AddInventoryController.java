@@ -3,13 +3,12 @@ package company.gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-
-public class LoadInventoryController  {
+public class AddInventoryController {
 
 
     @FXML
     private void handleBack(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/MainScreen.fxml");
+        GuiUtility.navigateToScreen(event,"/InventoryScreen.fxml");
 
     }
 
@@ -25,4 +24,6 @@ public class LoadInventoryController  {
         System.out.println("Enter Manually button clicked");
         // Add logic to enter inventory manually
     }
+
+
 }

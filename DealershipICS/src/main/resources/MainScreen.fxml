@@ -18,7 +18,4 @@
             </padding>
         </VBox>
     </center>
-    <top>
-        <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleClose" text="Close" alignment="TOP_RIGHT" BorderPane.alignment="TOP_RIGHT"/>
-    </top>
 </BorderPane>
