@@ -55,7 +55,7 @@ public class SceneManager {
     public void switchScene(String fxmlFile) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
         Parent root = loader.load();
-        Scene scene = new Scene(root,320,240);
+        Scene scene = new Scene(root,600,400);
         stage.setScene(scene);
         stage.setTitle(GuiUtility.getScreenTitle(fxmlFile));
     }
