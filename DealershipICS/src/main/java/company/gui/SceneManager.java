@@ -11,15 +11,13 @@ import java.util.Map;
 /**
  * The SceneManager class is responsible for managing the scenes of the application.
  * It follows the Singleton design pattern to ensure that only one instance of SceneManager exists
- * for a given stage and that scenes can be loaded and switched.
+ * for a given stage.
  */
 public class SceneManager {
 
     /** The stage for the application window. */
     private Stage stage;
 
-    /** A map storing all the loaded scenes, keyed by their name. */
-    private Map<String, Scene> scenes = new HashMap<>();
 
     /** The singleton instance of SceneManager. */
     private static SceneManager instance;
