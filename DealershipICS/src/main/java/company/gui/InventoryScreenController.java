@@ -15,25 +15,18 @@ public class InventoryScreenController
 
 
     @FXML
-    private void handleBack(ActionEvent event) {
+    private void handleBack(ActionEvent event) throws IOException
         {
-
             SceneManager sceneManager = SceneManager.getInstance(null);
-            sceneManager.switchScene("mainScene");
+            sceneManager.switchScene(MAIN_SCREEN);
 
         }
-    }
 
     @FXML
-    private void handleAddVehicleToDealership(ActionEvent event) {
+    private void handleAddVehicleToDealership(ActionEvent event) throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
-        try
-        {
-            sceneManager.loadScene("addInventoryScene",ADD_INVENTORY);
-            sceneManager.switchScene("addInventoryScene");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sceneManager.switchScene(ADD_INVENTORY);
+
 
     }
 

@@ -52,28 +52,15 @@ public class SceneManager {
      * Loads a scene from the specified FXML file and stores it in the scenes map.
      * The scene is also set with a title based on the FXML file's name.
      *
-     * @param name the name used to identify the scene in the scenes map
      * @param fxmlFile the path to the FXML file to load the scene from
      * @throws IOException if there is an error loading the FXML file
      */
-    public void loadScene(String name, String fxmlFile) throws IOException {
+    public void switchScene(String fxmlFile) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        scenes.put(name, scene);
+        stage.setScene(scene);
         stage.setTitle(GuiUtility.getScreenTitle(fxmlFile));
     }
 
-    /**
-     * Switches to the scene identified by the given name.
-     * If the scene is found in the scenes map, it sets the scene on the stage.
-     *
-     * @param name the name of the scene to switch to
-     */
-    public void switchScene(String name) {
-        Scene scene = scenes.get(name);
-        if (scene != null) {
-            stage.setScene(scene);
-        }
-    }
 }

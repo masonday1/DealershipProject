@@ -2,21 +2,19 @@ package company.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.stage.Stage;
+
+import java.io.IOException;
+
+import static company.gui.FXMLPaths.*;
 
 
 public class ProfileManagementController
 {
-    private Stage stage;
-
-    public void setStage(Stage stage){
-        this.stage = stage;
-    }
 
     @FXML
-    private void handleBack(ActionEvent event) {
-        SceneManager sceneManager = SceneManager.getInstance(stage);
-        sceneManager.switchScene("mainScene");
+    private void handleBack(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(MAIN_SCREEN);
 
     }
     @FXML

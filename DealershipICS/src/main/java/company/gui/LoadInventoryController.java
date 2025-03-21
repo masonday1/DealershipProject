@@ -3,14 +3,18 @@ package company.gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import java.io.IOException;
+
+import static company.gui.FXMLPaths.*;
+
 
 public class LoadInventoryController  {
 
 
     @FXML
-    private void handleBack(ActionEvent event) {
+    private void handleBack(ActionEvent event) throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
-        sceneManager.switchScene("mainScene");
+        sceneManager.switchScene(MAIN_SCREEN);
     }
 
 
