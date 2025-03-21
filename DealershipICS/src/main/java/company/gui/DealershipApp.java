@@ -12,7 +12,6 @@ public class DealershipApp extends Application {
     public void start(Stage primaryStage) throws Exception {
        SceneManager sceneManger = SceneManager.getInstance(primaryStage);
        sceneManger.switchScene(MAIN_SCREEN);
-       //GuiUtility.setScreenSize(primaryStage,0.8,0.8);
        primaryStage.show();
     }
 

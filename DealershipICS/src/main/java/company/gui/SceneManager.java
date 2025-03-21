@@ -5,8 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * The SceneManager class is responsible for managing the scenes of the application.
@@ -56,7 +55,7 @@ public class SceneManager {
     public void switchScene(String fxmlFile) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
         Parent root = loader.load();
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root,320,240);
         stage.setScene(scene);
         stage.setTitle(GuiUtility.getScreenTitle(fxmlFile));
     }
