@@ -2,6 +2,10 @@ package company.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+
+import java.io.IOException;
+
+import static company.gui.FXMLPaths.*;
 import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
 import javafx.collections.FXCollections;
@@ -13,45 +17,40 @@ public class ProfileManagementController
     @FXML
     private ListView<String> dealershipListView;
     
-    private Company company;
+    // private Company company;
 
-    public void setCompany(Company company) {
-        this.company = company;
-        populateDealershipList();
-    }
+    // public void setCompany(Company company) {
+    //     this.company = company;
+    //     populateDealershipList();
+    // }
 
-    private void populateDealershipList() {
-    if (company != null && company.getDealershipIdList() != null) {
-        // Populate the ListView with the list of Dealership objects
-        ObservableList<String> dealerships = FXCollections.observableArrayList(company.getDealershipIdList());
-        dealershipListView.setItems(dealerships);
-    } else {
-        System.out.println("Company or dealership list is null.");
-    }
-}
+//     private void populateDealershipList() {
+//     if (company != null && company.getDealershipIdList() != null) {
+//         // Populate the ListView with the list of Dealership objects
+//         ObservableList<String> dealerships = FXCollections.observableArrayList(company.getDealershipIdList());
+//         dealershipListView.setItems(dealerships);
+//     } else {
+//         System.out.println("Company or dealership list is null.");
+//     }
+// }
 
-@FXML
-public void initialize() {
-    // Initialization logic that does not depend on the company object
-    dealershipListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        if (newValue != null) {
-            System.out.println("Selected Dealership: " + newValue);
-            // Add logic to handle the selected dealership
-        }
-    });
-}
-
-    @FXML
-    private void handleBack(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/MainScreen.fxml");
-    }
+// @FXML
+// public void initialize() {
+//     // Initialization logic that does not depend on the company object
+//     dealershipListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+//         if (newValue != null) {
+//             System.out.println("Selected Dealership: " + newValue);
+//             // Add logic to handle the selected dealership
+//         }
+//     });
+// }
 
     @FXML
-    private void handleCompanyTableInfo(ActionEvent event) {
-        System.out.println("Edit Dealership Name button clicked");
-        // Add logic to edit dealership name
-    }
+    private void handleBack(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(MAIN_SCREEN);
 
+    }
     @FXML
     private void handleEditDealershipName(ActionEvent event) {
         System.out.println("Edit Dealership Name button clicked");

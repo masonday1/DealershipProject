@@ -3,8 +3,13 @@ package company.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
-import javafiles.domainfiles.Company;
 import javafx.event.ActionEvent;
+
+import javafiles.domainfiles.Company;
+
+import java.io.IOException;
+import static company.gui.FXMLPaths.*;
+
 import javafx.fxml.FXMLLoader;
 
 
@@ -25,34 +30,27 @@ public class MainScreenController {
 
     private Company company;
 
-    
-
     public void setCompany(Company company) {
         this.company = company;
         System.out.println("Company object set in MainScreenController.");
     }
 
-
-
     @FXML
-    private void handleManageCompanyInventory(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/InventoryScreen.fxml");
-
+    private void handleManageCompanyInventory(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(INVENTORY_SCREEN);
     }
 
     @FXML
-    private void handleManageCompanyProfile(ActionEvent event) {
-        FXMLLoader loader = GuiUtility.navigateToScreen(event,"/ProfileManagement.fxml");
-        ProfileManagementController controller = loader.getController();
-        controller.setCompany(this.company); // Pass the Company object to the ProfileManagementController
-
+    private void handleManageCompanyProfile(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene( PROFILE_MANAGEMENT);
     }
 
     @FXML
-    private void handleLoadInventory(ActionEvent event)
-    {
-
-        GuiUtility.navigateToScreen(event,"/LoadInventory.fxml");
+    private void handleLoadInventory(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(LOAD_INVENTORY);
 
     }
 

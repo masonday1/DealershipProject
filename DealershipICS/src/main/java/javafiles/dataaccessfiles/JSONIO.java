@@ -38,15 +38,15 @@ public class JSONIO extends FileIO {
      *
      * @param jObj The JSONObject that data is being extracted from.
      */
-    private Map<String, Object> readJSONObject(JSONObject jObj) {
-        Map<String, Object> map = new HashMap<>();
+    private Map<Key, Object> readJSONObject(JSONObject jObj) {
+        Map<Key, Object> map = new HashMap<>();
 
         for (Key key : Key.values()) {
             String keyStr = key.getKey();
 
             Object dataPoint = jObj.get(keyStr);
             if (dataPoint == null) {continue;}
-            map.put(keyStr, dataPoint);
+            map.put(key, dataPoint);
 
         }
         return map;
@@ -60,7 +60,7 @@ public class JSONIO extends FileIO {
      *         The Map has data in the same keys as keys.
      * @throws ReadWriteException Thrown if not in read ('r') mode.
      */
-    public List<Map<String, Object>> readInventory() throws ReadWriteException {
+    public List<Map<Key, Object>> readInventory() throws ReadWriteException {
         if (mode != 'r') {
             throw new ReadWriteException("Must be mode 'r', not mode '" + mode + "'.");
         }
@@ -80,10 +80,10 @@ public class JSONIO extends FileIO {
 
         jArray = (JSONArray)jFile.get("car_inventory");
 
-        List< Map<String, Object> > maps = new ArrayList<>();
+        List< Map<Key, Object> > maps = new ArrayList<>();
 
         for (Object jObj : jArray) {
-            Map<String, Object> map = readJSONObject((JSONObject) jObj);
+            Map<Key, Object> map = readJSONObject((JSONObject) jObj);
             if (validMap(map)) {maps.add(map);}
         }
 
@@ -98,13 +98,12 @@ public class JSONIO extends FileIO {
      *             the data the same as the keys in keys.
      * @return The newly created JSONObject
      */
-    private JSONObject makeJSONObject(Map<String, Object> data) {
+    private JSONObject makeJSONObject(Map<Key, Object> data) {
         JSONObject jObj = new JSONObject();
         for (Key key : Key.values()) {
-            String keyStr = key.getKey();
-            Object dataPoint = data.get(keyStr);
+            Object dataPoint = data.get(key);
             if (dataPoint == null) {continue;}
-            jObj.put(keyStr, dataPoint);
+            jObj.put(key.getKey(), dataPoint);
         }
         return jObj;
     }
@@ -114,24 +113,17 @@ public class JSONIO extends FileIO {
      *
      * @param data List of Maps to write to a file.
      *             The array of String should have the keys in key.
-     * @return The number of entries written to the file
      * @throws ReadWriteException Thrown if not in write ('w') mode.
      */
-    public int writeInventory(List<Map<String, Object>> data) throws ReadWriteException {
-        int added = 0;
+    public void writeInventory(List<Map<Key, Object>> data) throws ReadWriteException {
         if (mode != 'w') {
             throw new ReadWriteException("Must be mode 'w', not mode '" + mode + "'.");
         }
 
         JSONArray jArray = new JSONArray();
-        for (Map<String, Object> carData : data) {
-            if (validMap(carData)) {
-                JSONObject jObj = makeJSONObject(carData);
-                jArray.add(jObj);
-                added++;
-            } else {
-                System.out.println("Did not add. (invalid key)");
-            }
+        for (Map<Key, Object> carData : data) {
+            JSONObject jObj = makeJSONObject(carData);
+            jArray.add(jObj);
         }
 
         Writer fileWriter;
@@ -144,7 +136,5 @@ public class JSONIO extends FileIO {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
-        return added;
     }
 }
