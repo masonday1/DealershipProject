@@ -2,14 +2,21 @@ package company.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.stage.Stage;
 
 
 public class ProfileManagementController
 {
+    private Stage stage;
+
+    public void setStage(Stage stage){
+        this.stage = stage;
+    }
 
     @FXML
     private void handleBack(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/MainScreen.fxml");
+        SceneManager sceneManager = SceneManager.getInstance(stage);
+        sceneManager.switchScene("mainScene");
 
     }
     @FXML

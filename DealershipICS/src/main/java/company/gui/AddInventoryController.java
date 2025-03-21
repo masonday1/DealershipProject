@@ -3,13 +3,14 @@ package company.gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+
 public class AddInventoryController {
 
 
     @FXML
     private void handleBack(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/InventoryScreen.fxml");
-
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene("mainScene");
     }
 
 

@@ -4,11 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 
+import java.io.IOException;
 
-/**
- * Controller for the main application screen.
- * Manages navigation and application closure.
- */
+import static company.gui.FXMLPaths.*;
+
 public class MainScreenController {
 
     @FXML
@@ -18,27 +17,36 @@ public class MainScreenController {
     @FXML
     private Button LoadInventoryButton;
 
-
-
-
     @FXML
     private void handleManageCompanyInventory(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/InventoryScreen.fxml");
-
+        SceneManager sceneManager = SceneManager.getInstance(null);  // Use the existing instance
+        try {
+            sceneManager.loadScene("inventoryScene", "/InventoryScreen.fxml");
+            sceneManager.switchScene("inventoryScene");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void handleManageCompanyProfile(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/ProfileManagement.fxml");
+        SceneManager sceneManager = SceneManager.getInstance(null); // No need to pass the stage
+        try {
+            sceneManager.loadScene("profileScene", PROFILE_MANAGEMENT);
+            sceneManager.switchScene("profileScene");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    private void handleLoadInventory(ActionEvent event)
-    {
-
-        GuiUtility.navigateToScreen(event,"/LoadInventory.fxml");
-
+    private void handleLoadInventory(ActionEvent event) {
+        SceneManager sceneManager = SceneManager.getInstance(null); // No need to pass the stage
+        try {
+            sceneManager.loadScene("loadScene", LOAD_INVENTORY);
+            sceneManager.switchScene("loadScene");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-
 }

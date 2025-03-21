@@ -9,8 +9,8 @@ public class LoadInventoryController  {
 
     @FXML
     private void handleBack(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/MainScreen.fxml");
-
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene("mainScene");
     }
 
 
