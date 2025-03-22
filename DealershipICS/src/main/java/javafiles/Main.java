@@ -3,7 +3,6 @@ package javafiles;
 import javafiles.customexceptions.ReadWriteException;
 import javafiles.dataaccessfiles.FileIO;
 import javafiles.dataaccessfiles.FileIOBuilder;
-import javafiles.dataaccessfiles.Key;
 import javafiles.domainfiles.Company;
 
 import java.util.*;
@@ -12,14 +11,61 @@ public class Main {
 
       public static void main(String[] args) {
           Scanner scanner = new Scanner(System.in);
-          String userInput;
+          String userInput = "5";
           Company company = new Company();
 
           FileIOBuilder.setupFileIOBuilders();
 
-          company.dataToInventory(readData(scanner));
+          while (!userInput.equals("7")) {
+              switch (userInput) {
+                  case "1": // send vehicles in queue to dealership(s)
+                      // if carInventory is empty, print message and return to menu
+                      System.out.println("Likely to be removed (as pending removed), not functional at the moment");
 
-          while (true) {
+                      writeCompanyData(company);
+                      System.out.println("Sending vehicles to dealership...");
+                      break;
+                  case "2":
+                      // checking pending vehicle deliveries
+                      System.out.println("Likely to be removed (as pending removed), not functional at the moment");
+                      printPending(company);
+                      System.out.println("Checking pending vehicle deliveries...");
+                      break;
+                  case "3":
+                      System.out.println("Changing dealership vehicle receiving status...");
+
+                      int dealerIndex = getDealershipIndex(company, scanner); // will hold index of Dealership object
+                      // Proceed with enabling or disabling the vehicle receiving status once a valid dealership is found
+                      if (dealerIndex != -1) {
+                          changeReceivingStatus(company, dealerIndex, scanner);
+                      }
+
+                      // After completing the dealership status change process, return to the main menu
+                      break; // Exit Case 3 and go back to the main menu
+                  case "4":
+                      // writing dealership inventory to file
+                      int itemsWritten =  writeData(company.getDataMap(), scanner);
+                      System.out.println("Wrote " + itemsWritten + " items to file");
+                      break;
+                  case "5":
+                      // reading another JSON file
+                      List<Map<Key, Object>> badData = company.dataToInventory(readData(scanner));
+                      System.out.println("Reading JSON file...");
+                      for (Map<Key, Object> badMap : badData) {
+                          for (Key key: badMap.keySet()) {
+                              System.out.println(key.getKey() + ": [" + badMap.get(key) + "]");
+                          }
+                          System.out.println();
+                      }
+                      break;
+                  case "6":
+                      company.printInventory();
+                      break;
+                  default:
+                      System.out.println("Invalid input. Please select a valid option.");
+                      break;
+              }
+
               // Prompt user for the following:
               System.out.println(
                       """
@@ -35,63 +81,9 @@ public class Main {
 
               userInput = scanner.nextLine();
 
-              switch (userInput) {
-                  case "1": // send vehicles in queue to dealership(s)
-                      // if carInventory is empty, print message and return to menu
-                      System.out.println("Likely to be removed (as pending removed), not functional at the moment");
-
-                      writeCompanyData(company);
-                      System.out.println("Sending vehicles to dealership...");
-                      continue;
-                  case "2":
-                      // checking pending vehicle deliveries
-                      System.out.println("Likely to be removed (as pending removed), not functional at the moment");
-                      printPending(company);
-                      System.out.println("Checking pending vehicle deliveries...");
-                      continue;
-                  case "3":
-                      System.out.println("Changing dealership vehicle receiving status...");
-
-                      int dealerIndex = getDealershipIndex(company, scanner); // will hold index of Dealership object
-                      // Proceed with enabling or disabling the vehicle receiving status once a valid dealership is found
-                      if (dealerIndex != -1) {
-                          changeReceivingStatus(company, dealerIndex, scanner);
-                      }
-
-                      // After completing the dealership status change process, return to the main menu
-                      continue; // Exit Case 3 and go back to the main menu
-                  case "4":
-                      // writing dealership inventory to file
-                      int itemsWritten =  writeData(company.getDataMap(), scanner);
-                      System.out.println("Wrote " + itemsWritten + " items to file");
-                      continue;
-                  case "5":
-                      // reading another JSON file
-                      List<Map<Key, Object>> badData = company.dataToInventory(readData(scanner));
-                      System.out.println("Reading JSON file...");
-                      for (Map<Key, Object> badMap : badData) {
-                          for (Key key: badMap.keySet()) {
-                              System.out.println(key.getKey() + ": " + badMap.get(key));
-                          }
-                          System.out.println();
-                      }
-                      continue;
-
-                  case "6":
-                      company.printInventory();
-                      continue;
-                  case "7": // exit program
-                      System.out.println("Exiting program...");
-                      System.exit(0);
-                      break;
-                  default:
-                      System.out.println("Invalid input. Please select a valid option.");
-                      continue;
-              }
-
-              break;
           }
           scanner.close();
+          System.out.println("Exiting program...");
       }
 
       /**

@@ -1,5 +1,6 @@
 package javafiles.dataaccessfiles;
 
+import javafiles.Key;
 import javafiles.customexceptions.ReadWriteException;
 
 import java.io.File;

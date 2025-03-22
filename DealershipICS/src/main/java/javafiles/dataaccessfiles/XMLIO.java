@@ -1,5 +1,6 @@
 package javafiles.dataaccessfiles;
 
+import javafiles.Key;
 import javafiles.customexceptions.ReadWriteException;
 
 import org.w3c.dom.*;
@@ -18,18 +19,18 @@ import java.util.Map;
 
 enum XMLKey {
     D_ID (Key.DEALERSHIP_ID, "id"),
-    D_NAME (Key.DEALERSHIP_NAME,  "Name"),
+    D_NAME (Key.DEALERSHIP_NAME,  "name"),
 
     TYPE (Key.VEHICLE_TYPE, "type"),
     V_ID (Key.VEHICLE_ID, "id"),
 
-    PRICE_UNIT (Key.VEHICLE_PRICE_UNIT, "price_unit"),
+    PRICE_UNIT (Key.VEHICLE_PRICE_UNIT, "unit"),
     PRICE (Key.VEHICLE_PRICE, "price"),
 
     MODEL (Key.VEHICLE_MODEL, "model"),
     MAKE (Key.VEHICLE_MANUFACTURER, "make"),
 
-    REASON (Key.REASON_FOR_ERROR, "Reason");
+    REASON (Key.REASON_FOR_ERROR, "reason");
 
     private final Key KEY;
     private final String NAME;
@@ -60,17 +61,26 @@ public class XMLIO extends FileIO {
     private void parseNode(XMLKey[] keys, Map<Key, Object> map, String tagName, String nodeValue) {
         if (map == null || keys == null) {return;}
 
+        nodeValue = nodeValue.strip();
+
         for (XMLKey key: keys) {
 
             if (key.getName().equalsIgnoreCase(tagName)) {
-                Object nodeValCast;
+                Object nodeValCast = nodeValue;
                 if (key.getKey().getClassName().equals(Long.class.getName())) {
-                    nodeValCast = Long.parseLong(nodeValue);
-                } else {
-                    nodeValCast = nodeValue;
+                    try {
+                        nodeValCast = Long.parseLong(nodeValue);
+                    } catch (NumberFormatException e) {
+                        map.put(XMLKey.REASON.getKey(), "Invalid number format on " + key.getName() +
+                                ". [" + nodeValue + "]");
+                        return;
+                    }
                 }
-                if (map.containsKey(key.getKey())) {
-                    System.out.println("Already has key: " + key.getKey());
+                if (map.containsKey(key.getKey()) && !map.get(key.getKey()).equals(nodeValCast)) {
+                    String reason = "Key " + key.getName() + " already has a value and [";
+                    reason += map.get(key.getKey()) + "] != [" + nodeValue + "].";
+                    map.put(XMLKey.REASON.getKey(), reason);
+                    return;
                 }
                 map.put(key.getKey(), nodeValCast);
                 return;
@@ -79,9 +89,22 @@ public class XMLIO extends FileIO {
         }
     }
 
+    private String parseNodeVal(NodeList nodes) {
+       StringBuilder nodeVal = new StringBuilder();
+       for (int i = 0; i < nodes.getLength(); i++) {
+           Node node = nodes.item(i);
+           if (node.getNodeName().startsWith("#text")) {
+               nodeVal.append(node.getTextContent());
+           }
+       }
+       return nodeVal.toString();
+    }
+
     private void readXMLObject(Node node, XMLKey[] keys, Map<Key, Object> map, String stopTag, List<Node> haltedNodes) {
         String tagName = node.getNodeName();
-        String nodeValue = node.getTextContent();
+        String nodeValue = parseNodeVal(node.getChildNodes());
+
+        if (tagName.startsWith("#text")) {return;}
 
         if (tagName.equalsIgnoreCase(stopTag)) {
             if (haltedNodes != null) {
@@ -94,19 +117,17 @@ public class XMLIO extends FileIO {
 
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element) node;
+
             NodeList childNodes = element.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node newNode = childNodes.item(i);
-                if (!newNode.getNodeName().startsWith("#text")) {
-                    readXMLObject(newNode, keys, map, stopTag, haltedNodes);
-                }
+                readXMLObject(newNode, keys, map, stopTag, haltedNodes);
             }
+
             NamedNodeMap attributes = element.getAttributes();
             for (int i = 0; i < attributes.getLength(); i++) {
-                Node attribute = attributes.item(i);
-                String atrTagName = attribute.getNodeName();
-                String atrValue = attribute.getNodeValue();
-                parseNode(keys, map, atrTagName, atrValue);
+                Node atr = attributes.item(i);
+                parseNode(keys, map, atr.getNodeName(), atr.getNodeValue());
             }
         }
     }

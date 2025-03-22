@@ -1,6 +1,6 @@
 package javafiles.domainfiles;
 
-import javafiles.dataaccessfiles.Key;
+import javafiles.Key;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +59,9 @@ public class Company {
      * @param data The List of Maps containing Vehicle information to be added to inventory.
      */
     public List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> data) {
-        if (data == null) {return null;}
+        List<Map<Key, Object>> badInventoryMaps = new ArrayList<>();
+
+        if (data == null) {return badInventoryMaps;}
 
         // Used to ensure that the cars for new Dealerships are
         // added before considering rental or receiving statuses.
@@ -67,28 +69,30 @@ public class Company {
         // the same rental and receiving statuses.
         Map<Dealership, Map<Key, Object>> newDealershipStat = new HashMap<>();
 
-        List<Map<Key, Object>> badInventoryMaps = new ArrayList<>();
-        Map<Key, Object> badMap;
-
         for (Map<Key, Object> map: data) {
-            Dealership dealership = findDealership(Key.DEALERSHIP_ID.getVal(map, String.class));
-            if (dealership == null) {
-                String id = Key.DEALERSHIP_ID.getVal(map, String.class);
-                String name = Key.DEALERSHIP_NAME.getVal(map, String.class);
+            if (map.containsKey(Key.REASON_FOR_ERROR)) {
+                badInventoryMaps.add(map);
+                continue;
+            }
 
-                if (id == null) {
-                    Key.REASON_FOR_ERROR.putNonNull(map, "No dealerID.");
-                    badInventoryMaps.add(map);
-                    continue;
-                }
+            String id = Key.DEALERSHIP_ID.getVal(map, String.class);
+            String name = Key.DEALERSHIP_NAME.getVal(map, String.class);
+
+            if (id == null) {
+                Key.REASON_FOR_ERROR.putNonNull(map, "No dealerID.");
+                badInventoryMaps.add(map);
+                continue;
+            }
+
+            Dealership dealership = findDealership(id);
+            if (dealership == null) {
                 dealership = new Dealership(id, name);
                 addDealership(dealership);
 
                 newDealershipStat.put(dealership, map);
             }
-            badMap = dealership.dataToInventory(map);
-            if (badMap != null) {
-                badInventoryMaps.add(badMap);
+            if ( !dealership.dataToInventory(map) ) {
+                badInventoryMaps.add(map);
             }
         }
 
@@ -142,8 +146,7 @@ public class Company {
 
         for(Dealership dealership : listDealerships)
         {
-            dealership.printInventory();
-            System.out.println();
+            System.out.println(dealership.toFullString());
         }
     }
 

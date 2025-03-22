@@ -1,7 +1,7 @@
 package javafiles.domainfiles;
 
 import javafiles.customexceptions.*;
-import javafiles.dataaccessfiles.Key;
+import javafiles.Key;
 
 import java.util.*;
 
@@ -29,10 +29,14 @@ public class Dealership {
 
     // Instantiation requires dealer_ID
     public Dealership(String dealerId, String name) {
+        // necessary
         this.dealerId = dealerId;
+
+        // defaults
         this.name = name;
         this.receivingVehicle = true;
-        this.rentingVehicles = true;
+        this.rentingVehicles = false;
+
         salesInventory = new ArrayList<>();
         rentalInventory = new ArrayList<>();
     }
@@ -154,31 +158,25 @@ public class Dealership {
      * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.
      *
      * @param map The data needed to create the new Vehicle.
+     * @return Returns true if the Vehicle was added, false otherwise.
      */
-    public Map<Key, Object> dataToInventory(Map<Key, Object> map) {
+    public boolean dataToInventory(Map<Key, Object> map) {
         Vehicle vehicle;
+
         try {
-            vehicle = vehicleFactory.createVehicle(
-                    Key.VEHICLE_TYPE.getVal(map, String.class),
-                    Key.VEHICLE_ID.getVal(map, String.class)
-            );
-        } catch (InvalidVehicleTypeException e) {
+            vehicle = vehicleFactory.createVehicle(map);
+        } catch (InvalidVehicleTypeException | InvalidPriceException e) {
             Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());
-            return map;
+            return false;
         }
-        vehicle.setVehicleId(Key.VEHICLE_ID.getVal(map, String.class));
-        vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getVal(map, String.class));
-        vehicle.setVehicleModel(Key.VEHICLE_MODEL.getVal(map, String.class));
-        vehicle.setVehiclePrice(Key.VEHICLE_PRICE.getVal(map, Long.class));
-        vehicle.setAcquisitionDate(Key.VEHICLE_ACQUISITION_DATE.getVal(map, Long.class));
 
         try {
             addIncomingVehicle(vehicle);
         } catch (VehicleAlreadyExistsException | DealershipNotAcceptingVehiclesException e) {
             Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());
-            return map;
+            return false;
         }
-        return null;
+        return true;
     }
 
     /**
@@ -186,7 +184,7 @@ public class Dealership {
      * This method creates a new vehicle based on the vehicle type and sets its attributes
      * using the provided parameters.
      *</p>
-     * {@link VehicleFactory#createVehicle(String, String)} is used to create and validate the vehicle type.
+     * {@link VehicleFactory#createVehicle(String, String, String, Long)} is used to create and validate the vehicle type.
      * If the vehicle type is unsupported, the method will print an error message and return without
      * making any changes to the inventory. If the vehicle is created successfully, it will be added
      * to the dealership's inventory using the {@link #addIncomingVehicle(Vehicle)} method.
@@ -213,19 +211,16 @@ public class Dealership {
     public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, Long vehiclePrice,
                                  Long acquisitionDate, String vehicleType) throws InvalidVehicleTypeException,
             VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
+        // TODO: include price unit in function call (for fillVehicle)
 
         // Ensure the vehicle price is positive.
         if (vehiclePrice <= 0) {
             throw new InvalidPriceException("Error: Vehicle price must be a positive value. Vehicle ID: " + vehicleId + " was not added.");
         }
 
-        Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleId);
+        Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleId, vehicleModel, vehiclePrice);
 
-        newVehicle.setVehicleManufacturer(vehicleManufacturer);
-        newVehicle.setVehicleModel(vehicleModel);
-        newVehicle.setVehiclePrice(vehiclePrice);
-        newVehicle.setAcquisitionDate(acquisitionDate);
-
+        vehicleFactory.fillVehicle(newVehicle, vehicleManufacturer, acquisitionDate, null, null);
 
         this.addIncomingVehicle(newVehicle);
     }
@@ -325,6 +320,21 @@ public class Dealership {
 
     }
 
+    // used by toString()
+    private void listToStrBuilder(List<Vehicle> inventory, StringBuilder stringBuilder, String name) {
+        if (!inventory.isEmpty()) {
+            stringBuilder.append(name);
+            stringBuilder.append(": ");
+            for (Vehicle vehicle : inventory) {
+                stringBuilder.append("\n\n");
+                stringBuilder.append(vehicle.toString());
+            }
+        } else {
+            stringBuilder.append(name);
+            stringBuilder.append(" does not currently have any inventory.");
+        }
+    }
+
     /**
      * Prints the inventory of Vehicles for the Dealership.
      * <p>
@@ -333,34 +343,30 @@ public class Dealership {
      * separated by an empty line If a Dealership has no inventory,
      * a message indicating this is printed.
      */
-    public void printInventory() {
+    public String toFullString() {
+        String sep = "\n---------------------------------------------\n";
+        StringBuilder stringBuilder = new StringBuilder("Dealership ID: " + dealerId);
+        stringBuilder.append("\n");
 
-        if (salesInventory.isEmpty() && rentalInventory.isEmpty()) {
-            System.out.println("Dealership: " + dealerId);
-            System.out.println("Sales does not currently have any inventory");
-            System.out.println("Rental does not currently have any inventory\n");
-            return;
-        }
+        stringBuilder.append("Dealership Name: ");
+        stringBuilder.append(Objects.requireNonNullElse(name, "No name on file."));
 
-        System.out.println("Dealership: " + dealerId);
-        System.out.println("----------------------");
+        stringBuilder.append(sep);
+        listToStrBuilder(salesInventory, stringBuilder, "Sales");
 
-        if (!salesInventory.isEmpty()) {
-            System.out.println("Sales: \n");
-            for (Vehicle vehicle : salesInventory) {
-                System.out.println("\n" + vehicle.toString());
-            }
-        } else {
-            System.out.println("Sales does not currently have any inventory\n");
-        }
+        stringBuilder.append(sep);
+        listToStrBuilder(rentalInventory, stringBuilder, "Rental");
 
-        if (!rentalInventory.isEmpty()) {
-            System.out.println("\nRental: \n");
-            for (Vehicle vehicle : rentalInventory) {
-                System.out.println("\n" + vehicle.toString());
-            }
-        } else {
-            System.out.println("\nRental does not currently have any inventory\n");
-        }
+        stringBuilder.append(sep);
+
+        return stringBuilder.toString();
+    }
+
+    public String toString() {
+        String str = "Dealership ID: " + dealerId;
+        str += "\nDealership Name: " + Objects.requireNonNullElse(name, "No name on file.");
+        str += "\nSales Inventory Num: " + salesInventory.size();
+        str += "\nRental Inventory Num: " + rentalInventory.size();
+        return str;
     }
 }

@@ -16,10 +16,8 @@ public class SUV extends Vehicle
      *
      * @param vehicleID The vehicle ID of the Pickup to be created.
      */
-    public SUV(String vehicleID)
-    {
-        super("SUV");
-        this.setVehicleId(vehicleID);
+    public SUV(String vehicleID, String model, Long price) {
+        super("SUV", vehicleID, model, price);
     }
 
 }

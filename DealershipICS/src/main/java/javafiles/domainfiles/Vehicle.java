@@ -3,9 +3,8 @@ package javafiles.domainfiles;
 import javafiles.customexceptions.*;
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 
-import javafiles.dataaccessfiles.Key;
+import javafiles.Key;
 
 /**
  Vehicle is an abstract class that defines a set of common attributes
@@ -21,6 +20,7 @@ public abstract class Vehicle {
     private String vehicleManufacturer;
     private String vehicleModel;
     private Long vehiclePrice;
+    private String priceUnit;
     private Long acquisitionDate;
     private final String vehicleType; // Common field to all vehicle
     private boolean rental;
@@ -30,13 +30,11 @@ public abstract class Vehicle {
      * Constructor method to be used by Vehicle's child classes
      * to specify the children's vehicle type with default rental strategy
      *
-     * @param vehicleType represents the specific vehicle type that the extending class is
+     * @param type the specific vehicle type that the extending class is
+     * @param id The vehicle ID of the Vehicle
      */
-    public Vehicle(String vehicleType)
-    {
-        this.vehicleType = vehicleType;
-        this.rental = false;
-        this.rentalStrategy = new DefaultRentalStrategy();
+    public Vehicle(String type, String id, String model, Long price) {
+        this(type, id, model, price, new DefaultRentalStrategy());
     }
 
     /**
@@ -44,13 +42,23 @@ public abstract class Vehicle {
      * to specify the children's vehicle type with  a specified rental strategy
      *
      *
-     * @param vehicleType the specific vehicle type that the extending class is
-     * @param rentalStrategy the rental strategy used for this vehicle
+     * @param type the specific vehicle type that the extending class is
+     * @param id The vehicle ID of the Vehicle
+     * @param strategy the rental strategy used for this vehicle
      */
-    public Vehicle(String vehicleType, RentalStrategy rentalStrategy)
-    {
-        this.vehicleType = vehicleType;
-        this.rentalStrategy = rentalStrategy;
+    public Vehicle(String type, String id, String model, Long price, RentalStrategy strategy) {
+        // necessary
+        vehicleType = type;
+        vehicleId = id;
+        vehicleModel = model;
+        vehiclePrice = price;
+        rentalStrategy = strategy;
+
+        // defaults
+        vehicleManufacturer = "Unknown";
+        rental = false;
+        priceUnit = "dollars";
+        acquisitionDate = null;
     }
 
     /**
@@ -103,9 +111,9 @@ public abstract class Vehicle {
      *
      * @param state {@code true} to enable rentals, {@code false} to disable.
      */
-    public void setRental(boolean state) {this.rental = state; }
+    public void setRental(boolean state) {this.rental = state;}
 
-
+    public void setPriceUnit(String unit) {priceUnit = unit;}
 
     /**
      * Enables rentals using the configured rental strategy.
@@ -136,6 +144,7 @@ public abstract class Vehicle {
     public Long getAcquisitionDate() {return acquisitionDate;}
     public String getVehicleType() {return vehicleType;}
     public boolean getRentalStatus() { return rental; }
+    public String getPriceUnit() {return priceUnit;}
 
     /**
      * Creates and returns a String representation of the Vehicle
@@ -145,18 +154,18 @@ public abstract class Vehicle {
      * @author Dylan Browne
      */
     public String toString() {
-        // TODO: This (Date) needs to be handled differently (account for null)
-        long tempAcquisitionDate;
-        tempAcquisitionDate = Objects.requireNonNullElse(acquisitionDate, Long.MAX_VALUE);
-
-        Date date = new Date(tempAcquisitionDate);
+        String dateStr = "Unknown";
+        if (acquisitionDate != null) {
+            dateStr = new Date(acquisitionDate).toString();
+        }
 
         return  "Vehicle: " +  vehicleType +
                 "\nID: " + vehicleId +
-                "\nManufacturer: " + vehicleManufacturer +
                 "\nModel: " + vehicleModel +
-                "\nPrice: $" + vehiclePrice +
-                "\nAcquired: " + date;
+                "\nManufacturer: " + vehicleManufacturer +
+                "\nPrice: " + vehiclePrice + " " + priceUnit +
+                "\nCurrently being rented: " + rental +
+                "\nAcquired: " + dateStr;
     }
 
     /**

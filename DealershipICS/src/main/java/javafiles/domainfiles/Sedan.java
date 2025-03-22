@@ -15,9 +15,7 @@ public class Sedan extends Vehicle
      *
      * @param vehicleID The vehicle ID of the Pickup to be created.
      */
-    Sedan(String vehicleID)
-    {
-        super("Sedan");
-        this.setVehicleId(vehicleID);
+    Sedan(String vehicleID, String model, Long price) {
+        super("Sedan", vehicleID, model, price);
     }
 }

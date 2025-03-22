@@ -15,10 +15,8 @@ public class Pickup extends Vehicle
      *
      * @param vehicleID The vehicle ID of the Pickup to be created.
      */
-    public Pickup(String vehicleID)
-    {
-        super("Pickup");
-        this.setVehicleId(vehicleID);
+    public Pickup(String vehicleID, String model, Long price) {
+        super("Pickup", vehicleID, model, price);
     }
 
 }

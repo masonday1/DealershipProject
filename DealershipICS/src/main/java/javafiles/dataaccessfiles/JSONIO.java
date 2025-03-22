@@ -1,5 +1,6 @@
 package javafiles.dataaccessfiles;
 
+import javafiles.Key;
 import javafiles.customexceptions.ReadWriteException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
