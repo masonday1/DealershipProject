@@ -155,7 +155,7 @@ public class Dealership {
      *
      * @param map The data needed to create the new Vehicle.
      */
-    public void dataToInventory(Map<Key, Object> map) {
+    public Map<Key, Object> dataToInventory(Map<Key, Object> map) {
         Vehicle vehicle;
         try {
             vehicle = vehicleFactory.createVehicle(
@@ -163,8 +163,8 @@ public class Dealership {
                     Key.VEHICLE_ID.getVal(map, String.class)
             );
         } catch (InvalidVehicleTypeException e) {
-            // TODO: add this as a reason for not adding a vehicle instead of throwing exception
-            throw new RuntimeException(e);
+            Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());
+            return map;
         }
         vehicle.setVehicleId(Key.VEHICLE_ID.getVal(map, String.class));
         vehicle.setVehicleManufacturer(Key.VEHICLE_MANUFACTURER.getVal(map, String.class));
@@ -175,9 +175,10 @@ public class Dealership {
         try {
             addIncomingVehicle(vehicle);
         } catch (VehicleAlreadyExistsException | DealershipNotAcceptingVehiclesException e) {
-            // TODO: add this as a reason for not adding a vehicle instead of throwing exception
-            throw new RuntimeException(e);
+            Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());
+            return map;
         }
+        return null;
     }
 
     /**

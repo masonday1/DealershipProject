@@ -53,13 +53,13 @@ public class Company {
     }
 
     /**
-     * Takes a List of Map<String, Object>s representing a List of Vehicle information
+     * Takes a List of Map<Key, Object>s representing a List of Vehicle information
      * and writes the data in each map to the corresponding Dealership.
      *
      * @param data The List of Maps containing Vehicle information to be added to inventory.
      */
-    public void dataToInventory(List<Map<Key, Object>> data) {
-        if (data == null) {return;}
+    public List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> data) {
+        if (data == null) {return null;}
 
         // Used to ensure that the cars for new Dealerships are
         // added before considering rental or receiving statuses.
@@ -67,18 +67,29 @@ public class Company {
         // the same rental and receiving statuses.
         Map<Dealership, Map<Key, Object>> newDealershipStat = new HashMap<>();
 
+        List<Map<Key, Object>> badInventoryMaps = new ArrayList<>();
+        Map<Key, Object> badMap;
+
         for (Map<Key, Object> map: data) {
             Dealership dealership = findDealership(Key.DEALERSHIP_ID.getVal(map, String.class));
             if (dealership == null) {
                 String id = Key.DEALERSHIP_ID.getVal(map, String.class);
                 String name = Key.DEALERSHIP_NAME.getVal(map, String.class);
 
+                if (id == null) {
+                    Key.REASON_FOR_ERROR.putNonNull(map, "No dealerID.");
+                    badInventoryMaps.add(map);
+                    continue;
+                }
                 dealership = new Dealership(id, name);
                 addDealership(dealership);
 
                 newDealershipStat.put(dealership, map);
             }
-            dealership.dataToInventory(map);
+            badMap = dealership.dataToInventory(map);
+            if (badMap != null) {
+                badInventoryMaps.add(badMap);
+            }
         }
 
         for (Dealership dealership : newDealershipStat.keySet()) {
@@ -86,6 +97,8 @@ public class Company {
             dealership.setReceivingVehicle(Key.DEALERSHIP_RECEIVING_STATUS.getVal(map, Boolean.class));
             dealership.setRentingVehicles(Key.DEALERSHIP_RENTING_STATUS.getVal(map, Boolean.class));
         }
+
+        return badInventoryMaps;
     }
 
     /**

@@ -1,7 +1,6 @@
 package javafiles.dataaccessfiles;
 
 import java.util.Map;
-import java.util.Objects;
 
 public enum Key {
     DEALERSHIP_ID ("dealership_id", String.class, true),
@@ -19,7 +18,9 @@ public enum Key {
     VEHICLE_PRICE ("price", Long.class, true),
     VEHICLE_PRICE_UNIT ("price_unit", String.class, false),
 
-    VEHICLE_ACQUISITION_DATE ("acquisition_date", Long.class, false);
+    VEHICLE_ACQUISITION_DATE ("acquisition_date", Long.class, false),
+
+    REASON_FOR_ERROR ("error_reason", String.class, false);
 
     private final String KEY; // should be the same as JSONIO key
     private final Class<?> CLASS;

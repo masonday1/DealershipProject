@@ -48,22 +48,6 @@ public abstract class FileIO {
         throw new ReadWriteException(message);
     }
 
-    /**
-     * Returns whether this {@link FileIO} can be created from the given extensions.
-     *
-     * @param path The path of the file to be opened or created.
-     * @param extensions The list of valid path extensions.
-     * @return Whether this {@link FileIO} ends with one of the given extensions.
-     */
-    protected static boolean buildable(String path, String[] extensions) {
-        for (String extension : extensions) {
-            if (path.endsWith(extension)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     protected boolean validMap(Map<Key, Object> map) {
         for (Key key : Key.values()) {
             if (key.getNeeded() && ( !map.containsKey(key) || !key.validObjectType(map)) ) {

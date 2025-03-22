@@ -67,8 +67,14 @@ public class Main {
                       continue;
                   case "5":
                       // reading another JSON file
-                      company.dataToInventory(readData(scanner));
+                      List<Map<Key, Object>> badData = company.dataToInventory(readData(scanner));
                       System.out.println("Reading JSON file...");
+                      for (Map<Key, Object> badMap : badData) {
+                          for (Key key: badMap.keySet()) {
+                              System.out.println(key.getKey() + ": " + badMap.get(key));
+                          }
+                          System.out.println();
+                      }
                       continue;
 
                   case "6":
@@ -184,7 +190,7 @@ public class Main {
 
           do {
               System.out.print("Choose Path: ");
-              path = FileIOBuilder.selectFilePath();
+              path = FileIOBuilder.selectFilePath(mode);
               try {
                   if (path != null) {
                       System.out.println(path + "\n");

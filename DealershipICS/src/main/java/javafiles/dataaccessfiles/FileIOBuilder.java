@@ -10,11 +10,11 @@ import java.util.*;
 
 public abstract class FileIOBuilder {
     protected abstract FileIO createFileIO(String path, char mode) throws ReadWriteException;
+    protected abstract String[] getExtensions(char mode);
 
-    private final String[] EXTENSIONS;
+    protected final String[] EXTENSIONS;
 
     private static final List<FileIOBuilder> BUILDERS = new ArrayList<>();
-    private static final List<String> BUILDERS_EXTENSIONS = new ArrayList<>();
     private static boolean instantiated = false;
 
 
@@ -26,7 +26,22 @@ public abstract class FileIOBuilder {
      */
     protected FileIOBuilder(String[] extensions) {
         EXTENSIONS = extensions;
-        BUILDERS_EXTENSIONS.addAll(Arrays.asList(extensions));
+    }
+
+    /**
+     * Returns whether this {@link FileIO} can be created from the given extensions.
+     *
+     * @param path The path of the file to be opened or created.
+     * @param mode A char representation of the type of {@link File} this is (read 'r' or write 'w').
+     * @return Whether this {@link FileIO} ends with one of the given extensions.
+     */
+    protected boolean buildable(String path, char mode) {
+        for (String extension : getExtensions(mode)) {
+            if (path.endsWith(extension)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -39,7 +54,7 @@ public abstract class FileIOBuilder {
      * @throws ReadWriteException When creating {@link FileIO}(path, mode) throws an exception.
      */
     private FileIO build(String path, char mode) throws ReadWriteException {
-        if (FileIO.buildable(path, EXTENSIONS)) {
+        if (buildable(path, mode)) {
             return createFileIO(path, mode);
         }
         return null;
@@ -91,9 +106,14 @@ public abstract class FileIOBuilder {
      *         the dialog, or null if the user cancels or closes the dialog without
      *         selecting a file.
      */
-    public static String selectFilePath() {
-        String[] extensions = new String[BUILDERS_EXTENSIONS.size()];
-        for (int i = 0; i < extensions.length; i++) {extensions[i] = BUILDERS_EXTENSIONS.get(i);}
+    public static String selectFilePath(char mode) {
+        List<String> buildersExtensions = new ArrayList<>();
+        for (FileIOBuilder builder : BUILDERS) {
+            String[] extensions = builder.getExtensions(mode);
+            buildersExtensions.addAll(Arrays.asList(extensions));
+        }
+        String[] extensions = new String[buildersExtensions.size()];
+        for (int i = 0; i < extensions.length; i++) {extensions[i] = buildersExtensions.get(i);}
         return selectFilePath(extensions);
     }
 
@@ -121,8 +141,7 @@ public abstract class FileIOBuilder {
                 return fileIO;
             }
         }
-        throw new ReadWriteException("Extension for \"" + path + "\" not in " +
-                BUILDERS_EXTENSIONS + ".");
+        throw new ReadWriteException("Extension for \"" + path + " is invalid.");
     }
 
     /**

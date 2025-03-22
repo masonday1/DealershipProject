@@ -17,17 +17,19 @@ import java.util.List;
 import java.util.Map;
 
 enum XMLKey {
-    D_ID (Key.DEALERSHIP_ID, "Dealer_id"),
-    D_NAME (Key.DEALERSHIP_NAME, "Dealer_Name"),
+    D_ID (Key.DEALERSHIP_ID, "id"),
+    D_NAME (Key.DEALERSHIP_NAME,  "Name"),
 
-    TYPE (Key.VEHICLE_TYPE, "Vehicle_type"),
-    V_ID (Key.VEHICLE_ID, "Vehicle_id"),
+    TYPE (Key.VEHICLE_TYPE, "type"),
+    V_ID (Key.VEHICLE_ID, "id"),
 
-    PRICE_UNIT (Key.VEHICLE_PRICE_UNIT, "Vehicle_Price_unit"),
-    PRICE (Key.VEHICLE_PRICE, "Vehicle_Price"),
+    PRICE_UNIT (Key.VEHICLE_PRICE_UNIT, "price_unit"),
+    PRICE (Key.VEHICLE_PRICE, "price"),
 
-    MODEL (Key.VEHICLE_MODEL, "Vehicle_Model"),
-    MAKE (Key.VEHICLE_MANUFACTURER, "Vehicle_Make");
+    MODEL (Key.VEHICLE_MODEL, "model"),
+    MAKE (Key.VEHICLE_MANUFACTURER, "make"),
+
+    REASON (Key.REASON_FOR_ERROR, "Reason");
 
     private final Key KEY;
     private final String NAME;
@@ -55,50 +57,88 @@ public class XMLIO extends FileIO {
         }
     }
 
-    private void parseNode(Node node, String prefix, Map<String, String> map, boolean ignoreBody) {
-        if (prefix == null) {
-            prefix = "";
-        }
-        if (node == null || node.getNodeName().startsWith("#")) {
-            return;
-        }
-        String name = prefix + node.getNodeName();
-        String value =  node.getTextContent();
+    private void parseNode(XMLKey[] keys, Map<Key, Object> map, String tagName, String nodeValue) {
+        if (map == null || keys == null) {return;}
 
-        if (map.containsKey(name)) {
-            return;
-        }
-        if (!ignoreBody) {
-            map.put(name, value);
-        }
+        for (XMLKey key: keys) {
 
-        NamedNodeMap attributes = node.getAttributes();
-        if (attributes != null) {
-            for (int i = 0; i < attributes.getLength(); i++) {
-                parseNode(attributes.item(i), name + "_", map, false);
+            if (key.getName().equalsIgnoreCase(tagName)) {
+                Object nodeValCast;
+                if (key.getKey().getClassName().equals(Long.class.getName())) {
+                    nodeValCast = Long.parseLong(nodeValue);
+                } else {
+                    nodeValCast = nodeValue;
+                }
+                if (map.containsKey(key.getKey())) {
+                    System.out.println("Already has key: " + key.getKey());
+                }
+                map.put(key.getKey(), nodeValCast);
+                return;
             }
-        }
 
-        NodeList nodes = node.getChildNodes();
-        for (int i = 0; i < nodes.getLength(); i++) {
-            parseNode(nodes.item(i), name + "_", map, false);
         }
     }
 
-    private void readXMLObject(Map<String, String> vehicleMap, Map<Key, Object> map) {
-        for (XMLKey xmlKey : XMLKey.values()) {
-            String keyStr = xmlKey.getName();
-            if (vehicleMap.containsKey(keyStr)) {
-                Key key = xmlKey.getKey();
-                if (key != null) {
-                    Object val = vehicleMap.get(keyStr);
-                    if (key.getClassName().equals(Long.class.getName())) {
-                        val = Long.valueOf((String) val);
-                    }
-                    map.put(key, val);
+    private void readXMLObject(Node node, XMLKey[] keys, Map<Key, Object> map, String stopTag, List<Node> haltedNodes) {
+        String tagName = node.getNodeName();
+        String nodeValue = node.getTextContent();
+
+        if (tagName.equalsIgnoreCase(stopTag)) {
+            if (haltedNodes != null) {
+                haltedNodes.add(node);
+            }
+            return;
+        }
+
+        parseNode(keys, map, tagName, nodeValue);
+
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            Element element = (Element) node;
+            NodeList childNodes = element.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                Node newNode = childNodes.item(i);
+                if (!newNode.getNodeName().startsWith("#text")) {
+                    readXMLObject(newNode, keys, map, stopTag, haltedNodes);
                 }
             }
+            NamedNodeMap attributes = element.getAttributes();
+            for (int i = 0; i < attributes.getLength(); i++) {
+                Node attribute = attributes.item(i);
+                String atrTagName = attribute.getNodeName();
+                String atrValue = attribute.getNodeValue();
+                parseNode(keys, map, atrTagName, atrValue);
+            }
         }
+    }
+
+    private List<Map<Key, Object>> parseDocument(Document document) {
+        List<Map<Key, Object>> maps = new ArrayList<>();
+
+        Element documentElement = document.getDocumentElement();
+
+        List<Node> haltedNodesDealer = new ArrayList<>();
+
+        readXMLObject(documentElement, null, null, "Dealer", haltedNodesDealer);
+
+        XMLKey[] dealerKeys = {XMLKey.D_ID, XMLKey.D_NAME};
+        XMLKey[] vehicleKeys = {XMLKey.TYPE, XMLKey.V_ID, XMLKey.PRICE,
+                XMLKey.PRICE_UNIT, XMLKey.MAKE, XMLKey.MODEL};
+
+        for (Node dealerNode : haltedNodesDealer) {
+
+            List<Node> haltedNodesVehicle = new ArrayList<>();
+            Map<Key, Object> dealerMap = new HashMap<>();
+            readXMLObject(dealerNode, dealerKeys, dealerMap, "Vehicle", haltedNodesVehicle);
+
+            for (Node vehicleNode : haltedNodesVehicle) {
+                Map<Key, Object> vehicleMap = new HashMap<>(dealerMap);
+                readXMLObject(vehicleNode, vehicleKeys, vehicleMap, null, null);
+                maps.add(vehicleMap);
+            }
+
+        }
+
+        return maps;
     }
 
     public List<Map<Key, Object>> readInventory() throws ReadWriteException {
@@ -112,54 +152,19 @@ public class XMLIO extends FileIO {
 
         try {
             builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
             document = builder.parse(file);
-
-        } catch (SAXException | IOException e) {
-            throw new RuntimeException(e);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            ArrayList<Map<Key, Object>> reasonList = new ArrayList<>();
+            Map<Key, Object> reasonMap = new HashMap<>();
+            reasonMap.put(XMLKey.REASON.getKey(), e);
+            reasonList.add(reasonMap);
+            return reasonList;
         }
 
-        List<Map<Key, Object>> maps = new ArrayList<>();
-
-        Element documentElement = document.getDocumentElement();
-        NodeList dealers =  documentElement.getElementsByTagName("Dealer");
-        for (int i = 0; i < dealers.getLength(); i++) {
-            Map<String, String> dealerInfoMap = new HashMap<>();
-
-            Node dealer = dealers.item(i);
-
-            if (dealer.getNodeType() == Node.ELEMENT_NODE) {
-                Element e = (Element) dealer;
-                NodeList vehicles = e.getElementsByTagName("Vehicle");
-
-                Node dealerName = e.getElementsByTagName("Name").item(0);
-                parseNode(dealerName, "Dealer_", dealerInfoMap, false);
-
-                Node dealerId = e.getAttributeNode("id");
-                parseNode(dealerId, "Dealer_", dealerInfoMap, false);
-
-                for (int j = 0; j < vehicles.getLength(); j++) {
-                    Map<String, String> nameMap = new HashMap<>(dealerInfoMap);
-                    Map<Key, Object> map = new HashMap<>();
-                    parseNode(vehicles.item(j), null, nameMap, true);
-                    readXMLObject(nameMap, map);
-
-                    if (validMap(map)) {
-                        maps.add(map);
-                    }
-                }
-            }
-
-        }
-
-        return maps;
+        return parseDocument(document);
     }
 
     public void writeInventory(List<Map<Key, Object>> maps) throws ReadWriteException {
-        System.out.println("Not implemented (writeInventory).");
+        throw new ReadWriteException("Can not write to XML Files.");
     }
 }

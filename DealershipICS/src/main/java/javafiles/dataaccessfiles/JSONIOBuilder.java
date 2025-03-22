@@ -11,4 +11,9 @@ public class JSONIOBuilder extends FileIOBuilder {
     protected FileIO createFileIO(String path, char mode) throws ReadWriteException {
         return new JSONIO(path, mode);
     }
+
+    @Override
+    protected String[] getExtensions(char mode) {
+        return EXTENSIONS;
+    }
 }
