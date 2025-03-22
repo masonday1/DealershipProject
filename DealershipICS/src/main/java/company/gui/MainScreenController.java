@@ -3,12 +3,9 @@ package company.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
+import java.io.IOException;
+import static company.gui.FXMLPaths.*;
 
-
-/**
- * Controller for the main application screen.
- * Manages navigation and application closure.
- */
 public class MainScreenController {
 
     @FXML
@@ -18,27 +15,22 @@ public class MainScreenController {
     @FXML
     private Button LoadInventoryButton;
 
-
-
-
     @FXML
-    private void handleManageCompanyInventory(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/InventoryScreen.fxml");
-
+    private void handleManageCompanyInventory(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(INVENTORY_SCREEN);
     }
 
     @FXML
-    private void handleManageCompanyProfile(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/ProfileManagement.fxml");
+    private void handleManageCompanyProfile(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene( PROFILE_MANAGEMENT);
     }
 
     @FXML
-    private void handleLoadInventory(ActionEvent event)
-    {
-
-        GuiUtility.navigateToScreen(event,"/LoadInventory.fxml");
+    private void handleLoadInventory(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(LOAD_INVENTORY);
 
     }
-
-
 }

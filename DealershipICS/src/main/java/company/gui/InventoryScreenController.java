@@ -2,6 +2,8 @@ package company.gui;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import java.io.IOException;
+import static company.gui.FXMLPaths.*;
 
 
 /**
@@ -12,16 +14,19 @@ public class InventoryScreenController
 {
 
 
+    @FXML
+    private void handleBack(ActionEvent event) throws IOException
+        {
+            SceneManager sceneManager = SceneManager.getInstance(null);
+            sceneManager.switchScene(MAIN_SCREEN);
 
+        }
 
     @FXML
-    private void handleBack(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/MainScreen.fxml");
-    }
+    private void handleAddVehicleToDealership(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(ADD_INVENTORY);
 
-    @FXML
-    private void handleAddVehicleToDealership(ActionEvent event) {
-        GuiUtility.navigateToScreen(event,"/AddInventory.fxml");
 
     }
 

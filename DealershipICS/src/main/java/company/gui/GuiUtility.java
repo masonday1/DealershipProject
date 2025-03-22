@@ -1,14 +1,9 @@
 package company.gui;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
+
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import java.io.IOException;
 
 
 /**
@@ -16,36 +11,6 @@ import java.io.IOException;
  * such as navigating between screens and setting the window size.
  */
 public class GuiUtility {
-
-
-
-    /**
-     * Navigates to a new screen and sets the window's title. Using
-     * {@link #getScreenTitle(String)}
-     *
-     * @param event The ActionEvent triggered by the navigation action (button click).
-     * @param fxmlPath The path to the FXML file for the screen to navigate to.
-     */
-    public static void navigateToScreen(ActionEvent event, String fxmlPath) {
-        try {
-            // Load the FXML for the new screen
-            FXMLLoader loader = new FXMLLoader(GuiUtility.class.getResource(fxmlPath));
-            Parent root = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            stage.setScene(new Scene(root));
-            // Set the title of the new window
-            stage.setTitle(getScreenTitle(fxmlPath));
-            setScreenSize(stage,0.6,0.6);
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-    }
-
 
     /**
      * Helper method to get the screen title based on the FXML path.
@@ -99,7 +64,6 @@ public class GuiUtility {
         stage.setMinWidth(screenWidth * 0.5);
         stage.setMinHeight(screenHeight * 0.5);
     }
-
 
 
 
