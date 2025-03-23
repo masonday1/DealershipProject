@@ -56,4 +56,9 @@
             GridPane.columnIndex="1" GridPane.rowIndex="2"
             GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
 
+    <Button text="View Company Inventory" fx:id="btnViewInventory"
+            onAction="#handleViewCompanyInventory"
+            GridPane.columnIndex="1" GridPane.rowIndex="3"
+            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+
 </GridPane>
