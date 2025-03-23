@@ -10,11 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 
 /**
@@ -51,27 +47,31 @@ public class GuiUtility {
         stage.setMinHeight(screenHeight * 0.5);
     }
 
-    public static Map<String, Object> createKeyDataPoint(Key key, String name) {
+    public static Map<String, Object> createKeyDataPoint(Key key, String name, Integer width) {
+        if (width == null) {
+            width = 10;
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
         map.put("key", key);
+        map.put("width", width);
         return map;
     }
 
     public static List<Map<String, Object>> createKeyData() {
         List<Map<String, Object>> keyData = new ArrayList<>();
-        keyData.add(createKeyDataPoint(Key.DEALERSHIP_ID, "Dealer ID"));
-        keyData.add(createKeyDataPoint(Key.DEALERSHIP_NAME, "Dealer Name"));
+        keyData.add(createKeyDataPoint(Key.DEALERSHIP_ID, "Dealer ID", null));
+        keyData.add(createKeyDataPoint(Key.DEALERSHIP_NAME, "Dealer Name", 150));
 
-        keyData.add(createKeyDataPoint(Key.VEHICLE_ID, "Vehicle ID"));
-        keyData.add(createKeyDataPoint(Key.VEHICLE_TYPE, "Type"));
-        keyData.add(createKeyDataPoint(Key.VEHICLE_MANUFACTURER, "Make"));
-        keyData.add(createKeyDataPoint(Key.VEHICLE_MODEL, "Model"));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_ID, "Vehicle ID", null));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_TYPE, "Type", null));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_MANUFACTURER, "Make", null));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_MODEL, "Model", null));
 
-        keyData.add(createKeyDataPoint(Key.VEHICLE_PRICE, "Price"));
-        keyData.add(createKeyDataPoint(Key.VEHICLE_PRICE_UNIT, "Money Unit"));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_PRICE, "Price", null));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_PRICE_UNIT, "Money Unit", null));
 
-        keyData.add(createKeyDataPoint(Key.REASON_FOR_ERROR, "Issue"));
+        keyData.add(createKeyDataPoint(Key.REASON_FOR_ERROR, "Issue", 500));
 
         return keyData;
     }
@@ -97,7 +97,14 @@ public class GuiUtility {
 
         // Create the JTable
         DefaultTableModel model = new DefaultTableModel(tableData, columnNames);
-        return new JTable(model);
+        JTable jTable = new JTable(model);
+        for (int i = 0; i < columnNames.length; i++) {
+            TableColumnModel colModel = jTable.getColumnModel();
+            TableColumn col = colModel.getColumn(i);
+            col.setPreferredWidth((int) keyData.get(i).get("width"));
+        }
+
+        return jTable;
     }
 
     /**
@@ -121,7 +128,11 @@ public class GuiUtility {
         for (int i = 0; i < data.size(); i++) {
             Map<Key, Object> rowMap = data.get(i);
             for (int j = 0; j < keys.length; j++) {
-                tableData[i][j] = rowMap.get(keys[j]);
+                Object rowObject = rowMap.get(keys[j]);
+                if (keys[j].equals(Key.VEHICLE_ACQUISITION_DATE)) {
+                    rowObject = (new Date( (Long) rowObject) ).toString();
+                }
+                tableData[i][j] = rowObject;
             }
         }
 
