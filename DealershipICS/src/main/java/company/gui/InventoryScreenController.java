@@ -1,9 +1,15 @@
 package company.gui;
 
+import javafiles.Key;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+
+import javax.swing.*;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import static company.gui.FXMLPaths.*;
+
 
 
 /**
@@ -49,4 +55,34 @@ public class InventoryScreenController
     private void handleDisableVehicleRental() {
         System.out.println("Disable rental clicked");
     }
-}
+
+    @FXML
+    private void handleViewCompanyInventory()
+    {
+        List<Map<Key, Object>> vehicleData = AppStateManager.getCompanyData();
+
+        JTable vehicleTable = GuiUtility.createTableFromMapList(vehicleData);
+
+        if (vehicleTable != null) {
+
+            // remove column for error reason
+            GuiUtility.removeColumnByName(vehicleTable,"error_reason");
+
+            JFrame inventoryFrame = new JFrame("Vehicle Inventory");
+            inventoryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the inventory frame
+
+            JScrollPane scrollPane = new JScrollPane(vehicleTable);
+            inventoryFrame.getContentPane().add(scrollPane);
+
+            inventoryFrame.pack();
+            inventoryFrame.setVisible(true);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "No vehicle data available.");
+        }
+    }
+
+    }
+
+
+

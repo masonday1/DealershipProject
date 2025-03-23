@@ -24,6 +24,9 @@ public class MainScreenController {
     private static String masterInventoryList = "masterInventoryList.json";
     private static Company company = new Company();
 
+    public Company getCompany() {return company;}
+
+
     @FXML
     private Button manageCompanyInventoryButton;
     @FXML
