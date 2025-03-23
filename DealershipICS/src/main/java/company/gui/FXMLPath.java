@@ -10,7 +10,8 @@ enum FXMLPath {
     LOAD_INVENTORY ("/LoadInventory.fxml", "Load Inventory"),
     PROFILE_MANAGEMENT ("/ProfileManagement.fxml", "Profile Management"),
     ADD_INVENTORY ("/AddInventory.fxml", "Add Inventory"),
-    ADD_FROM_FILE ("/AddFromFile.fxml","Load From File");
+    ADD_FROM_FILE ("/AddFromFile.fxml","Load From File"),
+    VEHICLE_ENTRY ("/VehicleEntry.fxml", "Add Inventory Manually");
     // Add other FXML paths as needed
 
     private final String PATH;

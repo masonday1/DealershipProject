@@ -32,8 +32,6 @@ public class InventoryScreenController
     private void handleAddVehicleToDealership(ActionEvent event) throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
         sceneManager.switchScene(ADD_INVENTORY);
-
-
     }
 
     @FXML

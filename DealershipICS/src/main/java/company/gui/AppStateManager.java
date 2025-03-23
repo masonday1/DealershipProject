@@ -1,9 +1,14 @@
 package company.gui;
 
 import javafiles.Key;
+import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
+import javafiles.customexceptions.InvalidPriceException;
+import javafiles.customexceptions.InvalidVehicleTypeException;
+import javafiles.customexceptions.VehicleAlreadyExistsException;
 import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -88,4 +93,23 @@ public class AppStateManager {
     public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {
         return company.dataToInventory(maps);
     }
+
+    public static ArrayList<String> getDealershipIDs()
+    {
+        return company.getAllDealershipIds();
+    }
+
+
+    public static void manualVehicleAdd(String dealershipID, String vehicleID, String vehicleManufacturer, String vehicleModel, Long vehiclePrice, Long acquisitionDate, String vehicleType, String priceUnit)
+            throws VehicleAlreadyExistsException, InvalidPriceException, DealershipNotAcceptingVehiclesException,
+            InvalidVehicleTypeException {
+
+        Dealership dealership = company.findDealership(dealershipID);
+        if (dealership == null) {
+            throw new IllegalArgumentException("Dealership ID not found: " + dealershipID);
+        }
+
+        dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
+    }
+
 }

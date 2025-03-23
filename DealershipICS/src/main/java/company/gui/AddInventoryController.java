@@ -25,9 +25,9 @@ public class AddInventoryController {
     }
 
     @FXML
-    private void handleEnterManually(ActionEvent event) {
-        System.out.println("Enter Manually button clicked");
-        // Add logic to enter inventory manually
+    private void handleEnterManually(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(VEHICLE_ENTRY);
     }
 
 
