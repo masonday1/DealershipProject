@@ -5,15 +5,15 @@ import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 
 import java.io.IOException;
-import java.nio.file.*;
-import java.io.File;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javafiles.Key;
 import javafiles.customexceptions.ReadWriteException;
 import javafiles.dataaccessfiles.FileIOBuilder;
-import javafiles.dataaccessfiles.JSONIO;
+import javafiles.dataaccessfiles.FileIO;
 import javafiles.domainfiles.Company;
 
 import static company.gui.FXMLPaths.*;
@@ -34,19 +34,13 @@ public class MainScreenController {
     @FXML
     public void initialize() {
         // Move this code segment to a new class
-        try {
+
+        if (initialLaunch) {
             FileIOBuilder.setupFileIOBuilders();
-
-            if (initialLaunch) {
-                System.out.println("initial launch");
-                loadInitialFiles();
-                initialLaunch = false;
-            }
-
+            System.out.println("initial launch");
+            List<Map<Key, Object>> badDataMaps= loadInitialFiles();
             ProfileManagementController.setCompany(company);
-
-        } catch (ReadWriteException ex) {
-            System.err.println("An error occurred during initialization: " + ex.getMessage());
+            initialLaunch = false;
         }
         // TODO: Implement loading initial file class
         
@@ -70,35 +64,14 @@ public class MainScreenController {
         sceneManager.switchScene(LOAD_INVENTORY);
 
     }
-    // Move this code segment to a new class
-    private void loadInitialFiles() throws ReadWriteException {
-        Path file = Paths.get(masterInventoryList);
 
-        if (Files.exists(file)) {
-            try {
-                if (Files.size(file) == 0) {
-                    System.out.println("File is empty: " + masterInventoryList);
-                } else {
-                    System.out.println("File found and is not empty: " + masterInventoryList);
-                    JSONIO jsonIO = new JSONIO(masterInventoryList, 'r');
-                    List<Map<Key, Object>> data = jsonIO.readInventory();
-                    data.addAll(jsonIO.readInventory());
-                    company.dataToInventory(data);
-                }
-            } catch (IOException ex) {
-                System.err.println("An error occurred while checking the file size: " + ex.getMessage());
-            }
-        } else {
-            try {
-                File newFile = new File(masterInventoryList);
-                if (newFile.createNewFile()) {
-                    System.out.println(masterInventoryList + " created successfully.");
-                } else {
-                    System.out.println("Failed to create " + masterInventoryList);
-                }
-            } catch (IOException ex) {
-                System.err.println("An error occurred while creating the file: " + ex.getMessage());
-            }
+    private List<Map<Key, Object>> loadInitialFiles() {
+        try {
+            FileIO fileIO = FileIOBuilder.buildNewFileIO(masterInventoryList, 'r');
+            return company.dataToInventory(fileIO.readInventory());
+        } catch (ReadWriteException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
         }
     }
 }

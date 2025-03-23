@@ -29,6 +29,8 @@ public class GuiUtility {
                 return "Profile Management";
             case FXMLPaths.ADD_INVENTORY:
                 return "Add Inventory";
+            case FXMLPaths.ADD_FROM_FILE:
+                return "Load From File";
             default:
                 return "Unknown Screen";
         }
