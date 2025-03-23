@@ -90,6 +90,7 @@ public class VehicleEntryController implements Initializable {
 
         try {
             // Parse input values
+            //TODO make into methods that throw custom exceptions instead of generic
             Long vehiclePrice = Long.parseLong(vehiclePriceStr);
             Long acquisitionDate = Long.parseLong(acquisitionDateStr);
 
@@ -102,6 +103,7 @@ public class VehicleEntryController implements Initializable {
 
 
         }
+        //TODO: Make custom exceptions to handle both variables separately.
         catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Invalid format for price.");
         }
