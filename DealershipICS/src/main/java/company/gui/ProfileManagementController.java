@@ -81,7 +81,11 @@ public class ProfileManagementController
                 Boolean receivingEnabled = (Boolean) map.get(Key.DEALERSHIP_RECEIVING_STATUS);
                 Boolean rentingEnabled = (Boolean) map.get(Key.DEALERSHIP_RENTING_STATUS);
 
-                tableData.add(new DealershipRow(id, name, receivingEnabled, rentingEnabled));
+                // Check if the ID already exists in tableData
+                boolean idExists = tableData.stream().anyMatch(row -> row.getId().equals(id));
+                if (!idExists) {
+                    tableData.add(new DealershipRow(id, name, receivingEnabled, rentingEnabled));
+                }
             }
         }
 
