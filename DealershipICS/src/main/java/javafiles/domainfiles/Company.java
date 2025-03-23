@@ -123,7 +123,6 @@ public class Company {
         for (Dealership dealership : listDealerships) {
             list.addAll(dealership.getDataMap());
         }
-        if (list.isEmpty()) {return null;}
         return list;
     }
 

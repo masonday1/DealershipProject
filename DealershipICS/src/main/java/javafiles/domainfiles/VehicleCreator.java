@@ -37,9 +37,7 @@ class VehicleCreator implements VehicleFactory {
     }
 
     @Override
-    public void fillVehicle(Vehicle vehicle, String make, Long date,
-                            String priceUnit, Boolean rentalStatus) {
-
+    public void fillVehicle(Vehicle vehicle, String make, Long date, String priceUnit, Boolean rentalStatus) {
         setIfNotNull(vehicle, make, Vehicle::setVehicleManufacturer);
         setIfNotNull(vehicle, date, Vehicle::setAcquisitionDate);
         setIfNotNull(vehicle, priceUnit, Vehicle::setPriceUnit);

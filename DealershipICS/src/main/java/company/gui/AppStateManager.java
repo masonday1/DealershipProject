@@ -84,4 +84,8 @@ public class AppStateManager {
     {
         company.addDealership(dealership);
     }
+
+    public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {
+        return company.dataToInventory(maps);
+    }
 }

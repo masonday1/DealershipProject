@@ -19,9 +19,9 @@ public class AddInventoryController {
 
 
     @FXML
-    private void handleLoadFromFile(ActionEvent event) {
-        System.out.println("Load From File button clicked");
-        // Add logic to load inventory from a file
+    private void handleLoadFromFile(ActionEvent event) throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(ADD_FROM_FILE);
     }
 
     @FXML

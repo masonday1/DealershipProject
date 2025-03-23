@@ -49,7 +49,7 @@ enum XMLKey {
  *
  * @author Dylan Browne
  */
-public class XMLIO extends FileIO {
+class XMLIO extends FileIO {
     public XMLIO(String path, char mode) throws ReadWriteException {
         super(path, mode);
         if (path.endsWith("pom.xml")) {

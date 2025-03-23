@@ -2,7 +2,7 @@ package javafiles.dataaccessfiles;
 
 import javafiles.customexceptions.ReadWriteException;
 
-public class JSONIOBuilder extends FileIOBuilder {
+class JSONIOBuilder extends FileIOBuilder {
     JSONIOBuilder(String[] extensions) {
         super(extensions);
     }

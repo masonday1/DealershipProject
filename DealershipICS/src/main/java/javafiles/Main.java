@@ -20,16 +20,11 @@ public class Main {
               switch (userInput) {
                   case "1": // send vehicles in queue to dealership(s)
                       // if carInventory is empty, print message and return to menu
-                      System.out.println("Likely to be removed (as pending removed), not functional at the moment");
-
-                      writeCompanyData(company);
-                      System.out.println("Sending vehicles to dealership...");
+                      System.out.println("Removed Functionality.");
                       break;
                   case "2":
                       // checking pending vehicle deliveries
-                      System.out.println("Likely to be removed (as pending removed), not functional at the moment");
-                      printPending(company);
-                      System.out.println("Checking pending vehicle deliveries...");
+                      System.out.println("Removed Functionality.");
                       break;
                   case "3":
                       System.out.println("Changing dealership vehicle receiving status...");
@@ -262,33 +257,5 @@ public class Main {
               System.out.println(e.getMessage());
           }
           return 0;
-      }
-
-      /** TODO: Edit description
-       * This method processes the vehicle inventory and updates the dealership's incoming vehicles.
-       * It checks each vehicle in the provided inventory, finds the corresponding dealership, and if
-       * the dealership is acquiring vehicles, it adds the vehicle to the dealership's incoming
-       * vehicle list. After processing, it removes the accepted vehicles from the inventory
-       *
-       * @param company The {@link Company} object that contains the dealerships
-       */
-      private static void writeCompanyData(Company company) {
-          System.out.println("Likely to be removed (as pending removed), not functional at the moment" + company);
-      }
-
-      /** TODO: Edit description
-       * Prints information about pending vehicle deliveries and dealership status.
-       * <p>
-       * This method iterates through the provided inventory of vehicles and prints
-       * details about each vehicle, including its associated dealership and the
-       * dealership's current vehicle receiving status (accepting or not accepting vehicles).
-       *
-       * @param company   The {@link Company} object used to look up dealership information
-       *                  based on the dealership ID.
-       */
-      private static void printPending(Company company) {
-          // if this is used, it will call a method in company that calls a method in dealership
-          // that prints out all of the
-          System.out.println("Likely to be removed (as pending removed), not functional at the moment."  + company);
       }
 }

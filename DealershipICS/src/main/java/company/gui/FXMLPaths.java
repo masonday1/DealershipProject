@@ -11,5 +11,6 @@ public class FXMLPaths {
     public static final String LOAD_INVENTORY = "/LoadInventory.fxml";
     public static final String PROFILE_MANAGEMENT = "/ProfileManagement.fxml";
     public static final String ADD_INVENTORY = "/AddInventory.fxml";
+    public static final String ADD_FROM_FILE = "/AddFromFile.fxml";
     // Add other FXML paths as needed
 }

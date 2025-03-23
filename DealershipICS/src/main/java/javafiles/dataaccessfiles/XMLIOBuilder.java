@@ -2,7 +2,7 @@ package javafiles.dataaccessfiles;
 
 import javafiles.customexceptions.ReadWriteException;
 
-public class XMLIOBuilder extends FileIOBuilder {
+class XMLIOBuilder extends FileIOBuilder {
     XMLIOBuilder(String[] extensions) {
         super(extensions);
     }

@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Dylan Browne
  */
-public class JSONIO extends FileIO {
+class JSONIO extends FileIO {
     /**
      * Creates or opens a JSON file with name filePath in read ('r') or write ('w') mode.
      * Read mode allows the reading, but not writing of files, write mode allows for the

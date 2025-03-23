@@ -10,6 +10,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +78,54 @@ public class GuiUtility {
         stage.setMinHeight(screenHeight * 0.5);
     }
 
+    public static Map<String, Object> createKeyDataPoint(Key key, String name) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("key", key);
+        return map;
+    }
+
+    public static List<Map<String, Object>> createKeyData() {
+        List<Map<String, Object>> keyData = new ArrayList<>();
+        keyData.add(createKeyDataPoint(Key.DEALERSHIP_ID, "Dealer ID"));
+        keyData.add(createKeyDataPoint(Key.DEALERSHIP_NAME, "Dealer Name"));
+
+        keyData.add(createKeyDataPoint(Key.VEHICLE_ID, "Vehicle ID"));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_TYPE, "Type"));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_MANUFACTURER, "Make"));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_MODEL, "Model"));
+
+        keyData.add(createKeyDataPoint(Key.VEHICLE_PRICE, "Price"));
+        keyData.add(createKeyDataPoint(Key.VEHICLE_PRICE_UNIT, "Money Unit"));
+
+        keyData.add(createKeyDataPoint(Key.REASON_FOR_ERROR, "Issue"));
+
+        return keyData;
+    }
+    
+    public static JTable createTableFromMapList(List<Map<Key, Object>> data, List<Map<String, Object>> keyData) {
+        if (data == null || data.isEmpty()) {return null;}
+
+        // Use Key enum values for column names (maintains order)
+        String[] columnNames = new String[keyData.size()];
+
+        for (int i = 0; i < keyData.size(); i++) {
+            columnNames[i] = (String) keyData.get(i).get("name");
+        }
+
+        // Prepare table data
+        Object[][] tableData = new Object[data.size()][columnNames.length];
+        for (int i = 0; i < data.size(); i++) {
+            Map<Key, Object> rowMap = data.get(i);
+            for (int j = 0; j < keyData.size(); j++) {
+                tableData[i][j] = rowMap.get( (Key) keyData.get(j).get("key") );
+            }
+        }
+
+        // Create the JTable
+        DefaultTableModel model = new DefaultTableModel(tableData, columnNames);
+        return new JTable(model);
+    }
 
     /**
      * Creates a JTable from a List of Maps.
@@ -82,10 +133,8 @@ public class GuiUtility {
      * @param data The List of Maps containing vehicle data.
      * @return A JTable displaying the vehicle data, or null if the input list is null or empty.
      */
-    public static JTable createTableFromMapList (List <Map<Key,Object>> data){
-        if (data == null || data.isEmpty()) {
-                return null;
-        }
+    public static JTable createTableFromMapList(List<Map<Key, Object>> data) {
+        if (data == null || data.isEmpty()) {return null;}
 
         // Use Key enum values for column names (maintains order)
         Key[] keys = Key.values();
@@ -100,13 +149,13 @@ public class GuiUtility {
             Map<Key, Object> rowMap = data.get(i);
             for (int j = 0; j < keys.length; j++) {
                 tableData[i][j] = rowMap.get(keys[j]);
-                }
             }
-
-            // Create the JTable
-            DefaultTableModel model = new DefaultTableModel(tableData, columnNames);
-            return new JTable(model);
         }
+
+        // Create the JTable
+        DefaultTableModel model = new DefaultTableModel(tableData, columnNames);
+        return new JTable(model);
+    }
 
 
     /**
@@ -137,7 +186,4 @@ public class GuiUtility {
             System.out.println("Column '" + columnName + "' not found in the table.");
         }
     }
-
-
-
-    }
+}
