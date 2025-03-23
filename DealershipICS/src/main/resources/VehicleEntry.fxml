@@ -18,6 +18,7 @@
         </padding>
         <Button fx:id="backButton" mnemonicParsing="false" text="Back" onAction="#handleBackButton" />
         <HBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+            <Label text="*" />
             <ComboBox fx:id="dealershipComboBox" promptText="Select Dealership" />
         </HBox>
         <VBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS" spacing="5.0">
