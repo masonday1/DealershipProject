@@ -130,7 +130,11 @@ public class GuiUtility {
             for (int j = 0; j < keys.length; j++) {
                 Object rowObject = rowMap.get(keys[j]);
                 if (keys[j].equals(Key.VEHICLE_ACQUISITION_DATE)) {
-                    rowObject = (new Date( (Long) rowObject) ).toString();
+                    if (rowObject != null) {
+                        rowObject = (new Date((Long) rowObject)).toString();
+                    } else {
+                        rowObject = "N/A";
+                    }
                 }
                 tableData[i][j] = rowObject;
             }

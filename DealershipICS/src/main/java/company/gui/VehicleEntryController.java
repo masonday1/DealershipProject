@@ -1,9 +1,6 @@
 package company.gui;
 
-import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
-import javafiles.customexceptions.InvalidPriceException;
-import javafiles.customexceptions.InvalidVehicleTypeException;
-import javafiles.customexceptions.VehicleAlreadyExistsException;
+import javafiles.customexceptions.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,6 +17,10 @@ import java.util.ResourceBundle;
 
 import static company.gui.FXMLPath.ADD_INVENTORY;
 
+/**
+ * Controller class for the vehicle entry form.
+ * Handles user interactions for adding vehicle information.
+ */
 public class VehicleEntryController implements Initializable {
 
     @FXML
@@ -55,84 +56,100 @@ public class VehicleEntryController implements Initializable {
     @FXML
     private TextField priceUnitField;
 
+    /**
+     * Initializes the controller class.
+     * Populates the dealershipComboBox with available dealership IDs.
+     *
+     * @param url   The location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Populate dealershipComboBox
         dealershipComboBox.getItems().addAll(AppStateManager.getDealershipIDs());
     }
 
-
+    /**
+     * Handles the action when the back button is clicked.
+     * Switches the scene to the add inventory screen.
+     *
+     * @param event The ActionEvent triggered by the back button.
+     * @throws IOException If an I/O error occurs during scene switching.
+     */
     @FXML
     private void handleBackButton(ActionEvent event) throws IOException {
       SceneManager sceneManager = SceneManager.getInstance(null);
       sceneManager.switchScene(ADD_INVENTORY);
     }
 
+
+
+    /**
+     * Handles the action when the add vehicle button is clicked.
+     * Validates input fields and adds a new vehicle using AppStateManager.
+     *
+     * @param event The ActionEvent triggered by the add vehicle button.
+     * @throws DealershipNotSelectedException If no dealership is selected.
+     * @throws InvalidLongPriceException      If the vehicle price is invalid.
+     * @throws InvalidAcquisitionDateException If the acquisition date is invalid.
+     */
     @FXML
-    private void handleAddVehicleButton(ActionEvent event) {
-        // Validation
+    private void handleAddVehicleButton(ActionEvent event) throws DealershipNotSelectedException, InvalidLongPriceException, InvalidAcquisitionDateException {
+        // Validation (required fields)
         if (vehicleTypeField.getText().isEmpty() || vehicleIdField.getText().isEmpty() ||
                 vehicleModelField.getText().isEmpty() || vehiclePriceField.getText().isEmpty()) {
-            // Display error message (e.g., using an alert)
             JOptionPane.showMessageDialog(null, "Missing Required Vehicle Information");
             return;
         }
 
-        // Get input values
+        try
+        {
+        // Get input values, handling empty strings for optional fields
         String dealerId = dealershipComboBox.getValue();
         String vehicleId = vehicleIdField.getText();
-        String vehicleManufacturer = vehicleManufacturerField.getText();
+        String vehicleManufacturer = vehicleManufacturerField.getText().isEmpty() ? null : vehicleManufacturerField.getText();
         String vehicleModel = vehicleModelField.getText();
         String vehicleType = vehicleTypeField.getText();
         String acquisitionDateStr = acquisitionDateField.getText();
+        Long acquisitionDate = acquisitionDateStr.isEmpty() ? null : parseAcquisitionDate(acquisitionDateStr);
         String vehiclePriceStr = vehiclePriceField.getText();
-        String priceUnit = priceUnitField.getText();
+        Long vehiclePrice = parseVehiclePrice(vehiclePriceStr);
+        String priceUnit = priceUnitField.getText().isEmpty() ? null : priceUnitField.getText();
 
-        try {
-            // Parse input values
-            //TODO make into methods that throw custom exceptions instead of generic
-            Long vehiclePrice = Long.parseLong(vehiclePriceStr);
-            Long acquisitionDate = Long.parseLong(acquisitionDateStr);
+
+            if (dealerId == null) {
+                throw new DealershipNotSelectedException("No dealership has been selected yet");
+            }
 
             // Call AppStateManager to add the vehicle
             AppStateManager.manualVehicleAdd(dealerId, vehicleId, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
 
-            System.out.println("Vehicle added successfully.");
-            // Reset fields
+            JOptionPane.showMessageDialog(null, "Vehicle ID " + vehicleId + " has been successfully added");
             resetFields();
 
-
+        } catch (VehicleAlreadyExistsException | InvalidPriceException |
+                 DealershipNotAcceptingVehiclesException | InvalidVehicleTypeException |
+                 InvalidAcquisitionDateException | InvalidLongPriceException |
+                 DealershipNotSelectedException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        //TODO: Make custom exceptions to handle both variables separately.
-        catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Invalid format for price.");
-        }
-        catch (VehicleAlreadyExistsException e)
-        {
-            JOptionPane.showMessageDialog(null, "Vehicle ID already exists in inventory");
-        }
-        catch (InvalidPriceException e)
-        {
-            JOptionPane.showMessageDialog(null, "Price is invalid, please enter an integer greater than 0");
-        }
-        catch (DealershipNotAcceptingVehiclesException e)
-        {
-            JOptionPane.showMessageDialog(null, "Dealership is not currently accepting vehicles");
-        }
-        catch (InvalidVehicleTypeException e)
-        {
-            JOptionPane.showMessageDialog(null,"Invalid vehicle type, valid vehicle types are SUV, Sedan, Sports Car, Pickup");
-        }
-
-        // Reset Fields
-        resetFields();
     }
 
+
+    /**
+     * Handles the action when the reset button is clicked.
+     * Clears all input fields.
+     *
+     * @param event The ActionEvent triggered by the reset button.
+     */
     @FXML
     private void handleResetButton(ActionEvent event) {
         resetFields();
     }
 
+    /**
+     * Resets all input fields to their default empty state.
+     */
     private void resetFields() {
         vehicleTypeField.clear();
         vehicleIdField.clear();
@@ -142,4 +159,35 @@ public class VehicleEntryController implements Initializable {
         acquisitionDateField.clear();
         priceUnitField.clear();
     }
+
+    /**
+     * Parses a string representing a vehicle price into a Long.
+     *
+     * @param priceStr The string to parse.
+     * @return The parsed vehicle price as a Long.
+     * @throws InvalidLongPriceException If the string cannot be parsed into a Long.
+     */
+    private Long parseVehiclePrice(String priceStr) throws InvalidLongPriceException {
+        try {
+            return Long.parseLong(priceStr);
+        } catch (NumberFormatException e) {
+            throw new InvalidLongPriceException("Invalid format for vehicle price. Please enter a valid integer number.");
+        }
+    }
+
+    /**
+     * Parses a string representing an acquisition date into a Long.
+     *
+     * @param dateStr The string to parse.
+     * @return The parsed acquisition date as a Long.
+     * @throws InvalidAcquisitionDateException If the string cannot be parsed into a Long.
+     */
+    private Long parseAcquisitionDate(String dateStr) throws InvalidAcquisitionDateException {
+        try {
+            return Long.parseLong(dateStr);
+        } catch (NumberFormatException e) {
+            throw new InvalidAcquisitionDateException("Invalid format for acquisition date. Please enter a valid Epoch time number.");
+        }
+    }
+
 }
