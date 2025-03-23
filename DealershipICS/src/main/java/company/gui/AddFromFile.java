@@ -11,15 +11,12 @@ import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
 import javax.swing.*;
-import javax.swing.table.TableColumn;
-import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static company.gui.FXMLPaths.ADD_FROM_FILE;
-import static company.gui.FXMLPaths.ADD_INVENTORY;
+import static company.gui.FXMLPath.ADD_FROM_FILE;
+import static company.gui.FXMLPath.ADD_INVENTORY;
 
 public class AddFromFile {
 

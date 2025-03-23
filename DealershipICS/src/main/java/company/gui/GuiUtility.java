@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,32 +22,6 @@ import java.util.Map;
  * such as navigating between screens and setting the window size.
  */
 public class GuiUtility {
-
-    /**
-     * Helper method to get the screen title based on the FXML path.
-     *
-     * @param fxmlPath The FXML path to determine the screen title.
-     * @return The screen title corresponding to the given FXML path.
-     */
-    public static String getScreenTitle(String fxmlPath) {
-        switch (fxmlPath) {
-            case FXMLPaths.MAIN_SCREEN:
-                return "Main Menu";
-            case FXMLPaths.INVENTORY_SCREEN:
-                return "Inventory Management";
-            case FXMLPaths.LOAD_INVENTORY:
-                return "Load Inventory";
-            case FXMLPaths.PROFILE_MANAGEMENT:
-                return "Profile Management";
-            case FXMLPaths.ADD_INVENTORY:
-                return "Add Inventory";
-            case FXMLPaths.ADD_FROM_FILE:
-                return "Load From File";
-            default:
-                return "Unknown Screen";
-        }
-    }
-
 
     /**
      * Sets the size of the stage and ensures the size is retained across scene changes.

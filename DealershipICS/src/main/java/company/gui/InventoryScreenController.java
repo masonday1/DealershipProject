@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import static company.gui.FXMLPaths.*;
+import static company.gui.FXMLPath.*;
 
 
 

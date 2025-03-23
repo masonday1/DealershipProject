@@ -6,7 +6,7 @@ import javafiles.domainfiles.Dealership;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import static company.gui.FXMLPaths.*;
+import static company.gui.FXMLPath.*;
 
 public class DealershipApp extends Application {
     

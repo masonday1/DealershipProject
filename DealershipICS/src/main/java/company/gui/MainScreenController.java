@@ -16,7 +16,7 @@ import javafiles.dataaccessfiles.FileIOBuilder;
 import javafiles.dataaccessfiles.FileIO;
 import javafiles.domainfiles.Company;
 
-import static company.gui.FXMLPaths.*;
+import static company.gui.FXMLPath.*;
 
 public class MainScreenController {
 

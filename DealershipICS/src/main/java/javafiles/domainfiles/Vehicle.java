@@ -181,6 +181,7 @@ public abstract class Vehicle {
         Key.VEHICLE_MANUFACTURER.putNonNull(map, vehicleManufacturer);
         Key.VEHICLE_MODEL.putNonNull(map, vehicleModel);
         Key.VEHICLE_PRICE.putNonNull(map, vehiclePrice);
+        Key.VEHICLE_PRICE_UNIT.putNonNull(map, priceUnit);
         Key.VEHICLE_ACQUISITION_DATE.putNonNull(map, acquisitionDate);
         Key.VEHICLE_TYPE.putNonNull(map, vehicleType);
         Key.VEHICLE_RENTAL_STATUS.putNonNull(map, rental);

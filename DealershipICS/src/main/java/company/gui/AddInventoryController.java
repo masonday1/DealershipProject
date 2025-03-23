@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 
 import java.io.IOException;
 
-import static company.gui.FXMLPaths.*;
+import static company.gui.FXMLPath.*;
 
 
 public class AddInventoryController {
