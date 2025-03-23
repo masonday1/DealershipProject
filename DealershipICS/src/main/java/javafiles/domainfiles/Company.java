@@ -43,7 +43,7 @@ public class Company {
      * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
      * @return The Dealership we are searching for in listDealerships (null if absent).
      */
-    private Dealership findDealership(String dealerId) {
+    public Dealership findDealership(String dealerId) {
         for (Dealership dealership : listDealerships) {
             if (dealership.getDealerId().equals(dealerId)) {
                 return dealership;

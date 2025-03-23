@@ -17,6 +17,7 @@ import javafiles.dataaccessfiles.JSONIO;
 import javafiles.domainfiles.Company;
 
 import static company.gui.FXMLPaths.*;
+import javafiles.dataaccessfiles.FileIO;
 
 public class MainScreenController {
 
@@ -80,7 +81,7 @@ public class MainScreenController {
                     System.out.println("File is empty: " + masterInventoryList);
                 } else {
                     System.out.println("File found and is not empty: " + masterInventoryList);
-                    JSONIO jsonIO = new JSONIO(masterInventoryList, 'r');
+                    FileIO jsonIO = new JSONIO(masterInventoryList, 'r');
                     List<Map<Key, Object>> data = jsonIO.readInventory();
                     data.addAll(jsonIO.readInventory());
                     company.dataToInventory(data);
