@@ -49,15 +49,6 @@ public abstract class FileIO {
         throw new ReadWriteException(message);
     }
 
-    protected boolean validMap(Map<Key, Object> map) {
-        for (Key key : Key.values()) {
-            if (key.getNeeded() && ( !map.containsKey(key) || !key.validObjectType(map)) ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public String toString() {return "Opened file \"" + file.toString() + "\" in (" + mode + ") mode.";}
 }

@@ -85,7 +85,7 @@ class JSONIO extends FileIO {
 
         for (Object jObj : jArray) {
             Map<Key, Object> map = readJSONObject((JSONObject) jObj);
-            if (validMap(map)) {maps.add(map);}
+            maps.add(map);
         }
 
         return maps;

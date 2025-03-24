@@ -1,9 +1,13 @@
 package company.gui;
 
 import javafiles.Key;
+import javafiles.customexceptions.ReadWriteException;
+import javafiles.dataaccessfiles.FileIO;
+import javafiles.dataaccessfiles.FileIOBuilder;
 import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +19,7 @@ import java.util.Map;
  */
 public class AppStateManager {
 
+    private static String masterInventoryList = "masterInventoryList.json";
     private static Company company;
 
     /**
@@ -87,5 +92,25 @@ public class AppStateManager {
 
     public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {
         return company.dataToInventory(maps);
+    }
+
+    protected static List<Map<Key, Object>> loadInitialFiles() {
+        try {
+            FileIO fileIO = FileIOBuilder.buildNewFileIO(masterInventoryList, 'r');
+            return company.dataToInventory(fileIO.readInventory());
+        } catch (ReadWriteException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    protected static void writeToInventory() {
+        List<Map<Key, Object>> data = company.getDataMap();
+        try {
+            FileIO fileIO = FileIOBuilder.buildNewFileIO(masterInventoryList, 'w');
+            fileIO.writeInventory(data);
+        } catch (ReadWriteException e) {
+            System.out.println("Inventory could not be loaded.");
+        }
     }
 }

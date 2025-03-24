@@ -1,0 +1,13 @@
+{
+  "car_inventory":[
+    {
+      "dealership_id":"12513",
+      "vehicle_type":"suv",
+      "vehicle_manufacturer":"Ford",
+      "vehicle_model":"Explorer",
+      "vehicle_id":"48934j",
+      "price": 20123,
+      "acquisition_date": 1515354694451
+    }
+  ]
+}

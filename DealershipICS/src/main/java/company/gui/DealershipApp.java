@@ -1,15 +1,25 @@
 package company.gui;
 
 
+import javafiles.Key;
+import javafiles.dataaccessfiles.FileIOBuilder;
 import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.util.List;
+import java.util.Map;
+
 import static company.gui.FXMLPath.*;
 
 public class DealershipApp extends Application {
-    
+
+    @Override
+    public void stop() {
+        AppStateManager.writeToInventory();
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -24,6 +34,12 @@ public class DealershipApp extends Application {
 
         // test *******************
         AppStateManager.initializeCompany(company);
+
+        FileIOBuilder.setupFileIOBuilders();
+        System.out.println("initial launch");
+        List<Map<Key, Object>> badDataMaps = AppStateManager.loadInitialFiles(); // TODO: decide what to do with bad maps
+        ProfileManagementController.setCompany(company);
+
         AppStateManager.addADealership(d1);
 
 

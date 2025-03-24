@@ -20,8 +20,6 @@ import static company.gui.FXMLPath.*;
 
 public class MainScreenController {
 
-    private static boolean initialLaunch = true;
-    private static String masterInventoryList = "masterInventoryList.json";
     private static Company company = new Company();
 
     public Company getCompany() {return company;}
@@ -37,14 +35,6 @@ public class MainScreenController {
     @FXML
     public void initialize() {
         // Move this code segment to a new class
-
-        if (initialLaunch) {
-            FileIOBuilder.setupFileIOBuilders();
-            System.out.println("initial launch");
-            List<Map<Key, Object>> badDataMaps= loadInitialFiles();
-            ProfileManagementController.setCompany(company);
-            initialLaunch = false;
-        }
         // TODO: Implement loading initial file class
         
     }
@@ -66,15 +56,5 @@ public class MainScreenController {
         SceneManager sceneManager = SceneManager.getInstance(null);
         sceneManager.switchScene(LOAD_INVENTORY);
 
-    }
-
-    private List<Map<Key, Object>> loadInitialFiles() {
-        try {
-            FileIO fileIO = FileIOBuilder.buildNewFileIO(masterInventoryList, 'r');
-            return company.dataToInventory(fileIO.readInventory());
-        } catch (ReadWriteException e) {
-            System.out.println(e.getMessage());
-            return new ArrayList<>();
-        }
     }
 }
