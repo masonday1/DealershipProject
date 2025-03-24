@@ -101,12 +101,7 @@ public class ProfileManagementController {
         }
     }
 
-    // TODO Is this necessary? handleEditDealershipName allows the name to be changed if blank
-    @FXML
-    private void handleAddDealershipName(ActionEvent event) {
-        System.out.println("Add Dealership Name button clicked");
-        // Add logic to add dealership name
-    }
+
 
     @FXML
     private void handleAddDealership(ActionEvent event) {
@@ -154,6 +149,23 @@ public class ProfileManagementController {
             System.out.println("Added new dealership: ID = " + finalDealershipId + ", Name = " + finalDealershipName);
         });
     }
+
+
+    @FXML
+    private void handleChangeReceivingStatus()
+    {
+
+    }
+
+    @FXML
+    private void handleChangeRentalStatus()
+    {
+
+    }
+
+
+
+
 
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
