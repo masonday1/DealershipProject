@@ -97,7 +97,8 @@ public class ProfileManagementController {
                 System.out.println("Updated dealership name to: " + newName);
             });
         } else {
-            System.out.println("No dealership selected.");
+            showErrorAlert("No Dealership Selected", "Please select a dealership,");
+
         }
     }
 
@@ -151,16 +152,40 @@ public class ProfileManagementController {
     }
 
 
+    /**
+     * Handles the "Change Receiving Status" button action, toggling the receiving status of the selected dealership.
+     */
     @FXML
-    private void handleChangeReceivingStatus()
-    {
-
+    private void handleChangeReceivingStatus() {
+        if (selectedDealershipRow != null) {
+            Dealership dealership = AppStateManager.getCompany().findDealership(selectedDealershipRow.getId());
+            if (dealership != null) {
+                boolean newStatus = !selectedDealershipRow.getReceivingEnabled();
+                AppStateManager.setDealershipReceivingStatus(dealership,newStatus);
+                selectedDealershipRow.setReceivingEnabled(newStatus);
+                dealershipTable.refresh();
+            }
+        } else {
+            showErrorAlert("No Dealership Selected", "Please select a dealership,");
+        }
     }
 
+    /**
+     * Handles the "Change Rental Status" button action, toggling the rental status of the selected dealership.
+     */
     @FXML
-    private void handleChangeRentalStatus()
-    {
-
+    private void handleChangeRentalStatus() {
+        if (selectedDealershipRow != null) {
+            Dealership dealership = AppStateManager.getCompany().findDealership(selectedDealershipRow.getId());
+            if (dealership != null) {
+                boolean newStatus = !selectedDealershipRow.getRentingEnabled();
+                AppStateManager.setDealershipRentalStatus(dealership,newStatus);
+                selectedDealershipRow.setRentingEnabled(newStatus);
+                dealershipTable.refresh();
+            }
+        } else {
+            showErrorAlert("No Dealership Selected", "Please select a dealership,");
+        }
     }
 
 
@@ -203,6 +228,15 @@ public class ProfileManagementController {
 
         public Boolean getReceivingEnabled() {
             return receivingEnabled;
+        }
+
+        public void setReceivingEnabled(Boolean receivingStatus) {
+            this.receivingEnabled = receivingStatus;
+        }
+
+        public void setRentingEnabled(Boolean rentalStatus)
+        {
+            this.rentingEnabled = rentalStatus;
         }
 
         public Boolean getRentingEnabled() {
