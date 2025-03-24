@@ -1,26 +1,35 @@
 package company.gui;
 
+import java.awt.RenderingHints;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import javafiles.domainfiles.Company;
 import javafiles.Key;
+import javafiles.domainfiles.Dealership;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import company.gui.ProfileManagementController.DealershipRow;
 import static company.gui.FXMLPath.*;
 
 
-public class ProfileManagementController
-{
-    private static Company company;
+public class ProfileManagementController {
+    private DealershipRow selectedDealershipRow;
+    List<Map<Key, Object>> dataMap;
 
     @FXML
     private TableView<DealershipRow> dealershipTable;
@@ -37,32 +46,37 @@ public class ProfileManagementController
     @FXML
     private TableColumn<DealershipRow, Boolean> rentingColumn;
 
-    public static void setCompany(Company company) {
-        ProfileManagementController.company = company;
-    }
-
     @FXML
     public void initialize() {
-        
         // Set up the columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         receivingColumn.setCellValueFactory(new PropertyValueFactory<>("receivingEnabled"));
         rentingColumn.setCellValueFactory(new PropertyValueFactory<>("rentingEnabled"));
 
-        // Populate the table
-        List<Map<Key, Object>> dataMap = company.getDataMap();
+        // Fetch the latest data from the Company object
+        List<Dealership> dealerships = AppStateManager.getCompany().getListDealerships();
         ObservableList<DealershipRow> tableData = FXCollections.observableArrayList();
 
-        for (Map<Key, Object> map : dataMap) {
-            String id = (String) map.get(Key.DEALERSHIP_ID);
-            String name = (String) map.get(Key.DEALERSHIP_NAME);
-            Boolean receivingEnabled = (Boolean) map.get(Key.DEALERSHIP_RECEIVING_STATUS);
-            Boolean rentingEnabled = (Boolean) map.get(Key.DEALERSHIP_RENTING_STATUS);
-
-            tableData.add(new DealershipRow(id, name, receivingEnabled, rentingEnabled));
+        // Populate the table with the latest dealership data
+        for (Dealership dealership : dealerships) {
+            tableData.add(new DealershipRow(
+                dealership.getDealerId(),
+                dealership.getDealerName(),
+                dealership.getStatusAcquiringVehicle(),
+                dealership.getRentingVehicles()
+            ));
         }
+
+        // Set the table data
         dealershipTable.setItems(tableData);
+
+        // Add a listener to the selected item in the table
+        dealershipTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedDealershipRow = newValue;
+            }
+        });
     }
 
     @FXML
@@ -73,10 +87,32 @@ public class ProfileManagementController
 
     @FXML
     private void handleEditDealershipName(ActionEvent event) {
-        System.out.println("Edit Dealership Name button clicked");
-        // Add logic to edit dealership name
+        if (selectedDealershipRow != null) {
+            System.out.println("Edit Dealership Name button clicked for: " + selectedDealershipRow.getId());
+
+            // Create a TextInputDialog to get the new name from the user
+            TextInputDialog dialog = new TextInputDialog(selectedDealershipRow.getName());
+            dialog.setTitle("Edit Dealership Name");
+            dialog.setHeaderText("Edit the name of the selected dealership");
+            dialog.setContentText("Enter new name:");
+
+            // Show the dialog and capture the result
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(newName -> {
+                // Update the name in the selected row
+                selectedDealershipRow.setName(newName);
+                AppStateManager.getCompany().findDealership(selectedDealershipRow.getId()).setName(newName);
+                
+                // Refresh the table to reflect the change
+                dealershipTable.refresh(); 
+                System.out.println("Updated dealership name to: " + newName);
+            });
+        } else {
+            System.out.println("No dealership selected.");
+        }
     }
 
+    // TODO Is this necessary? handleEditDealershipName allows the name to be changed if blank
     @FXML
     private void handleAddDealershipName(ActionEvent event) {
         System.out.println("Add Dealership Name button clicked");
@@ -86,7 +122,56 @@ public class ProfileManagementController
     @FXML
     private void handleAddDealership(ActionEvent event) {
         System.out.println("Add a Dealership button clicked");
-        // Add logic to add a dealership
+
+        String dealershipId = null;
+        while (dealershipId == null || dealershipId.trim().isEmpty()) {
+            // Prompt the user for the dealership ID
+            TextInputDialog idDialog = new TextInputDialog();
+            idDialog.setTitle("Add Dealership");
+            idDialog.setHeaderText("Enter the ID for the new dealership");
+            idDialog.setContentText("Dealership ID:");
+
+            Optional<String> idResult = idDialog.showAndWait();
+            if (idResult.isPresent()) {
+                dealershipId = idResult.get().trim();
+                if (dealershipId.isEmpty()) {
+                    showErrorAlert("Invalid Input", "Dealership ID is required. Please enter a valid ID.");
+                }
+            } else {
+                // User canceled the dialog
+                return;
+            }
+        }
+
+        // Prompt the user for the dealership name
+        TextInputDialog nameDialog = new TextInputDialog();
+        nameDialog.setTitle("Add Dealership");
+        nameDialog.setHeaderText("Enter the name for the new dealership");
+        nameDialog.setContentText("Dealership Name:");
+
+        Optional<String> nameResult = nameDialog.showAndWait();
+        final String finalDealershipId = dealershipId; // Make dealershipId effectively final
+        nameResult.ifPresent(dealershipName -> {
+            final String finalDealershipName = dealershipName; // Make dealershipName effectively final
+
+            // Create a new DealershipRow and add it to the table
+            DealershipRow newRow = new DealershipRow(finalDealershipId, finalDealershipName, false, false);
+            dealershipTable.getItems().add(newRow);
+
+            // Create a new Dealership object and add it to the Company object
+            Dealership dealership = new Dealership(finalDealershipId, finalDealershipName);
+            AppStateManager.addADealership(dealership);
+
+            System.out.println("Added new dealership: ID = " + finalDealershipId + ", Name = " + finalDealershipName);
+        });
+    }
+
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     // Inner class to represent a row in the table
@@ -109,6 +194,10 @@ public class ProfileManagementController
 
         public String getName() {
             return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public Boolean getReceivingEnabled() {

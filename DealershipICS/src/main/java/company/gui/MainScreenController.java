@@ -42,7 +42,7 @@ public class MainScreenController {
             FileIOBuilder.setupFileIOBuilders();
             System.out.println("initial launch");
             List<Map<Key, Object>> badDataMaps= loadInitialFiles();
-            ProfileManagementController.setCompany(company);
+
             initialLaunch = false;
         }
         // TODO: Implement loading initial file class

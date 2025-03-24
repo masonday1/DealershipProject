@@ -43,6 +43,7 @@ public class Dealership {
 
     // Getters:
     public String getDealerId () {return dealerId;}
+    public String getDealerName () {return name;}
     public boolean getStatusAcquiringVehicle() {return receivingVehicle;}
     public boolean getRentingVehicles() {return rentingVehicles;}
     public ArrayList<Vehicle> getSaleVehicles() {return salesInventory;}
