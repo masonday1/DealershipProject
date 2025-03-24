@@ -140,7 +140,7 @@ public class ProfileManagementController {
             final String finalDealershipName = dealershipName; // Make dealershipName effectively final
 
             // Create a new DealershipRow and add it to the table
-            DealershipRow newRow = new DealershipRow(finalDealershipId, finalDealershipName, false, false);
+            DealershipRow newRow = new DealershipRow(finalDealershipId, finalDealershipName, true, false);
             dealershipTable.getItems().add(newRow);
 
             // Create a new Dealership object and add it to the Company object
