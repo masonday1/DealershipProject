@@ -11,10 +11,13 @@
 
     <top>
         <Button text="Back" onAction="#handleBack"
-                BorderPane.alignment="TOP_LEFT">
+                BorderPane.alignment="TOP_LEFT" minWidth="125">
             <BorderPane.margin>
                 <Insets top="10" left="10"/>
             </BorderPane.margin>
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20" />
+            </padding>
         </Button>
     </top>
 
@@ -24,11 +27,18 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             <children>
-                <Button text="Load From File" onAction="#handleLoadFromFile"/>
-                <Button text="Enter Manually" onAction="#handleEnterManually"/>
+                <Button text="Load From File" onAction="#handleLoadFromFile" minWidth="250">
+                    <padding>
+                        <Insets top="10" right="20" bottom="10" left="20" />
+                    </padding>
+                </Button>
+                <Button text="Enter Manually" onAction="#handleEnterManually" minWidth="250">
+                    <padding>
+                        <Insets top="10" right="20" bottom="10" left="20" />
+                    </padding>
+                </Button>
             </children>
         </VBox>
     </center>
 
 </BorderPane>
-

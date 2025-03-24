@@ -43,7 +43,7 @@ public class Company {
      * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
      * @return The Dealership we are searching for in listDealerships (null if absent).
      */
-    private Dealership findDealership(String dealerId) {
+    public Dealership findDealership(String dealerId) {
         for (Dealership dealership : listDealerships) {
             if (dealership.getDealerId().equals(dealerId)) {
                 return dealership;
@@ -149,6 +149,7 @@ public class Company {
         }
     }
 
+    //TODO: Decide whether we need this method still called in javafiles.Main
     /**
      * Generates a formatted list of Dealership IDs.
      * <p>
@@ -175,6 +176,32 @@ public class Company {
             return "No valid Dealerships.";
         }
         return output.toString();
+    }
+
+    /**
+     * Returns an ArrayList of Strings representing all Dealership IDs in the company.
+     *
+     * @return An ArrayList of Strings containing all Dealership IDs.
+     */
+    public ArrayList<String> getAllDealershipIds() {
+        ArrayList<String> dealershipIds = new ArrayList<>();
+        for (Dealership dealership : listDealerships) {
+            dealershipIds.add(dealership.getDealerId());
+        }
+        return dealershipIds;
+    }
+
+    public List<Map<String, Object>> getDealershipInfoList() {
+        List<Map<String, Object>> dealershipInfoList = new ArrayList<>();
+        for (Dealership dealership : listDealerships) {
+            Map<String, Object> dealershipInfo = new HashMap<>();
+            dealershipInfo.put("id", dealership.getDealerId());
+            dealershipInfo.put("name", dealership.getDealerName());
+            dealershipInfo.put("receivingEnabled", dealership.getStatusAcquiringVehicle());
+            dealershipInfo.put("rentingEnabled", dealership.getRentingVehicles());
+            dealershipInfoList.add(dealershipInfo);
+        }
+        return dealershipInfoList;
     }
 
     /**

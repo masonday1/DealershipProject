@@ -43,6 +43,7 @@ public class Dealership {
 
     // Getters:
     public String getDealerId () {return dealerId;}
+    public String getDealerName () {return name;}
     public boolean getStatusAcquiringVehicle() {return receivingVehicle;}
     public boolean getRentingVehicles() {return rentingVehicles;}
     public ArrayList<Vehicle> getSaleVehicles() {return salesInventory;}
@@ -209,9 +210,8 @@ public class Dealership {
      * @author Christopher Engelhart
      */
     public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, Long vehiclePrice,
-                                 Long acquisitionDate, String vehicleType) throws InvalidVehicleTypeException,
+                                 Long acquisitionDate, String vehicleType, String priceUnit) throws InvalidVehicleTypeException,
             VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
-        // TODO: include price unit in function call (for fillVehicle)
 
         // Ensure the vehicle price is positive.
         if (vehiclePrice <= 0) {
@@ -220,7 +220,7 @@ public class Dealership {
 
         Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleId, vehicleModel, vehiclePrice);
 
-        vehicleFactory.fillVehicle(newVehicle, vehicleManufacturer, acquisitionDate, null, null);
+        vehicleFactory.fillVehicle(newVehicle, vehicleManufacturer, acquisitionDate, priceUnit, null);
 
         this.addIncomingVehicle(newVehicle);
     }

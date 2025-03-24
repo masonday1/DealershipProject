@@ -4,6 +4,10 @@ import javafiles.Key;
 import javafiles.customexceptions.ReadWriteException;
 import javafiles.dataaccessfiles.FileIO;
 import javafiles.dataaccessfiles.FileIOBuilder;
+import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
+import javafiles.customexceptions.InvalidPriceException;
+import javafiles.customexceptions.InvalidVehicleTypeException;
+import javafiles.customexceptions.VehicleAlreadyExistsException;
 import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
 
@@ -113,4 +117,87 @@ public class AppStateManager {
             System.out.println("Inventory could not be loaded.");
         }
     }
+
+    public static ArrayList<String> getDealershipIDs()
+    {
+        return company.getAllDealershipIds();
+    }
+
+    /**
+     * Retrieves a List of DealershipRow objects representing dealership data.
+     * </p>
+     * This method fetches dealership information from the Company instance using
+     * {@link Company#getDealershipInfoList()} and converts it into a List of
+     * {@link ProfileManagementController.DealershipRow} objects.
+     *
+     * @return A List of {@link ProfileManagementController.DealershipRow} objects containing
+     *         dealership data such as ID, name, receiving status, and renting status.
+     */
+    public static List<ProfileManagementController.DealershipRow> getDealershipRows() {
+        List<Map<String, Object>> dealershipInfoList = company.getDealershipInfoList();
+        List<ProfileManagementController.DealershipRow> dealershipRows = new ArrayList<>();
+
+        for (Map<String, Object> info : dealershipInfoList) {
+            String id = (String) info.get("id");
+            String name = (String) info.get("name");
+            Boolean receivingEnabled = (Boolean) info.get("receivingEnabled");
+            Boolean rentingEnabled = (Boolean) info.get("rentingEnabled");
+
+            dealershipRows.add(new ProfileManagementController.DealershipRow(id, name, receivingEnabled, rentingEnabled));
+        }
+        return dealershipRows;
+    }
+
+
+    /**
+     * Manually adds a vehicle to a dealership's inventory.
+     * This method locates the specified dealership, validates the vehicle data,
+     * and adds the vehicle to the dealership's inventory.
+     *
+     * @param dealershipID      The ID of the dealership to add the vehicle to.
+     * @param vehicleID         The unique ID of the vehicle.
+     * @param vehicleManufacturer The manufacturer of the vehicle.
+     * @param vehicleModel      The model of the vehicle.
+     * @param vehiclePrice      The price of the vehicle.
+     * @param acquisitionDate   The acquisition date of the vehicle.
+     * @param vehicleType       The type of the vehicle.
+     * @param priceUnit         The unit of the price.
+     * @throws VehicleAlreadyExistsException       If a vehicle with the same ID already exists in the dealership's inventory.
+     * @throws InvalidPriceException              If the vehicle price is invalid.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not accepting vehicles.
+     * @throws InvalidVehicleTypeException         If the vehicle type is invalid.
+     * @throws IllegalArgumentException            If the dealership ID is not found.
+     */
+    public static void manualVehicleAdd(String dealershipID, String vehicleID, String vehicleManufacturer, String vehicleModel, Long vehiclePrice, Long acquisitionDate, String vehicleType, String priceUnit)
+            throws VehicleAlreadyExistsException, InvalidPriceException, DealershipNotAcceptingVehiclesException,
+            InvalidVehicleTypeException {
+
+        Dealership dealership = company.findDealership(dealershipID);
+        if (dealership == null) {
+            throw new IllegalArgumentException("Dealership ID not found: " + dealershipID);
+        }
+
+        dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
+    }
+
+
+    /**
+        Sets receiving status for a {@link Dealership} in the company.
+        Method calls {@link Dealership#setReceivingVehicle(Boolean)}
+     */
+    public static void setDealershipReceivingStatus(Dealership dealership,boolean status)
+    {
+        dealership.setReceivingVehicle(status);
+    }
+
+    /**
+     Sets rental status for a {@link Dealership} in the company.
+     Method calls {@link Dealership#setRentingVehicles(Boolean)}
+     */
+    public static void setDealershipRentalStatus(Dealership dealership,boolean status)
+    {
+        dealership.setRentingVehicles(status);
+    }
+
+
 }

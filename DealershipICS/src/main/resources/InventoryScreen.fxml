@@ -29,36 +29,71 @@
 
     <Button text="Back" onAction="#handleBack"
             GridPane.columnIndex="0" GridPane.rowIndex="0"
-            GridPane.halignment="LEFT" GridPane.valignment="TOP"/>
+            GridPane.halignment="LEFT" GridPane.valignment="TOP"
+            minWidth="125">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="20" />
+        </padding>
+    </Button>
 
     <Button text="Add Vehicle to Dealership" fx:id="btnAddVehicle"
             onAction="#handleAddVehicleToDealership"
             GridPane.columnIndex="0" GridPane.rowIndex="1"
-            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+            GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+            minWidth="250">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="20" />
+        </padding>
+    </Button>
 
     <Button text="Remove Vehicle from Dealership" fx:id="btnRemoveVehicle"
             onAction="#handleRemoveVehicleFromDealership"
             GridPane.columnIndex="0" GridPane.rowIndex="2"
-            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+            GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+            minWidth="250">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="20" />
+        </padding>
+    </Button>
 
     <Button text="Transfer Vehicle Between Dealerships" fx:id="btnTransferVehicle"
             onAction="#handleTransferVehicleBetweenDealerships"
             GridPane.columnIndex="0" GridPane.rowIndex="3"
-            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+            GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+            minWidth="250">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="20" />
+        </padding>
+    </Button>
 
     <Button text="Enable Vehicle Rental" fx:id="btnEnableRental"
             onAction="#handleEnableVehicleRental"
             GridPane.columnIndex="1" GridPane.rowIndex="1"
-            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+            GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+            minWidth="250">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="20" />
+        </padding>
+    </Button>
 
     <Button text="Disable Vehicle Rental" fx:id="btnDisableRental"
             onAction="#handleDisableVehicleRental"
             GridPane.columnIndex="1" GridPane.rowIndex="2"
-            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+            GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+            minWidth="250">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="20" />
+        </padding>
+    </Button>
 
     <Button text="View Company Inventory" fx:id="btnViewInventory"
             onAction="#handleViewCompanyInventory"
             GridPane.columnIndex="1" GridPane.rowIndex="3"
-            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+            GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+            minWidth="250">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="20" />
+        </padding>
+    </Button>
 
 </GridPane>

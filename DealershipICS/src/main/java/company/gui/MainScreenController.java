@@ -29,8 +29,7 @@ public class MainScreenController {
     private Button manageCompanyInventoryButton;
     @FXML
     private Button ManageCompanyProfileButton;
-    @FXML
-    private Button LoadInventoryButton;
+
 
     @FXML
     public void initialize() {
@@ -49,12 +48,5 @@ public class MainScreenController {
     private void handleManageCompanyProfile(ActionEvent event) throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
         sceneManager.switchScene( PROFILE_MANAGEMENT);
-    }
-
-    @FXML
-    private void handleLoadInventory(ActionEvent event) throws IOException {
-        SceneManager sceneManager = SceneManager.getInstance(null);
-        sceneManager.switchScene(LOAD_INVENTORY);
-
     }
 }

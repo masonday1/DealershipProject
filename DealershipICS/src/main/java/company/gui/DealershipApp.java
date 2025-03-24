@@ -28,9 +28,9 @@ public class DealershipApp extends Application {
 
         // just for testing purposes **************
         Dealership d1 = new Dealership("123","ICS372");
-        d1.manualVehicleAdd("abc","Toyota","Prius",50000L,1742696542L,"Sedan");
-        d1.manualVehicleAdd("cde","Toyota","Prius",50000L,1742696542L,"Sedan");
-        d1.manualVehicleAdd("efg","Toyota","Prius",50000L,1742696542L,"Sedan");
+        d1.manualVehicleAdd("abc","Toyota","Prius",50000L,1742696542L,"Sedan",null);
+        d1.manualVehicleAdd("cde","Toyota","Prius",50000L,1742696542L,"Sedan",null);
+        d1.manualVehicleAdd("efg","Toyota","Prius",50000L,1742696542L,"Sedan",null);
 
         // test *******************
         AppStateManager.initializeCompany(company);
@@ -38,7 +38,6 @@ public class DealershipApp extends Application {
         FileIOBuilder.setupFileIOBuilders();
         System.out.println("initial launch");
         List<Map<Key, Object>> badDataMaps = AppStateManager.loadInitialFiles(); // TODO: decide what to do with bad maps
-        ProfileManagementController.setCompany(company);
 
         AppStateManager.addADealership(d1);
 
