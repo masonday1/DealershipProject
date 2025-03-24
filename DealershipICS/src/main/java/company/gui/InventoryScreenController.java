@@ -45,8 +45,9 @@ public class InventoryScreenController
     }
 
     @FXML
-    private void handleEnableVehicleRental() {
-        System.out.println("Enable rental clicked");
+    private void handleEnableVehicleRental() throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(VEHIClE_RENTAL);
     }
 
     @FXML

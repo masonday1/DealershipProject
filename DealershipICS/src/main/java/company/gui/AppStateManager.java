@@ -1,21 +1,19 @@
 package company.gui;
 
 import javafiles.Key;
-import javafiles.customexceptions.ReadWriteException;
+import javafiles.customexceptions.*;
 import javafiles.dataaccessfiles.FileIO;
 import javafiles.dataaccessfiles.FileIOBuilder;
-import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
-import javafiles.customexceptions.InvalidPriceException;
-import javafiles.customexceptions.InvalidVehicleTypeException;
-import javafiles.customexceptions.VehicleAlreadyExistsException;
 import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
+import javafiles.domainfiles.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 
 /**
@@ -125,6 +123,23 @@ public class AppStateManager {
         return company.getAllDealershipIds();
     }
 
+
+    /**
+     * Retrieves a list of dealership IDs that currently have renting enabled.
+     *
+     * @return A list of dealership IDs that are currently renting enabled.
+     */
+    public static List<String> getRentingEnabledDealershipIDs()
+    {
+        return company.getListDealerships().stream()
+                .filter(dealership -> company.isDealershipRentingEnabled(dealership.getDealerId()))
+                .map(Dealership::getDealerId)
+                .collect(Collectors.toList());
+    }
+
+
+
+
     /**
      * Retrieves a List of DealershipRow objects representing dealership data.
      * </p>
@@ -154,6 +169,8 @@ public class AppStateManager {
         }
         return dealershipRows;
     }
+
+
 
 
     /**
@@ -206,5 +223,11 @@ public class AppStateManager {
         dealership.setRentingVehicles(status);
     }
 
+    public static void updateDealershipVehicleRentalState(String dealershipid, Vehicle updatedVehicle) throws
+            VehicleAlreadyExistsException, DealershipNotRentingException, VehicleNotRentableException,
+            DealershipNotAcceptingVehiclesException, EmptyInventoryException
+    {
+        company.updateVehicleRental(dealershipid, updatedVehicle);
+    }
 
 }

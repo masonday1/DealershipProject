@@ -1,6 +1,7 @@
 package javafiles.domainfiles;
 
 import javafiles.Key;
+import javafiles.customexceptions.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,86 @@ public class Company {
         }
         return null;
     }
+
+
+    /**
+     * Checks if a dealership with the given ID has renting services enabled.
+     *
+     * @param dealershipId The ID of the dealership to check.
+     * @return true if the dealership has renting enabled, false otherwise.
+     */
+    public boolean isDealershipRentingEnabled(String dealershipId) {
+        Dealership dealership = findDealership(dealershipId);
+        if (dealership != null) {
+            return dealership.getRentingVehicles();
+        }
+        return false; // Dealership not found, or renting is disabled.
+    }
+
+
+
+    /**
+     * Updates the rental status of a vehicle within a dealership and moves it between
+     * the dealership's sales and rental inventories based on the updated rental status.
+     *
+     * @param dealershipid     The dealershipid of {@link Dealership }containing the vehicle to update.
+     * @param updatedVehicle The {@link Vehicle} with the updated rental status.
+     * @throws VehicleAlreadyExistsException       If the vehicle already exists in the destination inventory.
+     * @throws DealershipNotRentingException       If the dealership is not currently renting vehicles.
+     * @throws VehicleNotRentableException         If the updated vehicle is not rentable.
+     * @throws EmptyInventoryException            If the source inventory is empty.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not accepting new vehicles.
+     * @throws VehicleNotFoundException            if the vehicle is not found in inventory
+     */
+    public void updateVehicleRental(String dealershipid, Vehicle updatedVehicle)
+            throws VehicleAlreadyExistsException, DealershipNotRentingException,
+            VehicleNotRentableException, EmptyInventoryException,
+            DealershipNotAcceptingVehiclesException {
+
+        Vehicle foundVehicle = null;
+        ArrayList<Vehicle> sourceInventory = null;
+        Dealership dealership = findDealership(dealershipid);
+
+        // Find the vehicle in either inventory
+        for (Vehicle vehicle : dealership.getSaleVehicles()) {
+            if (vehicle.getVehicleId().equals(updatedVehicle.getVehicleId())) {
+                foundVehicle = vehicle;
+                sourceInventory = dealership.getSaleVehicles();
+                break;
+            }
+        }
+        if (foundVehicle == null) {
+            for (Vehicle vehicle : dealership.getRentalVehicles()) {
+                if (vehicle.getVehicleId().equals(updatedVehicle.getVehicleId())) {
+                    foundVehicle = vehicle;
+                    sourceInventory = dealership.getRentalVehicles();
+                    break;
+                }
+            }
+        }
+
+        if (foundVehicle == null) {
+            // Vehicle not found in either inventory
+            throw new VehicleNotFoundException("Vehicle not found in dealershipID " + dealership.getDealerId() + " inventory");
+        }
+
+        // Update the vehicle's rental status
+        foundVehicle.setRental(updatedVehicle.getRentalStatus());
+
+        // Move the vehicle to the appropriate inventory
+        if (updatedVehicle.getRentalStatus()) {
+            // Move to rental inventory
+            dealership.addRentalVehicle(foundVehicle);
+        } else {
+            // Move to sales inventory
+            dealership.addIncomingVehicle(foundVehicle);
+        }
+
+        // Remove from the source inventory
+        dealership.tryRemoveVehicleFromInventory(foundVehicle, sourceInventory);
+    }
+
+
 
     /**
      * Takes a List of Map<Key, Object>s representing a List of Vehicle information
