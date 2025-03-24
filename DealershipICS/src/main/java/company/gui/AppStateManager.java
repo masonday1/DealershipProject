@@ -99,6 +99,30 @@ public class AppStateManager {
         return company.getAllDealershipIds();
     }
 
+    /**
+     * Retrieves a List of DealershipRow objects representing dealership data.
+     * </p>
+     * This method fetches dealership information from the Company instance using 
+     * {@link Company#getDealershipInfoList()} and converts it into a List of 
+     * {@link ProfileManagementController.DealershipRow} objects.
+     * 
+     * @return A List of {@link ProfileManagementController.DealershipRow} objects containing 
+     *         dealership data such as ID, name, receiving status, and renting status.
+     */
+    public static List<ProfileManagementController.DealershipRow> getDealershipRows() {
+        List<Map<String, Object>> dealershipInfoList = company.getDealershipInfoList();
+        List<ProfileManagementController.DealershipRow> dealershipRows = new ArrayList<>();
+    
+        for (Map<String, Object> info : dealershipInfoList) {
+            String id = (String) info.get("id");
+            String name = (String) info.get("name");
+            Boolean receivingEnabled = (Boolean) info.get("receivingEnabled");
+            Boolean rentingEnabled = (Boolean) info.get("rentingEnabled");
+    
+            dealershipRows.add(new ProfileManagementController.DealershipRow(id, name, receivingEnabled, rentingEnabled));
+        }
+        return dealershipRows;
+    }
 
     public static void manualVehicleAdd(String dealershipID, String vehicleID, String vehicleManufacturer, String vehicleModel, Long vehiclePrice, Long acquisitionDate, String vehicleType, String priceUnit)
             throws VehicleAlreadyExistsException, InvalidPriceException, DealershipNotAcceptingVehiclesException,
@@ -111,5 +135,4 @@ public class AppStateManager {
 
         dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
     }
-
 }

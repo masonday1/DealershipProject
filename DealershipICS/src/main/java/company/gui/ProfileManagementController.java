@@ -54,19 +54,8 @@ public class ProfileManagementController {
         receivingColumn.setCellValueFactory(new PropertyValueFactory<>("receivingEnabled"));
         rentingColumn.setCellValueFactory(new PropertyValueFactory<>("rentingEnabled"));
 
-        // Fetch the latest data from the Company object
-        List<Dealership> dealerships = AppStateManager.getCompany().getListDealerships();
-        ObservableList<DealershipRow> tableData = FXCollections.observableArrayList();
-
-        // Populate the table with the latest dealership data
-        for (Dealership dealership : dealerships) {
-            tableData.add(new DealershipRow(
-                dealership.getDealerId(),
-                dealership.getDealerName(),
-                dealership.getStatusAcquiringVehicle(),
-                dealership.getRentingVehicles()
-            ));
-        }
+        // Fetch the dealership rows from AppStateManager
+        ObservableList<DealershipRow> tableData = FXCollections.observableArrayList(AppStateManager.getDealershipRows());
 
         // Set the table data
         dealershipTable.setItems(tableData);

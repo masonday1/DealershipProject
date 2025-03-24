@@ -191,6 +191,18 @@ public class Company {
         return dealershipIds;
     }
 
+    public List<Map<String, Object>> getDealershipInfoList() {
+        List<Map<String, Object>> dealershipInfoList = new ArrayList<>();
+        for (Dealership dealership : listDealerships) {
+            Map<String, Object> dealershipInfo = new HashMap<>();
+            dealershipInfo.put("id", dealership.getDealerId());
+            dealershipInfo.put("name", dealership.getDealerName());
+            dealershipInfo.put("receivingEnabled", dealership.getStatusAcquiringVehicle());
+            dealershipInfo.put("rentingEnabled", dealership.getRentingVehicles());
+            dealershipInfoList.add(dealershipInfo);
+        }
+        return dealershipInfoList;
+    }
 
     /**
      * Returns a String displaying the current receiving status of the
