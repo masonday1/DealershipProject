@@ -1,7 +1,5 @@
 package company.gui;
 
-import java.awt.RenderingHints;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,24 +10,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import javafiles.Key;
 import javafiles.domainfiles.Dealership;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import company.gui.ProfileManagementController.DealershipRow;
 import static company.gui.FXMLPath.*;
 
 
 public class ProfileManagementController {
     private DealershipRow selectedDealershipRow;
-    List<Map<Key, Object>> dataMap;
 
     @FXML
     private TableView<DealershipRow> dealershipTable;
@@ -102,8 +92,6 @@ public class ProfileManagementController {
         }
     }
 
-
-
     @FXML
     private void handleAddDealership(ActionEvent event) {
         System.out.println("Add a Dealership button clicked");
@@ -135,9 +123,9 @@ public class ProfileManagementController {
         nameDialog.setContentText("Dealership Name:");
 
         Optional<String> nameResult = nameDialog.showAndWait();
-        final String finalDealershipId = dealershipId; // Make dealershipId effectively final
+        final String finalDealershipId = dealershipId; 
         nameResult.ifPresent(dealershipName -> {
-            final String finalDealershipName = dealershipName; // Make dealershipName effectively final
+            final String finalDealershipName = dealershipName; 
 
             // Create a new DealershipRow and add it to the table
             DealershipRow newRow = new DealershipRow(finalDealershipId, finalDealershipName, true, false);
@@ -150,7 +138,6 @@ public class ProfileManagementController {
             System.out.println("Added new dealership: ID = " + finalDealershipId + ", Name = " + finalDealershipName);
         });
     }
-
 
     /**
      * Handles the "Change Receiving Status" button action, toggling the receiving status of the selected dealership.
@@ -187,10 +174,6 @@ public class ProfileManagementController {
             showErrorAlert("No Dealership Selected", "Please select a dealership,");
         }
     }
-
-
-
-
 
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
