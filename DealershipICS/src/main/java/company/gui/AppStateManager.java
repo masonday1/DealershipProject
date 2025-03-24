@@ -14,6 +14,8 @@ import javafiles.domainfiles.Dealership;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 
 /**
@@ -136,6 +138,7 @@ public class AppStateManager {
     public static List<ProfileManagementController.DealershipRow> getDealershipRows() {
         List<Map<String, Object>> dealershipInfoList = company.getDealershipInfoList();
         List<ProfileManagementController.DealershipRow> dealershipRows = new ArrayList<>();
+        Set<String> existingIds = new HashSet<>();
 
         for (Map<String, Object> info : dealershipInfoList) {
             String id = (String) info.get("id");
@@ -143,7 +146,11 @@ public class AppStateManager {
             Boolean receivingEnabled = (Boolean) info.get("receivingEnabled");
             Boolean rentingEnabled = (Boolean) info.get("rentingEnabled");
 
-            dealershipRows.add(new ProfileManagementController.DealershipRow(id, name, receivingEnabled, rentingEnabled));
+            // Check if the ID already exists
+            if (!existingIds.contains(id)) {
+                dealershipRows.add(new ProfileManagementController.DealershipRow(id, name, receivingEnabled, rentingEnabled));
+                existingIds.add(id);
+            } 
         }
         return dealershipRows;
     }

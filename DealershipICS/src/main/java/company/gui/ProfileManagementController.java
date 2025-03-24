@@ -107,8 +107,22 @@ public class ProfileManagementController {
             Optional<String> idResult = idDialog.showAndWait();
             if (idResult.isPresent()) {
                 dealershipId = idResult.get().trim();
+
+                // Check if the ID is empty
                 if (dealershipId.isEmpty()) {
                     showErrorAlert("Invalid Input", "Dealership ID is required. Please enter a valid ID.");
+                    dealershipId = null; // Reset to prompt again
+                    continue;
+                }
+
+                // Check if the ID already exists in the table data
+                final String currentDealershipId = dealershipId;
+                boolean idExists = dealershipTable.getItems().stream()
+                    .anyMatch(row -> row.getId().equalsIgnoreCase(currentDealershipId));
+                if (idExists) {
+                    String alert = "A Dealership with ID\"" + currentDealershipId + "\" already exists. \nPlease enter a unique Dealership ID.";
+                    showErrorAlert("Duplicate ID", alert);
+                    dealershipId = null; // Reset to prompt again
                 }
             } else {
                 // User canceled the dialog
