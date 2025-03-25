@@ -117,7 +117,9 @@ class DealershipTest {
         dealership.addIncomingVehicle(vehicle4);
 
         ArrayList<Vehicle> inventory = dealership.getSaleVehicles();
-        dealership.tryRemoveVehicleFromInventory(vehicle4, inventory);
+
+        fail("Function does not exist.");
+        // dealership.tryRemoveVehicleFromInventory(vehicle4, inventory);
 
         assertTrue(dealership.getSaleVehicles().isEmpty());
     }
@@ -128,7 +130,10 @@ class DealershipTest {
         inventory.add(vehicle1);
 
         Vehicle nonExistentVehicle = new Vehicle("Truck", "V999", "Model Y", 60000L, null) {};
-        boolean result = dealership.tryRemoveVehicleFromInventory(nonExistentVehicle, inventory);
+
+        fail("Function does not exist.");
+        //boolean result = dealership.tryRemoveVehicleFromInventory(nonExistentVehicle, inventory);
+        boolean result = true;
 
         assertFalse(result);
         assertEquals(1, dealership.getSaleVehicles().size());

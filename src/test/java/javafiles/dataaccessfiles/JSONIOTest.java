@@ -9,77 +9,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static javafiles.dataaccessfiles.FileIOBuilderTest.getMaps;
+import static javafiles.dataaccessfiles.FileIOBuilderTest.testMaps;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class JSONIOTest {
-
-    private JSONIO getJSONIO(String partialPath, char mode, boolean failExpected) {
-        FileIOBuilder.setupFileIOBuilders();
-
-        String dir = System.getProperty("user.dir");
-        String path = dir + "\\src\\test\\resources\\read_inventory_" + partialPath + ".json";
-
-        try {
-            JSONIO jsonIO = (JSONIO) FileIOBuilder.buildNewFileIO(path, mode);
-            assertFalse(failExpected);
-            return jsonIO;
-        } catch (ReadWriteException | ClassCastException e) {
-            assertTrue(failExpected);
-        }
-        return null;
-    }
-
-    private List<Map<Key, Object>> getMaps(JSONIO jsonIO, int mapNum) {
-        List<Map<Key, Object>> maps;
-        try {
-            maps = jsonIO.readInventory();
-            assertEquals(mapNum, maps.size());
-            return maps;
-        } catch (ReadWriteException e) {
-            fail(e);
-        }
-        return null;
-    }
-
-    private void testMaps(List<Map<Key, Object>> maps, List<Map<Key, Object>> testingMaps) {
-        assertEquals(maps.size(), testingMaps.size());
-        for (int i = 0; i < maps.size(); i++) {
-            Map<Key, Object> map = maps.get(i);
-            Map<Key, Object> testingMap = testingMaps.get(i);
-            assertEquals(map.size(), testingMap.size());
-            for (Key key : map.keySet()) {
-                Object mapVal = map.get(key);
-                Object testVal = testingMap.get(key);
-                assertAll(
-                        () -> assertEquals(mapVal, testVal),
-                        () -> assertNotNull(mapVal),
-                        () -> assertNotNull(testVal),
-                        () -> assertEquals(mapVal.getClass(), testVal.getClass())
-                );
-            }
-        }
+    private JSONIO getJSONIO(String partialPath, char mode, boolean failExpected) throws ReadWriteException {
+        return (JSONIO) FileIOBuilderTest.getFileIOForTest(partialPath, ".json", mode, failExpected);
     }
 
     @Test
     void fileDNERead() {
-        JSONIO jsonIO = getJSONIO("DNE", 'r', true);
-
-        assertNull(jsonIO);
+        try {
+            JSONIO jsonIO = getJSONIO("DNE", 'r', true);
+            fail(jsonIO.toString());
+        } catch (ReadWriteException e) {
+            assertTrue(FileIOBuilderTest.isPathNotFoundException(e));
+        }
     }
 
     @Test
     void fileDNEWrite() {
-        JSONIO jsonIO = getJSONIO("DNE", 'w', false);
-
-        assertNotNull(jsonIO);
+        try {
+            getJSONIO("DNE", 'w', false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test
     void fileDNEBadChar() {
-        JSONIO jsonIO = getJSONIO("DNE", 'x', true);
-
-        assertNull(jsonIO);
+        try {
+            JSONIO jsonIO = getJSONIO("DNE", 'x', true);
+            fail(jsonIO.toString());
+        } catch (ReadWriteException e) {
+            assertTrue(FileIOBuilderTest.isBadCharException(e));
+        }
     }
 
     private Map<Key, Object> getMapPartialMap() {
@@ -98,7 +64,12 @@ class JSONIOTest {
 
     @Test
     void readInventoryPartialMap() {
-        JSONIO jsonIO = getJSONIO("1", 'r', false);
+        JSONIO jsonIO = null;
+        try {
+            jsonIO = getJSONIO("r1", 'r', false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
 
         assertNotNull(jsonIO);
 
@@ -137,7 +108,13 @@ class JSONIOTest {
 
     @Test
     void readInventoryFullMap() {
-        JSONIO jsonIO = getJSONIO("2", 'r', false);
+        JSONIO jsonIO = null;
+        try {
+            jsonIO = getJSONIO("r2", 'r', false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
+
 
         assertNotNull(jsonIO);
 
@@ -171,7 +148,13 @@ class JSONIOTest {
 
     @Test
     void readInventoryMultipleMaps() {
-        JSONIO jsonIO = getJSONIO("3", 'r', false);
+        JSONIO jsonIO = null;
+        try {
+            jsonIO = getJSONIO("r3", 'r', false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
+
 
         assertNotNull(jsonIO);
 
@@ -187,10 +170,33 @@ class JSONIOTest {
     }
 
     @Test
+    void createJSONIOWithXMLFile() {
+        FileIO fileIO = null;
+        try {
+            fileIO = FileIOBuilderTest.getFileIOForTest("json", ".xml", 'r', false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            JSONIO jsonIO = (JSONIO) fileIO;
+            assertNotNull(jsonIO);
+            fail(jsonIO.toString());
+        } catch (ClassCastException _) {
+
+        }
+    }
+
+    @Test
     void readWithWriteJSONIO() {
         char mode = 'w';
 
-        JSONIO writeJSONIO = getJSONIO("1", mode, false);
+        JSONIO writeJSONIO = null;
+        try {
+            writeJSONIO = getJSONIO("r1", mode, false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
         assertNotNull(writeJSONIO);
 
         try {
@@ -205,7 +211,12 @@ class JSONIOTest {
     void writeWithReadJSONIO() {
         char mode = 'r';
 
-        JSONIO readJSONIO = getJSONIO("4", mode, false);
+        JSONIO readJSONIO = null;
+        try {
+            readJSONIO = getJSONIO("w1", mode, false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
         assertNotNull(readJSONIO);
 
         List<Map<Key, Object>> maps = new ArrayList<>();
@@ -219,14 +230,29 @@ class JSONIOTest {
         }
     }
 
-    @Test
-    void writeInventoryPartialMap() {
-        JSONIO jsonIO = getJSONIO("4", 'w', false);
+    private void writeInventoryWithBadKeys(String partialPath, int[] readMaps, Map<Key, Object> badKeys) {
+        JSONIO jsonIO = null;
+        try {
+            jsonIO = getJSONIO(partialPath, 'w', false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
+
         assertNotNull(jsonIO);
 
-        Map<Key, Object> target = getMapPartialMap();
+
         List<Map<Key, Object>> targetLst = new ArrayList<>();
-        targetLst.add(target);
+        for (int mapKey: readMaps) {
+            Map<Key, Object> target = switch (mapKey) {
+                case 1 -> getMapPartialMap();
+                case 2 -> getMapFullMap();
+                case 3 -> getMapExtra();
+                default -> null;
+            };
+            assertNotNull(target);
+            target.putAll(badKeys);
+            targetLst.add(target);
+        }
 
         try {
             jsonIO.writeInventory(targetLst);
@@ -234,62 +260,60 @@ class JSONIOTest {
             fail(e.toString());
         }
 
-        JSONIO readFile = getJSONIO("4", 'r', false);
+        for (Map<Key, Object> map : targetLst) {
+            for (Key key : badKeys.keySet()) {
+                map.remove(key);
+            }
+        }
+
+        JSONIO readFile = null;
+        try {
+            readFile = getJSONIO(partialPath, 'r', false);
+        } catch (ReadWriteException e) {
+            fail(e.getMessage());
+        }
         assertNotNull(readFile);
 
-        List<Map<Key, Object>> maps = getMaps(readFile, 1);
+        List<Map<Key, Object>> maps = getMaps(readFile, readMaps.length);
         assertNotNull(maps);
 
         testMaps(targetLst, maps);
+    }
+
+    private void writeInventoryGood(String partialPath, int[] readMaps) {
+        writeInventoryWithBadKeys(partialPath, readMaps, new HashMap<>());
+    }
+
+    @Test
+    void writeInventoryPartialMap() {
+        writeInventoryGood("w1", new int[]{1});
     }
 
     @Test
     void writeInventoryFullMap() {
-        JSONIO jsonIO = getJSONIO("5", 'w', false);
-        assertNotNull(jsonIO);
-
-        Map<Key, Object> target = getMapFullMap();
-        List<Map<Key, Object>> targetLst = new ArrayList<>();
-        targetLst.add(target);
-
-        try {
-            jsonIO.writeInventory(targetLst);
-        } catch (ReadWriteException e) {
-            fail(e.toString());
-        }
-
-        JSONIO readFile = getJSONIO("5", 'r', false);
-        assertNotNull(readFile);
-
-        List<Map<Key, Object>> maps = getMaps(readFile, 1);
-        assertNotNull(maps);
-
-        testMaps(targetLst, maps);
+        writeInventoryGood("w2", new int[]{2});
     }
 
     @Test
     void writeInventoryMultipleMaps() {
-        JSONIO jsonIO = getJSONIO("6", 'w', false);
-        assertNotNull(jsonIO);
+        writeInventoryGood("w3", new int[]{1, 2, 3});
+    }
 
-        List<Map<Key, Object>> targetLst = new ArrayList<>();
-        targetLst.add(getMapPartialMap());
-        targetLst.add(getMapFullMap());
-        targetLst.add(getMapExtra());
+    @Test
+    void writeInventoryNullKey() {
+        Map<Key, Object> badKey = new HashMap<>();
+        badKey.put(null, "Null Key Val");
 
-        try {
-            jsonIO.writeInventory(targetLst);
-        } catch (ReadWriteException e) {
-            fail(e.toString());
-        }
+        writeInventoryWithBadKeys("w4", new int[]{1}, badKey);
+    }
 
-        JSONIO readFile = getJSONIO("6", 'r', false);
-        assertNotNull(readFile);
 
-        List<Map<Key, Object>> maps = getMaps(readFile, 3);
-        assertNotNull(maps);
+    @Test
+    void writeInventoryNullVal() {
+        Map<Key, Object> badKey = new HashMap<>();
+        badKey.put(Key.REASON_FOR_ERROR, null);
 
-        testMaps(targetLst, maps);
+        writeInventoryWithBadKeys("w5", new int[]{1}, badKey);
     }
 }
 

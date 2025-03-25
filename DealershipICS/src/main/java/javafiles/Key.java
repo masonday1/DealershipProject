@@ -54,7 +54,7 @@ public enum Key {
             try {
                 return type.cast(object);
             } catch (ClassCastException e) {
-                System.out.println("Cast exception");
+                // Should be caught with if statement, but left as is just in case.
                 return null;
             }
         }

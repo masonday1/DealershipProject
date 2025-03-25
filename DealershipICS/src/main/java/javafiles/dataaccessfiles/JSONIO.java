@@ -67,17 +67,15 @@ class JSONIO extends FileIO {
         }
         JSONParser parser = new JSONParser();
         Reader fileReader;
-        JSONObject jFile = null;
+        JSONObject jFile;
         JSONArray jArray;
         try {
             fileReader = new FileReader(file);
             jFile = (JSONObject) parser.parse(fileReader);
             fileReader.close();
         } catch (ParseException | IOException e) {
-            System.out.println(e.getMessage());
+            return new ArrayList<>();
         }
-
-        assert jFile != null;
 
         jArray = (JSONArray)jFile.get("car_inventory");
 
