@@ -1,0 +1,270 @@
+package javafiles.domainfiles;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import javafiles.Key;
+import javafiles.customexceptions.*;
+
+class DealershipTest {
+
+    private Dealership dealership;
+    private Vehicle vehicle1;
+    private Vehicle vehicle2;
+    private Vehicle vehicle3;
+    private Vehicle vehicle4;
+
+    @BeforeEach
+    public void setUp() {
+        dealership = new Dealership("D001", "Test Dealership");
+
+        vehicle1 = new Vehicle("suv", "V001", "Model X", 50000L, null) {};
+        vehicle2 = new Vehicle("pickup", "V002", "Model Y", 60000L, null) {};
+        vehicle3 = new Vehicle("sedan", "V003", "Model Z", 40000L, null) {};
+        vehicle4 = new Vehicle("sports car", "V004", "Model A", 80000L, null) {};
+    }
+
+    @Test
+    public void testConstructor() {
+        assertEquals("D001", dealership.getDealerId());
+        assertEquals("Test Dealership", dealership.getDealerName());
+        assertTrue(dealership.getStatusAcquiringVehicle());
+        assertFalse(dealership.getRentingVehicles());
+        assertTrue(dealership.getSaleVehicles().isEmpty());
+        assertTrue(dealership.getRentalVehicles().isEmpty());
+    }
+
+    @Test
+    public void testSetName() {
+        dealership.setName("New Name");
+        assertEquals("New Name", dealership.getDealerName());
+    }
+
+    @Test
+    public void testSetReceivingVehicle() {
+        dealership.setReceivingVehicle(false);
+        assertFalse(dealership.getStatusAcquiringVehicle());
+    }
+
+    @Test
+    public void testSetRentingVehicles() {
+        dealership.setRentingVehicles(true);
+        assertTrue(dealership.getRentingVehicles());
+    }
+
+    @Test
+    public void testAddVehicle() throws Exception {
+        
+        assertDoesNotThrow(() -> dealership.addIncomingVehicle(vehicle1));
+
+        assertEquals(1, dealership.getSaleVehicles().size());
+        assertEquals(vehicle1, dealership.getSaleVehicles().get(0));
+    }
+
+    @Test
+    public void testManualVehicleAdd() throws Exception {
+        // TODO: Create Test for Manual Vehicle Add
+    }
+
+    @Test
+    public void testAddMultipleVehicles() throws Exception {
+        dealership.addIncomingVehicle(vehicle1);
+        dealership.addIncomingVehicle(vehicle2);
+        dealership.addIncomingVehicle(vehicle3);
+        dealership.addIncomingVehicle(vehicle4);
+
+        assertEquals(4, dealership.getSaleVehicles().size());
+        assertEquals(vehicle1, dealership.getSaleVehicles().get(0));
+        assertEquals(vehicle2, dealership.getSaleVehicles().get(1));
+        assertEquals(vehicle3, dealership.getSaleVehicles().get(2));
+        assertEquals(vehicle4, dealership.getSaleVehicles().get(3));
+    }
+
+    @Test
+    public void testAddDuplicateVehicle() throws Exception {
+
+        try {
+            dealership.addIncomingVehicle(vehicle2);
+        } catch (DealershipNotAcceptingVehiclesException | VehicleAlreadyExistsException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+
+        VehicleAlreadyExistsException exception = assertThrows(VehicleAlreadyExistsException.class, () -> {
+            dealership.addIncomingVehicle(vehicle2);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void testAddVehicleWhenNotAccepting() {
+        dealership.setReceivingVehicle(false);
+
+        DealershipNotAcceptingVehiclesException exception = assertThrows(DealershipNotAcceptingVehiclesException.class, () -> {
+            dealership.addIncomingVehicle(vehicle3);
+        });
+        assertNotNull(exception);
+    }
+
+    @Test
+    public void testRemoveVehicle() throws Exception {
+        dealership.addIncomingVehicle(vehicle4);
+
+        ArrayList<Vehicle> inventory = dealership.getSaleVehicles();
+        dealership.tryRemoveVehicleFromInventory(vehicle4, inventory);
+
+        assertTrue(dealership.getSaleVehicles().isEmpty());
+    }
+
+    @Test
+    public void testRemoveNonExistentVehicle() throws EmptyInventoryException {
+        ArrayList<Vehicle> inventory = dealership.getSaleVehicles();
+        inventory.add(vehicle1);
+
+        Vehicle nonExistentVehicle = new Vehicle("Truck", "V999", "Model Y", 60000L, null) {};
+        boolean result = dealership.tryRemoveVehicleFromInventory(nonExistentVehicle, inventory);
+
+        assertFalse(result);
+        assertEquals(1, dealership.getSaleVehicles().size());
+        assertEquals(vehicle1, dealership.getSaleVehicles().get(0));
+    }
+
+    @Test
+    public void testGetVehicleFromSalesInventory() throws VehicleNotFoundException, DealershipNotAcceptingVehiclesException, VehicleAlreadyExistsException {
+        // Add the vehicle to the sales inventory using the proper method
+        dealership.addIncomingVehicle(vehicle2);
+
+        // Retrieve the vehicle by ID
+        Vehicle retrievedVehicle = dealership.getVehicleFromSalesInventory("V002");
+
+        // Perform assertions
+        assertNotNull(retrievedVehicle);
+        assertEquals(vehicle2, retrievedVehicle);
+    }
+
+    @Test
+    public void testGetVehicleFromSalesInventoryNotFound() {
+        VehicleNotFoundException exception = assertThrows(VehicleNotFoundException.class, () -> {
+            dealership.getVehicleFromSalesInventory("V999");
+        });
+
+        assertNotNull(exception);
+        assertEquals("Vehicle with ID: V999 not found in sales inventory.", exception.getMessage());
+    }
+
+    @Test
+    public void testGetVehicleFromRentalInventory() throws Exception {
+        Vehicle vehicle = new Vehicle("suv", "R001", "Model Y", 60000L, null) {
+            @Override
+            public boolean getRentalStatus() {
+                return true; 
+            }
+        };
+
+        dealership.setRentingVehicles(true); 
+
+        assertDoesNotThrow(() -> dealership.addRentalVehicle(vehicle));
+
+        Vehicle retrievedVehicle = dealership.getVehicleFromRentalInventory("R001");
+
+        assertNotNull(retrievedVehicle);
+        assertEquals(vehicle, retrievedVehicle);
+    }
+
+    @Test
+    public void testGetVehicleFromRentalInventoryNotFound() {
+        VehicleNotFoundException exception = assertThrows(VehicleNotFoundException.class, () -> {
+            dealership.getVehicleFromRentalInventory("R999");
+        });
+
+        assertNotNull(exception);
+        assertEquals("Vehicle with ID: R999 not found in rental inventory.", exception.getMessage());
+    }
+
+    @Test
+    public void testGetDataMap() {
+        dealership.getSaleVehicles().add(vehicle1);
+        dealership.getSaleVehicles().add(vehicle2);
+        dealership.getRentalVehicles().add(vehicle3);
+        dealership.getRentalVehicles().add(vehicle4);
+
+        List<Map<Key, Object>> dataMapList = dealership.getDataMap();
+
+        assertNotNull(dataMapList);
+        assertEquals(4, dataMapList.size());
+    }
+
+    @Test
+    public void testDataToInventory() {
+        Map<Key, Object> validMap = new HashMap<>();
+        validMap.put(Key.VEHICLE_TYPE, "suv");
+        validMap.put(Key.VEHICLE_ID, "V001");
+        validMap.put(Key.VEHICLE_MODEL, "Model X");
+        validMap.put(Key.VEHICLE_PRICE, 50000L);
+    
+        boolean result = dealership.dataToInventory(validMap);
+        assertTrue(result);
+        assertEquals(1, dealership.getSaleVehicles().size());
+        assertEquals("V001", dealership.getSaleVehicles().get(0).getVehicleId());
+    
+        Map<Key, Object> invalidTypeMap = new HashMap<>();
+        invalidTypeMap.put(Key.VEHICLE_TYPE, "spaceship");
+        invalidTypeMap.put(Key.VEHICLE_ID, "V002");
+        invalidTypeMap.put(Key.VEHICLE_MODEL, "Model Y");
+        invalidTypeMap.put(Key.VEHICLE_PRICE, 60000L);
+    
+        boolean invalidTypeResult = dealership.dataToInventory(invalidTypeMap);
+        assertFalse(invalidTypeResult);
+        assertEquals("spaceship is not a valid Vehicle Type.", invalidTypeMap.get(Key.REASON_FOR_ERROR));
+    
+        Map<Key, Object> duplicateMap = new HashMap<>(validMap);
+    
+        boolean duplicateResult = dealership.dataToInventory(duplicateMap);
+        assertFalse(duplicateResult);
+        assertEquals("This vehicle is already located in the sales inventory. Vehicle ID: V001 was not added to dealership D001.",
+                duplicateMap.get(Key.REASON_FOR_ERROR));
+    }
+
+    @Test
+    public void testToFullString() {
+        dealership.getSaleVehicles().add(vehicle3); 
+        dealership.getRentalVehicles().add(vehicle4); 
+
+        String result = dealership.toFullString();
+
+        String sep = "\n---------------------------------------------\n";
+        StringBuilder expectedOutput = new StringBuilder("Dealership ID: D001\n");
+        expectedOutput.append("Dealership Name: Test Dealership");
+        expectedOutput.append(sep);
+        expectedOutput.append("Sales: \n\n");
+        expectedOutput.append(vehicle3.toString());
+        expectedOutput.append(sep);
+        expectedOutput.append("Rental: \n\n");
+        expectedOutput.append(vehicle4.toString());
+        expectedOutput.append(sep);
+
+        assertEquals(expectedOutput.toString(), result);
+    }
+
+    @Test
+    public void testToString() {
+
+        dealership.getSaleVehicles().add(vehicle3); 
+        dealership.getRentalVehicles().add(vehicle4); 
+
+        String result = dealership.toString();
+    
+        String expectedOutput = "Dealership ID: D001\n" +
+                "Dealership Name: Test Dealership\n" +
+                "Sales Inventory Num: 1\n" +
+                "Rental Inventory Num: 1";
+
+        assertEquals(expectedOutput, result);
+    }
+}

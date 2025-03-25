@@ -1,6 +1,7 @@
 package javafiles.domainfiles;
 
 import javafiles.Key;
+import javafiles.customexceptions.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +41,8 @@ public class Company {
      * Takes a String representing a Dealership ID and returns the given
      * Dealership in this Company's listDealerships.
      *
-     * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
-     * @return The Dealership we are searching for in listDealerships (null if absent).
+     * @param dealerId A String equal to the dealerID of the target Dealership.
+     * @return The Dealership target dealership (null if absent).
      */
     public Dealership findDealership(String dealerId) {
         for (Dealership dealership : listDealerships) {
@@ -51,6 +52,88 @@ public class Company {
         }
         return null;
     }
+
+
+    /**
+     * Checks if a dealership with the given ID has renting services enabled.
+     *
+     * @param dealershipId The ID of the dealership to check.
+     * @return true if the dealership has renting enabled, false otherwise.
+     */
+    public boolean isDealershipRentingEnabled(String dealershipId) {
+        Dealership dealership = findDealership(dealershipId);
+        if (dealership != null) {
+            return dealership.getRentingVehicles();
+        }
+        return false; // Dealership not found, or renting is disabled.
+    }
+
+    /**
+     * Gets the complete inventory of a target dealership in company object.
+     * Method calls {@link Dealership#getTotalInventory()}.
+     *
+     * @param dealershipId dealership ID of target dealership
+     * @return a total collection of target dealership's sales and rental inventory
+     */
+    public ArrayList <Vehicle> getDealershipCompleteInventory(String dealershipId)
+    {
+        Dealership dealership = findDealership(dealershipId);
+        return dealership.getTotalInventory();
+    }
+
+
+    /**
+     * Updates the rental status of a vehicle within a dealership and moves it between
+     * the dealership's sales and rental inventories based on the updated rental status.
+     *
+     * @param dealershipid The ID of the dealership containing the vehicle to update.
+     * @param vehicle       The vehicle object with the updated rental status. This is the same vehicle object that
+     * is present in the dealership's inventory (either sales or rental).
+     * @throws VehicleAlreadyExistsException       If the vehicle already exists in the destination inventory.
+     * @throws DealershipNotRentingException       If the dealership is not currently renting vehicles.
+     * @throws VehicleNotRentableException         If the vehicle is a sports car, which is not rentable.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not accepting new vehicles into sales inventory.
+     */
+    public void updateVehicleRental(String dealershipid, Vehicle vehicle)
+            throws VehicleAlreadyExistsException, DealershipNotRentingException,
+            VehicleNotRentableException, DealershipNotAcceptingVehiclesException {
+
+        Dealership dealership = findDealership(dealershipid);
+
+        // Update the vehicle's rental status
+        if (!vehicle.getVehicleType().equalsIgnoreCase("Sports car")) {
+            vehicle.setRental(!vehicle.getRentalStatus());
+        }
+
+        else {
+            throw new VehicleNotRentableException("Sports car types are not currently rentable");
+        }
+
+        // Remove from the source inventory and add vehicle to opposite inventory
+        if (dealership.getSaleVehicles().contains(vehicle)) {
+            dealership.getSaleVehicles().remove(vehicle);
+            dealership.getRentalVehicles().add(vehicle);
+        } else {
+            dealership.getRentalVehicles().remove(vehicle);
+            dealership.getSaleVehicles().add(vehicle);
+        }
+    }
+
+
+    /**
+     * Removes target {@link Vehicle} from a {@link Dealership} inventory.
+     * Method calls {@link Dealership#removeVehicleFromInventory(Vehicle)}.
+     *
+     * @param dealershipId target dealership to remove vehicle from
+     * @param targetVehicle vehicle to be removed
+     * @throws EmptyInventoryException if target dealership's inventory is empty
+     * @throws IllegalArgumentException if target vehicle is null
+     */
+    public void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws  IllegalArgumentException{
+        Dealership dealership = this.findDealership(dealershipId);
+        dealership.removeVehicleFromInventory(targetVehicle);
+    }
+
 
     /**
      * Takes a List of Map<Key, Object>s representing a List of Vehicle information

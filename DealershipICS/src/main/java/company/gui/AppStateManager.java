@@ -1,21 +1,19 @@
 package company.gui;
 
 import javafiles.Key;
-import javafiles.customexceptions.ReadWriteException;
+import javafiles.customexceptions.*;
 import javafiles.dataaccessfiles.FileIO;
 import javafiles.dataaccessfiles.FileIOBuilder;
-import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
-import javafiles.customexceptions.InvalidPriceException;
-import javafiles.customexceptions.InvalidVehicleTypeException;
-import javafiles.customexceptions.VehicleAlreadyExistsException;
 import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
+import javafiles.domainfiles.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 
 /**
@@ -77,11 +75,31 @@ public class AppStateManager {
      *
      * @return A List of Dealership objects.
      */
-    public static List getListDealerships()
+    public static ArrayList<Dealership> getListDealerships()
     {
         return company.getListDealerships();
     }
 
+
+    /**
+     * Retrieves a comprehensive list of all vehicles owned by the company, aggregated from all dealerships.
+     *
+     * @return An ArrayList of Vehicle objects representing all vehicles owned by the company.
+     */
+    public static ArrayList<Vehicle> getListCompanyVehicles()
+    {
+        ArrayList<Vehicle> companyListVehicles = new ArrayList<>();
+
+        ArrayList<Dealership> listDealerships = company.getListDealerships();
+
+        for (Dealership dealership : listDealerships)
+        {
+            companyListVehicles.addAll(getDealershipCompleteInventory(dealership.getDealerId()));
+
+        }
+
+        return companyListVehicles;
+    }
 
     /**
      * Adds a Dealership object to the Company instance.
@@ -125,6 +143,23 @@ public class AppStateManager {
         return company.getAllDealershipIds();
     }
 
+
+    /**
+     * Retrieves a list of dealership IDs that currently have renting enabled.
+     *
+     * @return A list of dealership IDs that are currently renting enabled.
+     */
+    public static List<String> getRentingEnabledDealershipIDs()
+    {
+        return company.getListDealerships().stream()
+                .filter(dealership -> company.isDealershipRentingEnabled(dealership.getDealerId()))
+                .map(Dealership::getDealerId)
+                .collect(Collectors.toList());
+    }
+
+
+
+
     /**
      * Retrieves a List of DealershipRow objects representing dealership data.
      * </p>
@@ -154,6 +189,8 @@ public class AppStateManager {
         }
         return dealershipRows;
     }
+
+
 
 
     /**
@@ -206,5 +243,63 @@ public class AppStateManager {
         dealership.setRentingVehicles(status);
     }
 
+    /**
+     * Updates the rental status of a vehicle within a dealership and moves it between
+     * the dealership's sales and rental inventories based on the updated rental status.
+     * </p>
+     * 
+     * mwethod calls {@link Company#updateVehicleRental(String, Vehicle)}
+     *
+    */
+    public static void updateDealershipVehicleRentalState(String dealershipid, Vehicle vehicleToUpdate) throws
+            VehicleAlreadyExistsException, DealershipNotRentingException, VehicleNotRentableException,
+            DealershipNotAcceptingVehiclesException
+    {
+        company.updateVehicleRental(dealershipid, vehicleToUpdate);
+    }
+
+
+    /**
+     * Takes a String representing a Dealership ID and returns {@link Dealership}
+     * with matching ID in the company.
+     * </p>
+     * Method calls {@link Company#findDealership(String)}.
+     *
+     * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
+     * @return The Dealership we are searching for in listDealerships (null if absent).
+     */
+    public static Dealership findADealership(String dealerId)
+    {
+       return company.findDealership(dealerId);
+    }
+
+
+
+    /**
+     * Gets the complete inventory of a given dealership.
+     * Method calls {@link Company#getDealershipCompleteInventory(String)}.
+     *
+     * @param dealershipId dealership ID of target dealership
+     * @return ArrayList<Vehicle> represent a complete collection of target dealership's sales and rental inventory
+     */
+    public static ArrayList<Vehicle> getDealershipCompleteInventory(String dealershipId)
+    {
+        return company.getDealershipCompleteInventory(dealershipId);
+    }
+
+
+    /**
+     * Removes target {@link Vehicle} from a {@link Dealership} inventory.
+     * Method calls {@link Company#removeVehicleFromDealership(String, Vehicle)} 
+     *
+     * @param dealershipId target dealership to remove vehicle from
+     * @param targetVehicle vehicle to be removed
+     * @throws EmptyInventoryException if target dealership's inventory is empty
+     * @throws IllegalArgumentException if target vehicle is null
+     */
+    public static void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws IllegalArgumentException
+    {
+        company.removeVehicleFromDealership(dealershipId,targetVehicle);
+    }
 
 }

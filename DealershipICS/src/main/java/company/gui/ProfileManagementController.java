@@ -81,9 +81,9 @@ public class ProfileManagementController {
                 // Update the name in the selected row
                 selectedDealershipRow.setName(newName);
                 AppStateManager.getCompany().findDealership(selectedDealershipRow.getId()).setName(newName);
-                
+
                 // Refresh the table to reflect the change
-                dealershipTable.refresh(); 
+                dealershipTable.refresh();
                 System.out.println("Updated dealership name to: " + newName);
             });
         } else {
@@ -118,7 +118,7 @@ public class ProfileManagementController {
                 // Check if the ID already exists in the table data
                 final String currentDealershipId = dealershipId;
                 boolean idExists = dealershipTable.getItems().stream()
-                    .anyMatch(row -> row.getId().equalsIgnoreCase(currentDealershipId));
+                        .anyMatch(row -> row.getId().equalsIgnoreCase(currentDealershipId));
                 if (idExists) {
                     String alert = "A Dealership with ID\"" + currentDealershipId + "\" already exists. \nPlease enter a unique Dealership ID.";
                     showErrorAlert("Duplicate ID", alert);
@@ -137,9 +137,9 @@ public class ProfileManagementController {
         nameDialog.setContentText("Dealership Name:");
 
         Optional<String> nameResult = nameDialog.showAndWait();
-        final String finalDealershipId = dealershipId; 
+        final String finalDealershipId = dealershipId;
         nameResult.ifPresent(dealershipName -> {
-            final String finalDealershipName = dealershipName; 
+            final String finalDealershipName = dealershipName;
 
             // Create a new DealershipRow and add it to the table
             DealershipRow newRow = new DealershipRow(finalDealershipId, finalDealershipName, true, false);
