@@ -9,4 +9,5 @@ module com.example.dealershipics {
 
     opens company.gui to javafx.fxml;
     exports company.gui;
+    opens javafiles.domainfiles to javafx.base;
 }

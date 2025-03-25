@@ -223,11 +223,47 @@ public class AppStateManager {
         dealership.setRentingVehicles(status);
     }
 
+    /**
+     * Updates the rental status of a vehicle within a dealership and moves it between
+     * the dealership's sales and rental inventories based on the updated rental status.
+     * </p>
+     * 
+     * mwethod calls {@link Company#updateVehicleRental(String, Vehicle)}
+     *
+    */
     public static void updateDealershipVehicleRentalState(String dealershipid, Vehicle updatedVehicle) throws
             VehicleAlreadyExistsException, DealershipNotRentingException, VehicleNotRentableException,
             DealershipNotAcceptingVehiclesException, EmptyInventoryException
     {
         company.updateVehicleRental(dealershipid, updatedVehicle);
+    }
+
+
+    /**
+     * Takes a String representing a Dealership ID and returns {@link Dealership}
+     * with matching ID in the company.
+     * </p>
+     * Method calls {@link Company#findDealership(String)}.
+     *
+     * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
+     * @return The Dealership we are searching for in listDealerships (null if absent).
+     */
+    public static Dealership findADealership(String dealerId)
+    {
+       return company.findDealership(dealerId);
+    }
+
+
+
+    /**
+     * Gets the complete inventory of a given dealership.
+     *
+     * @param dealershipId dealership ID of target dealership
+     * @return ArrayList<Vehicle> represent a complete collection of target dealership's sales and rental inventory
+     */
+    public static ArrayList<Vehicle> getDealershipCompleteInventory(String dealershipId)
+    {
+        return company.getDealershipCompleteInventory(dealershipId);
     }
 
 }

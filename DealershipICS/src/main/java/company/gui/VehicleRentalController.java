@@ -33,16 +33,16 @@ public class VehicleRentalController {
     private TableColumn<Vehicle, String> vehicleIdColumn;
 
     @FXML
-    private TableColumn<Vehicle, String> manufacturerColumn;
+    private TableColumn<Vehicle, Long> vehicleTypeColumn;
 
     @FXML
-    private TableColumn<Vehicle, String> modelColumn;
+    private TableColumn<Vehicle, String> vehicleManufacturerColumn;
 
     @FXML
-    private TableColumn<Vehicle, Long> priceColumn;
+    private TableColumn<Vehicle, String> vehicleModelColumn;
 
     @FXML
-    private TableColumn<Vehicle, Boolean> rentableColumn;
+    private TableColumn<Vehicle, Boolean> rentalColumn;
 
     private Vehicle selectedVehicle;
 
@@ -56,11 +56,11 @@ public class VehicleRentalController {
         dealershipComboBox.setItems(FXCollections.observableArrayList(rentingEnabledDealershipIDs));
 
         // Set up the table columns
-        vehicleIdColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleID"));
-        manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("Type"));
-        modelColumn.setCellValueFactory(new PropertyValueFactory<>("Rental"));
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("Model"));
-        rentableColumn.setCellValueFactory(new PropertyValueFactory<>("Manufacturer"));
+        vehicleIdColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleId"));
+        vehicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleType"));
+        rentalColumn.setCellValueFactory(new PropertyValueFactory<>("rentalStatus"));
+        vehicleModelColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleModel"));
+        vehicleManufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleManufacturer"));
 
         // Add a listener to the selected item in the table
         vehicleTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -104,7 +104,7 @@ public class VehicleRentalController {
             return;
         }
 
-        Dealership dealership = AppStateManager.getCompany().findDealership(selectedDealershipId);
+        Dealership dealership = AppStateManager.findADealership(selectedDealershipId);
         if (dealership == null) {
             showAlert("Dealership not found.");
             return;
@@ -137,14 +137,14 @@ public class VehicleRentalController {
      */
     @FXML
     private void handleDealershipSelection(ActionEvent event) {
-//        String selectedDealershipId = dealershipComboBox.getValue();
-//        if (selectedDealershipId != null) {
-//            Dealership dealership = AppStateManager.getCompany().findDealership(selectedDealershipId);
-//            if (dealership != null) {
-//                //ObservableList<Vehicle> vehicleData = FXCollections.observableArrayList(dealership.getVehicles());
-//                vehicleTable.setItems(vehicleData);
-//            }
-//        }
+      String selectedDealershipId = dealershipComboBox.getValue();
+        if (selectedDealershipId != null) {
+            Dealership dealership = AppStateManager.findADealership(selectedDealershipId);
+            if (dealership != null) {
+                ObservableList<Vehicle> vehicleData = FXCollections.observableArrayList(AppStateManager.getDealershipCompleteInventory(selectedDealershipId));
+                vehicleTable.setItems(vehicleData);
+            }
+        }
     }
 
 

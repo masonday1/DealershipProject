@@ -41,8 +41,8 @@ public class Company {
      * Takes a String representing a Dealership ID and returns the given
      * Dealership in this Company's listDealerships.
      *
-     * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
-     * @return The Dealership we are searching for in listDealerships (null if absent).
+     * @param dealerId A String equal to the dealerID of the target Dealership.
+     * @return The Dealership target dealership (null if absent).
      */
     public Dealership findDealership(String dealerId) {
         for (Dealership dealership : listDealerships) {
@@ -66,6 +66,21 @@ public class Company {
             return dealership.getRentingVehicles();
         }
         return false; // Dealership not found, or renting is disabled.
+    }
+
+    /**
+     * Gets the complete inventory of a given dealership.
+     *
+     * @param dealershipId dealership ID of target dealership
+     * @return totalInventory a total collection of target dealership's sales and rental inventory
+     */
+    public ArrayList <Vehicle> getDealershipCompleteInventory(String dealershipId)
+    {
+        Dealership dealership = findDealership(dealershipId);
+        ArrayList<Vehicle> totalInventory = new ArrayList<>();
+        totalInventory.addAll(dealership.getSaleVehicles());
+        totalInventory.addAll(dealership.getRentalVehicles());
+        return totalInventory;
     }
 
 
