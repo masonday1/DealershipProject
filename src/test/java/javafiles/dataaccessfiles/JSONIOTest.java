@@ -82,7 +82,7 @@ class JSONIOTest {
         assertNull(jsonIO);
     }
 
-    private Map<Key, Object> getMap1() {
+    private Map<Key, Object> getMapPartialMap() {
         Map<Key, Object> map = new HashMap<>();
 
         map.put(Key.DEALERSHIP_ID, "12513");
@@ -97,7 +97,7 @@ class JSONIOTest {
     }
 
     @Test
-    void readInventory1() {
+    void readInventoryPartialMap() {
         JSONIO jsonIO = getJSONIO("1", 'r', false);
 
         assertNotNull(jsonIO);
@@ -106,12 +106,12 @@ class JSONIOTest {
         assertNotNull(maps);
 
         List<Map<Key, Object>> validMaps = new ArrayList<>();
-        validMaps.add(getMap1());
+        validMaps.add(getMapPartialMap());
 
         testMaps(validMaps, maps);
     }
 
-    private Map<Key, Object> getMap2() {
+    private Map<Key, Object> getMapFullMap() {
         Map<Key, Object> map = new HashMap<>();
 
         map.put(Key.DEALERSHIP_ID, "d_id");
@@ -127,11 +127,16 @@ class JSONIOTest {
         map.put(Key.DEALERSHIP_RECEIVING_STATUS, true);
         map.put(Key.VEHICLE_RENTAL_STATUS, false);
 
+        map.put(Key.VEHICLE_PRICE_UNIT, "dollar");
+        map.put(Key.VEHICLE_ACQUISITION_DATE, 100L);
+
+        assertEquals(Key.values().length - 1, map.size());
+
         return map;
     }
 
     @Test
-    void readInventory2() {
+    void readInventoryFullMap() {
         JSONIO jsonIO = getJSONIO("2", 'r', false);
 
         assertNotNull(jsonIO);
@@ -140,12 +145,12 @@ class JSONIOTest {
         assertNotNull(maps);
 
         List<Map<Key, Object>> validMaps = new ArrayList<>();
-        validMaps.add(getMap2());
+        validMaps.add(getMapFullMap());
 
         testMaps(validMaps, maps);
     }
 
-    private Map<Key, Object> getMap3() {
+    private Map<Key, Object> getMapExtra() {
         Map<Key, Object> map = new HashMap<>();
 
         map.put(Key.VEHICLE_PRICE_UNIT, "dollars");
@@ -165,7 +170,7 @@ class JSONIOTest {
     }
 
     @Test
-    void readInventory3() {
+    void readInventoryMultipleMaps() {
         JSONIO jsonIO = getJSONIO("3", 'r', false);
 
         assertNotNull(jsonIO);
@@ -174,19 +179,52 @@ class JSONIOTest {
         assertNotNull(maps);
 
         List<Map<Key, Object>> mapSolutionMaps = new ArrayList<>();
-        mapSolutionMaps.add(getMap1());
-        mapSolutionMaps.add(getMap2());
-        mapSolutionMaps.add(getMap3());
+        mapSolutionMaps.add(getMapPartialMap());
+        mapSolutionMaps.add(getMapFullMap());
+        mapSolutionMaps.add(getMapExtra());
 
         testMaps(mapSolutionMaps, maps);
     }
 
     @Test
-    void writeInventory1() {
+    void readWithWriteJSONIO() {
+        char mode = 'w';
+
+        JSONIO writeJSONIO = getJSONIO("1", mode, false);
+        assertNotNull(writeJSONIO);
+
+        try {
+            writeJSONIO.readInventory();
+            fail("Read from write file.");
+        } catch (ReadWriteException e) {
+            assertEquals("Must be mode 'r', not mode '" + mode + "'.", e.getMessage());
+        }
+    }
+
+    @Test
+    void writeWithReadJSONIO() {
+        char mode = 'r';
+
+        JSONIO readJSONIO = getJSONIO("4", mode, false);
+        assertNotNull(readJSONIO);
+
+        List<Map<Key, Object>> maps = new ArrayList<>();
+        maps.add(getMapExtra());
+
+        try {
+            readJSONIO.writeInventory(maps);
+            fail("Wrote to read file.");
+        } catch (ReadWriteException e) {
+            assertEquals("Must be mode 'w', not mode '" + mode + "'.", e.getMessage());
+        }
+    }
+
+    @Test
+    void writeInventoryPartialMap() {
         JSONIO jsonIO = getJSONIO("4", 'w', false);
         assertNotNull(jsonIO);
 
-        Map<Key, Object> target = getMap1();
+        Map<Key, Object> target = getMapPartialMap();
         List<Map<Key, Object>> targetLst = new ArrayList<>();
         targetLst.add(target);
 
@@ -206,11 +244,11 @@ class JSONIOTest {
     }
 
     @Test
-    void writeInventory2() {
+    void writeInventoryFullMap() {
         JSONIO jsonIO = getJSONIO("5", 'w', false);
         assertNotNull(jsonIO);
 
-        Map<Key, Object> target = getMap2();
+        Map<Key, Object> target = getMapFullMap();
         List<Map<Key, Object>> targetLst = new ArrayList<>();
         targetLst.add(target);
 
@@ -230,14 +268,14 @@ class JSONIOTest {
     }
 
     @Test
-    void writeInventory3() {
+    void writeInventoryMultipleMaps() {
         JSONIO jsonIO = getJSONIO("6", 'w', false);
         assertNotNull(jsonIO);
 
         List<Map<Key, Object>> targetLst = new ArrayList<>();
-        targetLst.add(getMap1());
-        targetLst.add(getMap2());
-        targetLst.add(getMap3());
+        targetLst.add(getMapPartialMap());
+        targetLst.add(getMapFullMap());
+        targetLst.add(getMapExtra());
 
         try {
             jsonIO.writeInventory(targetLst);

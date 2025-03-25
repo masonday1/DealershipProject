@@ -62,25 +62,24 @@ public enum Key {
     }
 
     /**
-     * Confirms that the Object in map at KEY is an instance of the correct type.
+     * Confirms that the {@link Object} is an instance of the correct type.
      * (As given by CLASS)
      *
-     * @param map The {@link Map} whose contents type is being checked
+     * @param object The {@link Object} that is being checked.
      * @return Whether object is of the correct type.
      */
-    public boolean validObjectType(Map<Key, Object> map) {
-        if (!map.containsKey(this)) {return true;}
-        return CLASS.isInstance(map.get(this));
+    private boolean validObjectType(Object object) {
+        return CLASS.isInstance(object);
     }
 
     /**
-     * Puts the {@link Object} into the map iff the item is not null. Uses KEY for key.
+     * Puts the {@link Object} into the map iff the item is not null and of the correct type.
      *
      * @param map The {@link Map} that is being appended to.
      * @param object The {@link Object} being added as a value to the map.
      */
     public void putNonNull(Map<Key, Object> map, Object object) {
-        if (object != null) {
+        if (validObjectType(object)) {
             map.put(this, object);
         }
     }

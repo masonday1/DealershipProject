@@ -19,7 +19,9 @@
     "dealership_id":"d_id",
     "vehicle_manufacturer":"manufacture",
     "vehicle_id":"v_id",
-    "vehicle_rental_status":false
+    "vehicle_rental_status":false,
+    "price_unit": "dollar",
+    "acquisition_date": 100
   },
   {
     "price_unit":"dollars",
