@@ -158,29 +158,4 @@ public class VehicleRentalController {
             }
         }
     }
-
-
-    // Inner class to represent a row in the table
-    public static class VehicleRow {
-        private String vehicleID;
-        private String vehicleType;
-        private Boolean rental;
-        private String vehicleModel;
-        private String vehicleManufacturer;
-
-        public VehicleRow(String vehicleID, String vehicleType, Boolean rental, String vehicleModel, String vehicleManufacturer)
-        {
-            this.vehicleID = vehicleID;
-            this.vehicleType = vehicleType;
-            this.rental = rental;
-            this.vehicleModel = vehicleModel;
-            this.vehicleManufacturer = vehicleManufacturer;
-        }
-
-        public String getVehicleID(){return vehicleID;}
-        public Boolean getRental(){return rental;}
-        public void setRental(Boolean rentalStatus){this.rental = rentalStatus;}
-
-    }
-
 }
