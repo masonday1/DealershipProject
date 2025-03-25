@@ -113,42 +113,40 @@ class DealershipTest {
     }
 
     @Test
-    public void testRemoveVehicle() throws Exception {
-        dealership.addIncomingVehicle(vehicle4);
-
+    public void testRemoveVehicle() throws IllegalArgumentException {
         ArrayList<Vehicle> inventory = dealership.getSaleVehicles();
+        inventory.add(vehicle4);
 
-        fail("Function does not exist.");
-        // dealership.tryRemoveVehicleFromInventory(vehicle4, inventory);
+        dealership.removeVehicleFromInventory(vehicle4);
 
         assertTrue(dealership.getSaleVehicles().isEmpty());
     }
 
     @Test
-    public void testRemoveNonExistentVehicle() throws EmptyInventoryException {
+    public void testRemoveVehicleWhenEmpty() throws EmptyInventoryException {
+        dealership.removeVehicleFromInventory(vehicle4);
+
+        assertTrue(dealership.getSaleVehicles().isEmpty());
+    }
+
+    @Test
+    public void testRemoveNonExistentVehicle() throws IllegalArgumentException {
         ArrayList<Vehicle> inventory = dealership.getSaleVehicles();
         inventory.add(vehicle1);
 
         Vehicle nonExistentVehicle = new Vehicle("Truck", "V999", "Model Y", 60000L, null) {};
-
-        fail("Function does not exist.");
-        //boolean result = dealership.tryRemoveVehicleFromInventory(nonExistentVehicle, inventory);
-        boolean result = true;
-
-        assertFalse(result);
+        dealership.removeVehicleFromInventory(nonExistentVehicle);
+        
         assertEquals(1, dealership.getSaleVehicles().size());
         assertEquals(vehicle1, dealership.getSaleVehicles().get(0));
     }
 
     @Test
     public void testGetVehicleFromSalesInventory() throws VehicleNotFoundException, DealershipNotAcceptingVehiclesException, VehicleAlreadyExistsException {
-        // Add the vehicle to the sales inventory using the proper method
         dealership.addIncomingVehicle(vehicle2);
 
-        // Retrieve the vehicle by ID
         Vehicle retrievedVehicle = dealership.getVehicleFromSalesInventory("V002");
 
-        // Perform assertions
         assertNotNull(retrievedVehicle);
         assertEquals(vehicle2, retrievedVehicle);
     }
