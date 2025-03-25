@@ -9,8 +9,11 @@
             fx:controller="company.gui.AddFromFile"
             prefHeight="400.0" prefWidth="600.0">
     <top>
-        <Button text="Back" onAction="#handleBack"
+        <Button text="Back" minWidth="150" onAction="#handleBack"
                 BorderPane.alignment="TOP_LEFT">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
             <BorderPane.margin>
                 <Insets top="10" left="10"/>
             </BorderPane.margin>
@@ -22,7 +25,10 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
         </VBox>
-        <Button text="Add Another" onAction="#handleAnother">
+        <Button text="Add Another" minWidth="150"  onAction="#handleAnother">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
             <BorderPane.margin>
                 <Insets top="10" left="10"/>
             </BorderPane.margin>
