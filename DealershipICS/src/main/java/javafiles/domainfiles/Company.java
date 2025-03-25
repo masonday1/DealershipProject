@@ -84,68 +84,53 @@ public class Company {
     }
 
 
-
     /**
      * Updates the rental status of a vehicle within a dealership and moves it between
      * the dealership's sales and rental inventories based on the updated rental status.
      *
-     * @param dealershipid     The dealershipid of {@link Dealership }containing the vehicle to update.
-     * @param updatedVehicle The {@link Vehicle} with the updated rental status.
+     * @param dealershipid The ID of the dealership containing the vehicle to update.
+     * @param vehicle       The vehicle object with the updated rental status. This is the same vehicle object that
+     * is present in the dealership's inventory (either sales or rental).
      * @throws VehicleAlreadyExistsException       If the vehicle already exists in the destination inventory.
      * @throws DealershipNotRentingException       If the dealership is not currently renting vehicles.
-     * @throws VehicleNotRentableException         If the updated vehicle is not rentable.
-     * @throws EmptyInventoryException            If the source inventory is empty.
-     * @throws DealershipNotAcceptingVehiclesException If the dealership is not accepting new vehicles.
-     * @throws VehicleNotFoundException            if the vehicle is not found in inventory
+     * @throws VehicleNotRentableException         If the vehicle is a sports car, which is not rentable.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not accepting new vehicles into sales inventory.
      */
-    public void updateVehicleRental(String dealershipid, Vehicle updatedVehicle)
+    public void updateVehicleRental(String dealershipid, Vehicle vehicle)
             throws VehicleAlreadyExistsException, DealershipNotRentingException,
-            VehicleNotRentableException, EmptyInventoryException,
-            DealershipNotAcceptingVehiclesException {
+            VehicleNotRentableException, DealershipNotAcceptingVehiclesException {
 
-        Vehicle foundVehicle = null;
-        ArrayList<Vehicle> sourceInventory = null;
         Dealership dealership = findDealership(dealershipid);
 
-        // Find the vehicle in either inventory
-        for (Vehicle vehicle : dealership.getSaleVehicles()) {
-            if (vehicle.getVehicleId().equals(updatedVehicle.getVehicleId())) {
-                foundVehicle = vehicle;
-                sourceInventory = dealership.getSaleVehicles();
-                break;
-            }
-        }
-        if (foundVehicle == null) {
-            for (Vehicle vehicle : dealership.getRentalVehicles()) {
-                if (vehicle.getVehicleId().equals(updatedVehicle.getVehicleId())) {
-                    foundVehicle = vehicle;
-                    sourceInventory = dealership.getRentalVehicles();
-                    break;
-                }
-            }
-        }
-
-        if (foundVehicle == null) {
-            // Vehicle not found in either inventory
-            throw new VehicleNotFoundException("Vehicle not found in dealershipID " + dealership.getDealerId() + " inventory");
-        }
-
         // Update the vehicle's rental status
-        foundVehicle.setRental(updatedVehicle.getRentalStatus());
+        if (!vehicle.getVehicleType().equalsIgnoreCase("Sports car")) {
+            vehicle.setRental(!vehicle.getRentalStatus());
+        }
 
-        // Move the vehicle to the appropriate inventory
-        if (updatedVehicle.getRentalStatus()) {
-            // Move to rental inventory
-            dealership.addRentalVehicle(foundVehicle);
-        } else {
-            // Move to sales inventory
-            dealership.addIncomingVehicle(foundVehicle);
+        else {
+            throw new VehicleNotRentableException("Sports car types are not currently rentable");
         }
 
         // Remove from the source inventory
-        dealership.tryRemoveVehicleFromInventory(foundVehicle, sourceInventory);
-    }
+        if (dealership.getSaleVehicles().contains(vehicle)) {
+            dealership.getSaleVehicles().remove(vehicle);
+        } else {
+            dealership.getRentalVehicles().remove(vehicle);
+        }
 
+
+        // Move the vehicle to the appropriate inventory
+        if (vehicle.getRentalStatus()) {
+            // Move to rental inventory
+            dealership.addRentalVehicle(vehicle);
+        } else {
+            // Move to sales inventory, only if it is not already there.
+            if (!dealership.getSaleVehicles().contains(vehicle)){
+                dealership.addIncomingVehicle(vehicle);
+            }
+        }
+
+    }
 
 
     /**

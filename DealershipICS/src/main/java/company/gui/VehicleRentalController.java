@@ -114,7 +114,13 @@ public class VehicleRentalController {
         vehicleTable.refresh();
 
         // Update the vehicle in the dealership's inventory
-        AppStateManager.updateDealershipVehicleRentalState(selectedDealershipId,selectedVehicle);
+        try {
+            AppStateManager.updateDealershipVehicleRentalState(selectedDealershipId, selectedVehicle);
+        } catch (VehicleAlreadyExistsException | DealershipNotRentingException | VehicleNotRentableException |
+                 DealershipNotAcceptingVehiclesException e) {
+            showAlert(e.getMessage());
+        }
+
     }
 
     /**
