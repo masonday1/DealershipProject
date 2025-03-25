@@ -3,6 +3,7 @@ package company.gui;
 import javafiles.Key;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -19,6 +20,12 @@ import static company.gui.FXMLPath.*;
 public class InventoryScreenController
 {
 
+
+    public Button btnChangeRental;
+    public Button btnTransferVehicle;
+    public Button btnRemoveVehicle;
+    public Button btnAddVehicle;
+    public Button btnViewInventory;
 
     @FXML
     private void handleBack(ActionEvent event) throws IOException
