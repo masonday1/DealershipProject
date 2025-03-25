@@ -160,7 +160,7 @@ public abstract class Vehicle {
      * @throws InvalidAcquisitionDateException if the acquisitionDate is null or an invalid epoch time.
      */
     public String getFormattedAcquisitionDate() throws InvalidAcquisitionDateException {
-        if (acquisitionDate == null || acquisitionDate.equals("") || acquisitionDate == 0) {
+        if (acquisitionDate == null || acquisitionDate.equals("")) {
             return "";
         }
         try {

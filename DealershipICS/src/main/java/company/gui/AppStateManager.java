@@ -75,11 +75,31 @@ public class AppStateManager {
      *
      * @return A List of Dealership objects.
      */
-    public static List getListDealerships()
+    public static ArrayList<Dealership> getListDealerships()
     {
         return company.getListDealerships();
     }
 
+
+    /**
+     * Retrieves a comprehensive list of all vehicles owned by the company, aggregated from all dealerships.
+     *
+     * @return An ArrayList of Vehicle objects representing all vehicles owned by the company.
+     */
+    public static ArrayList<Vehicle> getListCompanyVehicles()
+    {
+        ArrayList<Vehicle> companyListVehicles = new ArrayList<>();
+
+        ArrayList<Dealership> listDealerships = company.getListDealerships();
+
+        for (Dealership dealership : listDealerships)
+        {
+            companyListVehicles.addAll(getDealershipCompleteInventory(dealership.getDealerId()));
+
+        }
+
+        return companyListVehicles;
+    }
 
     /**
      * Adds a Dealership object to the Company instance.
