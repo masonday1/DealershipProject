@@ -132,7 +132,8 @@ public class Dealership {
     public void addIncomingVehicle(Vehicle newVehicle) throws DealershipNotAcceptingVehiclesException,
             VehicleAlreadyExistsException
     {
-        // Checks if the dealership is accepting new vehicles.
+
+        // Checks if the dealership is not accepting new vehicles
         if (!receivingVehicle) {
             throw new DealershipNotAcceptingVehiclesException("Dealership " + this.dealerId + " is not accepting new " +
                     "vehicles at this time. " + "Vehicle ID: " + newVehicle.getVehicleId() +
@@ -179,6 +180,21 @@ public class Dealership {
         }
         return true;
     }
+
+    /**
+     * Gets the complete inventory of dealership. A sum of all vehicles in rental and
+     * sales inventory.
+     *
+     * @return totalInventory a total collection of target dealership's sales and rental inventory
+     */
+    public ArrayList<Vehicle> getTotalInventory()
+    {
+        ArrayList<Vehicle> totalInventory = new ArrayList<>();
+        totalInventory.addAll(this.getSaleVehicles());
+        totalInventory.addAll(this.getRentalVehicles());
+        return totalInventory;
+    }
+
 
     /**
      * Adds a new vehicle to the dealership inventory based on the provided vehicle details.

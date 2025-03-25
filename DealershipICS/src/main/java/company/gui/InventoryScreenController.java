@@ -45,15 +45,11 @@ public class InventoryScreenController
     }
 
     @FXML
-    private void handleEnableVehicleRental() throws IOException {
+    private void handleChangeVehicleRental() throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
         sceneManager.switchScene(VEHIClE_RENTAL);
     }
 
-    @FXML
-    private void handleDisableVehicleRental() {
-        System.out.println("Disable rental clicked");
-    }
 
     @FXML
     private void handleViewCompanyInventory()

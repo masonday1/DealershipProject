@@ -231,11 +231,11 @@ public class AppStateManager {
      * mwethod calls {@link Company#updateVehicleRental(String, Vehicle)}
      *
     */
-    public static void updateDealershipVehicleRentalState(String dealershipid, Vehicle updatedVehicle) throws
+    public static void updateDealershipVehicleRentalState(String dealershipid, Vehicle vehicleToUpdate) throws
             VehicleAlreadyExistsException, DealershipNotRentingException, VehicleNotRentableException,
             DealershipNotAcceptingVehiclesException
     {
-        company.updateVehicleRental(dealershipid, updatedVehicle);
+        company.updateVehicleRental(dealershipid, vehicleToUpdate);
     }
 
 
@@ -257,6 +257,7 @@ public class AppStateManager {
 
     /**
      * Gets the complete inventory of a given dealership.
+     * Method calls {@link Company#getDealershipCompleteInventory(String)}.
      *
      * @param dealershipId dealership ID of target dealership
      * @return ArrayList<Vehicle> represent a complete collection of target dealership's sales and rental inventory

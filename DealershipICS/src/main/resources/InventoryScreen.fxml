@@ -66,8 +66,8 @@
         </padding>
     </Button>
 
-    <Button text="Enable Vehicle Rental" fx:id="btnEnableRental"
-            onAction="#handleEnableVehicleRental"
+    <Button text="Enable Vehicle Rental" fx:id="btnChangeRental"
+            onAction="#handleChangeVehicleRental"
             GridPane.columnIndex="1" GridPane.rowIndex="1"
             GridPane.halignment="CENTER" GridPane.valignment="CENTER"
             minWidth="250">
@@ -75,20 +75,9 @@
             <Insets top="10" right="20" bottom="10" left="20" />
         </padding>
     </Button>
-
-    <Button text="Disable Vehicle Rental" fx:id="btnDisableRental"
-            onAction="#handleDisableVehicleRental"
-            GridPane.columnIndex="1" GridPane.rowIndex="2"
-            GridPane.halignment="CENTER" GridPane.valignment="CENTER"
-            minWidth="250">
-        <padding>
-            <Insets top="10" right="20" bottom="10" left="20" />
-        </padding>
-    </Button>
-
     <Button text="View Company Inventory" fx:id="btnViewInventory"
             onAction="#handleViewCompanyInventory"
-            GridPane.columnIndex="1" GridPane.rowIndex="3"
+            GridPane.columnIndex="1" GridPane.rowIndex="2"
             GridPane.halignment="CENTER" GridPane.valignment="CENTER"
             minWidth="250">
         <padding>

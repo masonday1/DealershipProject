@@ -69,18 +69,16 @@ public class Company {
     }
 
     /**
-     * Gets the complete inventory of a given dealership.
+     * Gets the complete inventory of a target dealership in company object.
+     * Method calls {@link Dealership#getTotalInventory()}.
      *
      * @param dealershipId dealership ID of target dealership
-     * @return totalInventory a total collection of target dealership's sales and rental inventory
+     * @return a total collection of target dealership's sales and rental inventory
      */
     public ArrayList <Vehicle> getDealershipCompleteInventory(String dealershipId)
     {
         Dealership dealership = findDealership(dealershipId);
-        ArrayList<Vehicle> totalInventory = new ArrayList<>();
-        totalInventory.addAll(dealership.getSaleVehicles());
-        totalInventory.addAll(dealership.getRentalVehicles());
-        return totalInventory;
+        return dealership.getTotalInventory();
     }
 
 
@@ -111,25 +109,14 @@ public class Company {
             throw new VehicleNotRentableException("Sports car types are not currently rentable");
         }
 
-        // Remove from the source inventory
+        // Remove from the source inventory and add vehicle to opposite inventory
         if (dealership.getSaleVehicles().contains(vehicle)) {
             dealership.getSaleVehicles().remove(vehicle);
+            dealership.getRentalVehicles().add(vehicle);
         } else {
             dealership.getRentalVehicles().remove(vehicle);
+            dealership.getSaleVehicles().add(vehicle);
         }
-
-
-        // Move the vehicle to the appropriate inventory
-        if (vehicle.getRentalStatus()) {
-            // Move to rental inventory
-            dealership.addRentalVehicle(vehicle);
-        } else {
-            // Move to sales inventory, only if it is not already there.
-            if (!dealership.getSaleVehicles().contains(vehicle)){
-                dealership.addIncomingVehicle(vehicle);
-            }
-        }
-
     }
 
 
