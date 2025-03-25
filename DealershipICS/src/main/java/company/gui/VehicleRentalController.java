@@ -1,8 +1,10 @@
 package company.gui;
 
 import javafiles.customexceptions.*;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -11,12 +13,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafiles.domainfiles.Dealership;
 import javafiles.domainfiles.Vehicle;
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import static company.gui.FXMLPath.INVENTORY_SCREEN;
-import static company.gui.FXMLPath.MAIN_SCREEN;
+
 
 /**
  * Controller for the Vehicle Rental screen, handling vehicle rental operations.
@@ -44,6 +46,9 @@ public class VehicleRentalController {
     @FXML
     private TableColumn<Vehicle, Boolean> rentalColumn;
 
+    @FXML
+    private TableColumn<Vehicle, Long> acquisitionDateColumn;
+
     private Vehicle selectedVehicle;
 
     /**
@@ -61,6 +66,7 @@ public class VehicleRentalController {
         rentalColumn.setCellValueFactory(new PropertyValueFactory<>("rentalStatus"));
         vehicleModelColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleModel"));
         vehicleManufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleManufacturer"));
+        acquisitionDateColumn.setCellValueFactory(new PropertyValueFactory<>("formattedAcquisitionDate"));
 
         // Add a listener to the selected item in the table
         vehicleTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

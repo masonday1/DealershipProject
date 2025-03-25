@@ -2,6 +2,7 @@ package company.gui;
 
 
 import javafiles.Key;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
 
 import javafx.stage.Screen;
@@ -11,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.util.*;
+
 
 
 /**
@@ -133,7 +135,7 @@ public class GuiUtility {
                     if (rowObject != null) {
                         rowObject = (new Date((Long) rowObject)).toString();
                     } else {
-                        rowObject = "N/A";
+                        rowObject = "";
                     }
                 }
                 tableData[i][j] = rowObject;
@@ -174,4 +176,7 @@ public class GuiUtility {
             System.out.println("Column '" + columnName + "' not found in the table.");
         }
     }
+
+
+
 }

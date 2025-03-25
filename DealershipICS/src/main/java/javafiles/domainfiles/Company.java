@@ -121,6 +121,21 @@ public class Company {
 
 
     /**
+     * Removes target {@link Vehicle} from a {@link Dealership} inventory.
+     * Method calls {@link Dealership#removeVehicleFromInventory(Vehicle)}.
+     *
+     * @param dealershipId target dealership to remove vehicle from
+     * @param targetVehicle vehicle to be removed
+     * @throws EmptyInventoryException if target dealership's inventory is empty
+     * @throws IllegalArgumentException if target vehicle is null
+     */
+    public void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws  IllegalArgumentException{
+        Dealership dealership = this.findDealership(dealershipId);
+        dealership.removeVehicleFromInventory(targetVehicle);
+    }
+
+
+    /**
      * Takes a List of Map<Key, Object>s representing a List of Vehicle information
      * and writes the data in each map to the corresponding Dealership.
      *

@@ -308,32 +308,33 @@ public class Dealership {
         return list;
     }
 
+
     /**
-     * Removes a vehicle from the inventory. Returns true if vehicle is removed and false otherwise.
+     * Removes a vehicle from the dealership's inventory, including sales and rental.
+     * Returns true if vehicle is removed and false otherwise.
      *
      * @param targetVehicle The vehicle to remove. Cannot be null.
-     * @param inventory     The inventory from which to remove the vehicle.
-     * @return {@code true} if the vehicle was successfully removed, {@code false} otherwise.
      * @throws IllegalArgumentException If the {@code targetVehicle} is null.
      * @throws EmptyInventoryException  If the inventory is empty.
-     *
      * @author Christopher Engelhart
      */
-    public boolean tryRemoveVehicleFromInventory(Vehicle targetVehicle, ArrayList<Vehicle> inventory) throws IllegalArgumentException
-            ,EmptyInventoryException
+    public void removeVehicleFromInventory(Vehicle targetVehicle) throws IllegalArgumentException
+
     {
-
         if (targetVehicle == null) {
-            throw new IllegalArgumentException("target vehicle is null.");
+            throw new IllegalArgumentException("Target vehicle is null.");
         }
 
-        if (inventory.isEmpty())
+        if (getSaleVehicles().contains(targetVehicle))
         {
-            throw new EmptyInventoryException("Inventory is already empty " + " Could not remove vehicle" + targetVehicle.getVehicleId());
+            this.getSaleVehicles().remove(targetVehicle);
         }
 
-        return inventory.remove(targetVehicle);
+        if (getRentalVehicles().contains(targetVehicle))
 
+        {
+            this.getRentalVehicles().remove(targetVehicle);
+        }
     }
 
     // used by toString()

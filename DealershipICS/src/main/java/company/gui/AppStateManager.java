@@ -267,4 +267,19 @@ public class AppStateManager {
         return company.getDealershipCompleteInventory(dealershipId);
     }
 
+
+    /**
+     * Removes target {@link Vehicle} from a {@link Dealership} inventory.
+     * Method calls {@link Company#removeVehicleFromDealership(String, Vehicle)} 
+     *
+     * @param dealershipId target dealership to remove vehicle from
+     * @param targetVehicle vehicle to be removed
+     * @throws EmptyInventoryException if target dealership's inventory is empty
+     * @throws IllegalArgumentException if target vehicle is null
+     */
+    public static void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws IllegalArgumentException
+    {
+        company.removeVehicleFromDealership(dealershipId,targetVehicle);
+    }
+
 }

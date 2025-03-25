@@ -1,6 +1,11 @@
 package javafiles.domainfiles;
 
 import javafiles.customexceptions.*;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 
@@ -145,6 +150,28 @@ public abstract class Vehicle {
     public String getVehicleType() {return vehicleType;}
     public boolean getRentalStatus() { return rental; }
     public String getPriceUnit() {return priceUnit;}
+
+
+    /**
+     * Gets the acquisition date formatted as a String in "dd/MM/yyyy" format.
+     * If the acquisition date is 0 (epoch time), an empty String is returned.
+     *
+     * @return The formatted acquisition date String, or an empty String if the epoch time is 0.
+     * @throws InvalidAcquisitionDateException if the acquisitionDate is null or an invalid epoch time.
+     */
+    public String getFormattedAcquisitionDate() throws InvalidAcquisitionDateException {
+        if (acquisitionDate == null || acquisitionDate.equals("") || acquisitionDate == 0) {
+            return "";
+        }
+        try {
+            LocalDate localDate = Instant.ofEpochMilli(acquisitionDate)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            return localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } catch (Exception e) {
+            throw new InvalidAcquisitionDateException("Invalid acquisition date epoch time.");
+        }
+    }
 
     /**
      * Creates and returns a String representation of the Vehicle

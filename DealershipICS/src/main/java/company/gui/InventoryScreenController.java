@@ -42,8 +42,9 @@ public class InventoryScreenController
     }
 
     @FXML
-    private void handleRemoveVehicleFromDealership() {
-        System.out.println("Remove vehicle clicked");
+    private void handleRemoveVehicleFromDealership() throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(VEHICLE_REMOVAL);
     }
 
     @FXML
