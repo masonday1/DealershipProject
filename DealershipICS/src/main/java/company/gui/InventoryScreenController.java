@@ -47,8 +47,9 @@ public class InventoryScreenController
     }
 
     @FXML
-    private void handleTransferVehicleBetweenDealerships() {
-        System.out.println("Transfer vehicle clicked");
+    private void handleTransferVehicleBetweenDealerships() throws IOException {
+        SceneManager sceneManager = SceneManager.getInstance(null);
+        sceneManager.switchScene(VEHICLE_TRANSFER);
     }
 
     @FXML
