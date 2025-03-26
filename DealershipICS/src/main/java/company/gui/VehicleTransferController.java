@@ -61,7 +61,8 @@ public class VehicleTransferController {
     private Vehicle selectedVehicle;
 
     /**
-     * Initializes the controller, populating combo boxes and setting up table columns.
+     * Initializes the controller, populating combo boxes and setting up table columns. Combo boxes are
+     * populated by {@link AppStateManager#getDealershipIDs()}.
      */
     @FXML
     public void initialize() {
@@ -105,7 +106,8 @@ public class VehicleTransferController {
 
     /**
      * Handles the "Transfer" button action, transferring the selected vehicle between dealerships.
-     *
+     * Calls the  {@link AppStateManager#transferVehicle(String, String, Vehicle)} method to perform
+     * the transfer operation.
      * @param event The action event.
      */
     @FXML

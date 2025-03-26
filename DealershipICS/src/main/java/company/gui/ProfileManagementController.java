@@ -17,7 +17,11 @@ import java.util.Optional;
 
 import static company.gui.FXMLPath.*;
 
-
+/**
+ * Controller for the profile management screen.
+ * Handles actions related to managing dealership profiles, including adding dealership, editing dealership names,
+ * and changing the receiving and rental statuses of dealerships.
+ */
 public class ProfileManagementController {
     private DealershipRow selectedDealershipRow;
 
@@ -36,6 +40,11 @@ public class ProfileManagementController {
     @FXML
     private TableColumn<DealershipRow, Boolean> rentingColumn;
 
+    /**
+     * Initializes the profile management controller.
+     * Sets up the table columns, fetches dealership data from AppStateManager,
+     * and adds a listener to the table's selection model.
+     */
     @FXML
     public void initialize() {
         // Set up the columns
@@ -58,12 +67,25 @@ public class ProfileManagementController {
         });
     }
 
+    /**
+     * Handles the "Back" button action.
+     * Switches the scene to the main screen.
+     *
+     * @param event The ActionEvent triggered by the "Back" button.
+     * @throws IOException If an I/O error occurs during scene switching.
+     */
     @FXML
     private void handleBack(ActionEvent event) throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
         sceneManager.switchScene(MAIN_SCREEN);
     }
 
+    /**
+     * Handles the "Edit Dealership Name" button action.
+     * Opens a dialog to edit the name of the selected dealership.
+     *
+     * @param event The ActionEvent triggered by the "Edit Dealership Name" button.
+     */
     @FXML
     private void handleEditDealershipName(ActionEvent event) {
         if (selectedDealershipRow != null) {
@@ -92,6 +114,12 @@ public class ProfileManagementController {
         }
     }
 
+    /**
+     * Handles the "Add Dealership" button action.
+     * Opens dialogs to add a new dealership with a unique ID and name.
+     *
+     * @param event The ActionEvent triggered by the "Add Dealership" button.
+     */
     @FXML
     private void handleAddDealership(ActionEvent event) {
         System.out.println("Add a Dealership button clicked");
@@ -155,6 +183,8 @@ public class ProfileManagementController {
 
     /**
      * Handles the "Change Receiving Status" button action, toggling the receiving status of the selected dealership.
+     *
+     * @author Christopher Engelhart
      */
     @FXML
     private void handleChangeReceivingStatus() {
@@ -173,6 +203,7 @@ public class ProfileManagementController {
 
     /**
      * Handles the "Change Rental Status" button action, toggling the rental status of the selected dealership.
+     * @author Christopher Engelhart
      */
     @FXML
     private void handleChangeRentalStatus() {
@@ -189,6 +220,11 @@ public class ProfileManagementController {
         }
     }
 
+    /**
+     * Displays an alert dialog with the given message.
+     *
+     * @param message The message to display in the alert.
+     */
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

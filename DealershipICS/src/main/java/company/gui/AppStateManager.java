@@ -133,10 +133,25 @@ public class AppStateManager {
     }
 
 
+    /**
+     * Processes a list of Maps containing inventory data and adds it to the Company's inventory.
+     * This method calls {@link Company#dataToInventory(List)} method.
+     *
+     * @param maps The list of Maps containing inventory data.
+     * @return A list of Maps representing invalid data entries, if any.
+     */
     public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {
         return company.dataToInventory(maps);
     }
 
+    /**
+     * Loads initial inventory data from a file.
+     * This method attempts to read inventory data from the specified file using FileIO,
+     * and processes it using  {@link Company#dataToInventory(List)} method.
+     * If a ReadWriteException occurs, it prints the error message and returns an empty list.
+     *
+     * @return A list of Maps representing invalid data entries, or an empty list if an error occurs.
+     */
     protected static List<Map<Key, Object>> loadInitialFiles() {
         try {
             FileIO fileIO = FileIOBuilder.buildNewFileIO(masterInventoryList, 'r');
@@ -147,6 +162,13 @@ public class AppStateManager {
         }
     }
 
+    /**
+     * Writes the Company's inventory data to a file.
+     * </p>
+     * This method retrieves the inventory data from the Company by calling
+     * {@link Company#getDataMap()} and attempts to write it to the specified
+     * file using FileIO. If a ReadWriteException occurs, it prints an error message.
+     */
     protected static void writeToInventory() {
         List<Map<Key, Object>> data = company.getDataMap();
         try {
@@ -157,6 +179,13 @@ public class AppStateManager {
         }
     }
 
+
+    /**
+     * Retrieves a list of all dealership IDs from the Company.
+     * This method delegates to {@link Company#getAllDealershipIds()}.
+     *
+     * @return An ArrayList of Strings representing all dealership IDs.
+     */
     public static ArrayList<String> getDealershipIDs()
     {
         return company.getAllDealershipIds();

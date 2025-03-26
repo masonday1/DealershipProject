@@ -18,8 +18,19 @@ import java.util.Map;
 import static company.gui.FXMLPath.ADD_FROM_FILE;
 import static company.gui.FXMLPath.ADD_INVENTORY;
 
+/**
+ * Controller class for the "Add From File" functionality in the GUI.
+ * This class handles the logic for importing inventory data from a file,
+ * processing the data, and displaying any errors or invalid entries to the user.
+ */
 public class AddFromFile {
 
+    /**
+     * Initializes the controller and processes the file import.
+     * This method prompts the user to select a file, reads the inventory data from the file,
+     * and processes the data using {@link AppStateManager#dataToInventory(List)}.
+     * If any invalid data is found, it displays the errors in a Swing JTable within a JFrame.
+     */
     public void initialize() {
         String path = FileIOBuilder.selectFilePath('r');
 
@@ -54,6 +65,13 @@ public class AddFromFile {
         }
     }
 
+    /**
+     * Handles the action when the back button is clicked.
+     * Switches the scene to the add inventory screen.
+     *
+     * @param event The ActionEvent triggered by the back button.
+     * @throws IOException If an I/O error occurs during scene switching.
+     */
     @FXML
     private void handleBack(ActionEvent event) throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
@@ -61,6 +79,14 @@ public class AddFromFile {
     }
 
 
+    /**
+     * Handles the "Add Another File" button action.
+     * This method switches the current scene to the "Add From File" scene,
+     * allowing the user to import another file.
+     *
+     * @param actionEvent The ActionEvent triggered by the "Add Another File" button.
+     * @throws IOException If an I/O error occurs while switching scenes.
+     */
     public void handleAnother(ActionEvent actionEvent) throws IOException {
         SceneManager sceneManager = SceneManager.getInstance(null);
         sceneManager.switchScene(ADD_FROM_FILE);

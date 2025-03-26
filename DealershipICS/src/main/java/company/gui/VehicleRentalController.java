@@ -21,7 +21,8 @@ import static company.gui.FXMLPath.INVENTORY_SCREEN;
 
 
 /**
- * Controller for the Vehicle Rental screen, handling vehicle rental operations.
+ * Controller for the Vehicle Rental screen, allowing users to change rental status of vehicle
+ * to true or false.
  */
 public class VehicleRentalController {
 
@@ -52,7 +53,8 @@ public class VehicleRentalController {
     private Vehicle selectedVehicle;
 
     /**
-     * Initializes the controller, setting up the combo box and table.
+     * Initializes the controller, setting up the combo box and table. Combo box is populated by calling the method
+     * {@link AppStateManager#getRentingEnabledDealershipIDs()}.
      */
     @FXML
     public void initialize() {

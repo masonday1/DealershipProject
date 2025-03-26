@@ -72,7 +72,7 @@ public class ViewInventoryController {
     }
 
     /**
-     * Loads the vehicle data from AppStateManager and populates the TableView.
+     * Loads the vehicle data using {@link AppStateManager#getListCompanyVehicles()} and populates the TableView.
      */
     private void loadVehicleData() {
         ObservableList<javafiles.domainfiles.Vehicle> vehicleList = FXCollections.observableArrayList(AppStateManager.getListCompanyVehicles());
@@ -82,7 +82,7 @@ public class ViewInventoryController {
 
 
     /**
-     * Retrieves the dealership ID from the map for the given Vehicle.
+     * Retrieves the dealership ID from the map for the selected Vehicle.
      *
      * @param vehicle The Vehicle object.
      * @return The dealership ID or "N/A" if dealership ID is not found for a vehicle.

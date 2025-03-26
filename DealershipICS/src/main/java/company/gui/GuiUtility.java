@@ -17,38 +17,21 @@ import java.util.*;
 
 /**
  * A utility class that contains commonly used functions for managing GUI elements,
- * such as navigating between screens and setting the window size.
+ * specifically for creating and manipulating JTables to display data.
  */
+
 public class GuiUtility {
 
+
+
     /**
-     * Sets the size of the stage and ensures the size is retained across scene changes.
-     * This method calculates the window size as a percentage of the screen size, and
-     * allows you to keep that size even after scene transitions.
+     * Creates a Map representing a key data point for JTable column configuration.
      *
-     * @param stage            The stage whose size is to be set.
-     * @param widthPercentage  The percentage of the screen width to be used for the stage's width.
-     * @param heightPercentage The percentage of the screen height to be used for the stage's height.
+     * @param key   The Key enum representing the data key.
+     * @param name  The display name for the column header.
+     * @param width The preferred width of the column (can be null for default width).
+     * @return A Map containing the key data point.
      */
-    public static void setScreenSize(Stage stage, double widthPercentage, double heightPercentage) {
-        // Get screen bounds
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        double screenWidth = screenBounds.getWidth();
-        double screenHeight = screenBounds.getHeight();
-
-        // Calculate the size based on the given percentage
-        double stageWidth = screenWidth * widthPercentage;
-        double stageHeight = screenHeight * heightPercentage;
-
-        // Set the stage size
-        stage.setWidth(stageWidth);
-        stage.setHeight(stageHeight);
-
-        //set minimum size to 50% of the screen size or any other desired value
-        stage.setMinWidth(screenWidth * 0.5);
-        stage.setMinHeight(screenHeight * 0.5);
-    }
-
     public static Map<String, Object> createKeyDataPoint(Key key, String name, Integer width) {
         if (width == null) {
             width = 10;
@@ -60,6 +43,11 @@ public class GuiUtility {
         return map;
     }
 
+    /**
+     * Creates a List of Maps representing key data for JTable column configuration.
+     *
+     * @return A List of Maps containing key data for JTable columns.
+     */
     public static List<Map<String, Object>> createKeyData() {
         List<Map<String, Object>> keyData = new ArrayList<>();
         keyData.add(createKeyDataPoint(Key.DEALERSHIP_ID, "Dealer ID", null));
@@ -77,7 +65,15 @@ public class GuiUtility {
 
         return keyData;
     }
-    
+
+
+    /**
+     * Creates a JTable from a List of Maps using specified key data for column configuration.
+     *
+     * @param data    The List of Maps containing data for the JTable.
+     * @param keyData The List of Maps containing key data for JTable columns.
+     * @return A JTable displaying the data, or null if the input list is null or empty.
+     */
     public static JTable createTableFromMapList(List<Map<Key, Object>> data, List<Map<String, Object>> keyData) {
         if (data == null || data.isEmpty()) {return null;}
 
@@ -191,7 +187,5 @@ public class GuiUtility {
             System.out.println("Column '" + columnName + "' not found in the table.");
         }
     }
-
-
 
 }

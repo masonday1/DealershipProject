@@ -19,7 +19,7 @@ public class SportsCar extends Vehicle
      *
      * @param vehicleID The vehicle ID of the SportsCar to be created.
      */
-    SportsCar(String vehicleID, String model, Long price) {
+    public SportsCar(String vehicleID, String model, Long price) {
         super("Sports car", vehicleID, model, price, new SportsCarRentalStrategy());
     }
 }
