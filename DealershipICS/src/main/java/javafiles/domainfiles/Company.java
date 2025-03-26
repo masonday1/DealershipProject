@@ -88,20 +88,22 @@ public class Company {
      * @param dealershipid The ID of the dealership containing the vehicle to update.
      * @param vehicle       The vehicle object with the updated rental status. This is the same vehicle object that
      * is present in the dealership's inventory (either sales or rental).
-     * @throws VehicleAlreadyExistsException       If the vehicle already exists in the destination inventory.
-     * @throws DealershipNotRentingException       If the dealership is not currently renting vehicles.
-     * @throws VehicleNotRentableException         If the vehicle is a sports car, which is not rentable.
-     * @throws DealershipNotAcceptingVehiclesException If the dealership is not accepting new vehicles into sales inventory.
+     * @throws RentalException       If the vehicle is a sports car, which is not rentable.
      */
-    public void updateVehicleRental(String dealershipid, Vehicle vehicle)
-            throws VehicleAlreadyExistsException, DealershipNotRentingException,
-            VehicleNotRentableException, DealershipNotAcceptingVehiclesException {
-
+    public void updateVehicleRental(String dealershipid, Vehicle vehicle) throws RentalException
+    {
         Dealership dealership = findDealership(dealershipid);
 
         // Update the vehicle's rental status
         if (!vehicle.getVehicleType().equalsIgnoreCase("Sports car")) {
-            vehicle.setRental(!vehicle.getRentalStatus());
+            if(vehicle.getRentalStatus())
+            {
+                vehicle.disableRental();
+            }
+            else
+            {
+                vehicle.enableRental();
+            }
         }
 
         else {

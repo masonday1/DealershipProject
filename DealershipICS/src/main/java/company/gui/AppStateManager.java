@@ -271,8 +271,8 @@ public class AppStateManager {
      *
     */
     public static void updateDealershipVehicleRentalState(String dealershipid, Vehicle vehicleToUpdate) throws
-            VehicleAlreadyExistsException, DealershipNotRentingException, VehicleNotRentableException,
-            DealershipNotAcceptingVehiclesException
+             RentalException
+
     {
         company.updateVehicleRental(dealershipid, vehicleToUpdate);
     }

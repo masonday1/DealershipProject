@@ -97,8 +97,7 @@ public class VehicleRentalController {
      * @param event The action event.
      */
     @FXML
-    private void handleChangeRental(ActionEvent event) throws VehicleAlreadyExistsException, DealershipNotRentingException,
-            VehicleNotRentableException, DealershipNotAcceptingVehiclesException, EmptyInventoryException {
+    private void handleChangeRental(ActionEvent event) {
         String selectedDealershipId = dealershipComboBox.getValue();
         if (selectedDealershipId == null) {
             showAlert("Please select a dealership.");
@@ -122,12 +121,13 @@ public class VehicleRentalController {
         // Update the vehicle in the dealership's inventory
         try {
             AppStateManager.updateDealershipVehicleRentalState(selectedDealershipId, selectedVehicle);
-        } catch (VehicleAlreadyExistsException | DealershipNotRentingException | VehicleNotRentableException |
-                 DealershipNotAcceptingVehiclesException e) {
+        } catch (RentalException e) {
             showAlert(e.getMessage());
         }
 
-    }
+        }
+
+
 
     /**
      * Displays an alert dialog with the given message.
