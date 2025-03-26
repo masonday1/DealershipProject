@@ -7,6 +7,11 @@ import javafiles.customexceptions.ReadWriteException;
 import java.io.File;
 import java.util.*;
 
+/**
+ * An abstract class whose inheritors reads and writes to different file types.
+ *
+ * @author Dylan Browne
+ */
 public abstract class FileIO {
     protected File file;
     protected char mode;

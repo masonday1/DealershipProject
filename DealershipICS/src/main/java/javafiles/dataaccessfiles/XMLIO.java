@@ -46,7 +46,7 @@ enum XMLKey {
 }
 
 /**
- * A class that reads and writes to XML files
+ * A class that reads from XML files
  *
  * @author Dylan Browne
  */
@@ -178,11 +178,7 @@ class XMLIO extends FileIO {
             builder = factory.newDocumentBuilder();
             document = builder.parse(file);
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            ArrayList<Map<Key, Object>> reasonList = new ArrayList<>();
-            Map<Key, Object> reasonMap = new HashMap<>();
-            XMLKey.REASON.getKey().putNonNull(reasonMap, new ReadWriteException(e));
-            reasonList.add(reasonMap);
-            return reasonList;
+            throw new ReadWriteException(e);
         }
 
         return parseDocument(document);

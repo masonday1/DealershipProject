@@ -10,8 +10,31 @@ import java.io.File;
 
 import java.util.*;
 
+/**
+ * An abstract class whose inheritors creates and returns versions of {@link FileIO}s.
+ *
+ * @author Dylan Browne
+ */
 public abstract class FileIOBuilder {
+    /**
+     * Creates and returns a new instance of a {@link FileIO} with the given path and mode.
+     *
+     * @param path The path of the file to be opened or created.
+     * @param mode A char representation of the type of file that is created (read 'r' or write 'w').
+     * @return the newly created {@link FileIO} instance.
+     * @throws ReadWriteException when the {@link FileIO} is unable to be created.
+     */
     protected abstract FileIO createFileIO(String path, char mode) throws ReadWriteException;
+
+    /**
+     * Returns a list o list of {@link String}s that correspond with the extensions of
+     * files that can be created with the given mode. This means if a {@link FileIO} can
+     * only read or only write, then it will only return the extensions when mode is the
+     * correct value for reading or writing.
+     *
+     * @param mode A char representation of the mode associated with the extensions (read 'r' or write 'w').
+     * @return an array of {@link String}s corresponding to the extensions that can be written with the mode.
+     */
     protected abstract String[] getExtensions(char mode);
 
     protected final String[] EXTENSIONS;
@@ -21,8 +44,8 @@ public abstract class FileIOBuilder {
 
 
     /**
-     * Creates a new {@link FileIOBuilder} that creates {@link FileIO} type {@link FileIO}s
-     * when the extension on the path is in extensions.
+     * Creates a new {@link FileIOBuilder} that creates {@link FileIO}s when the
+     * extension on the path is in extensions.
      *
      * @param extensions The valid path extensions for creating a {@link FileIO} object.
      */
@@ -31,11 +54,12 @@ public abstract class FileIOBuilder {
     }
 
     /**
-     * Returns whether this {@link FileIO} can be created from the given extensions.
+     * Returns whether this {@link FileIO} can be created from the given extensions for
+     * the given mode.
      *
      * @param path The path of the file to be opened or created.
-     * @param mode A char representation of the type of {@link File} this is (read 'r' or write 'w').
-     * @return Whether this {@link FileIO} ends with one of the given extensions.
+     * @param mode A char representation of the type of file this is (read 'r' or write 'w').
+     * @return Whether this {@link FileIO} ends with one of the valid extensions for this mode.
      */
     protected boolean buildable(String path, char mode) {
         for (String extension : getExtensions(mode)) {
@@ -47,12 +71,12 @@ public abstract class FileIOBuilder {
     }
 
     /**
-     * Creates and returns a new {@link FileIO} of type {@link FileIO} with parameters (path, mode).
+     * Creates and returns a new {@link FileIO} with parameters (path, mode).
      * Instead, returns null if the path does not have an appropriate extension.
      *
      * @param path The path of the file to be opened or created.
-     * @param mode A char representation of the type of file this is (read 'r' or write 'w').
-     * @return A new {@link FileIO} of type {@link FileIO} with parameters (path, mode).
+     * @param mode A char representation of the type of file being created (read 'r' or write 'w').
+     * @return A new {@link FileIO} with parameters (path, mode).
      * @throws ReadWriteException When creating {@link FileIO}(path, mode) throws an exception.
      */
     private FileIO build(String path, char mode) throws ReadWriteException {
@@ -102,7 +126,8 @@ public abstract class FileIOBuilder {
      * Opens a file chooser dialog to allow the user to select a file.
      * The file chooser will start in the current user's working directory
      * and will filter files to only show those with an extension in
-     * BUILDERS_EXTENSIONS.
+     * that allows for the creation of a {@link FileIO} in the given mode
+     * with one or more of the {@link FileIOBuilder}s in BUILDERS.
      *
      * @return The selected path to the file if the user selects a file and confirms
      *         the dialog, or null if the user cancels or closes the dialog without
@@ -126,7 +151,7 @@ public abstract class FileIOBuilder {
      * Maven files).
      *
      * @param path The path of the file to be opened or created.
-     * @param mode A char representation of the type of file this is (read 'r' or write 'w').
+     * @param mode A char representation of the type of file that is created (read 'r' or write 'w').
      * @return The new instance of the {@link FileIO} created.
      * @throws ReadWriteException When the creation of the {@link FileIO} is invalid.
      */

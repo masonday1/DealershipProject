@@ -24,7 +24,7 @@ class JSONIO extends FileIO {
      * Read mode allows the reading, but not writing of files, write mode allows for the
      * writing, but not reading of files.
      *
-     * @param filePath The path of the file to be opened or created
+     * @param filePath The full path of the file to be opened or created
      * @param mode A char representation of the type of file this is (read 'r' or write 'w')
      * @throws ReadWriteException Thrown if the mode is an invalid char
      */

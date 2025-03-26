@@ -21,12 +21,16 @@ class FileIOBuilderTest {
         return causeTarget.getClass().equals(cause.getClass());
     }
 
+    public static String getPath(String partialPath, String folder, String extension) {
+        String dir = System.getProperty("user.dir");
+        return dir + "\\src\\test\\resources\\"+ folder +"\\test_inventory_" + partialPath + extension;
+    }
+
     public static FileIO getFileIOForTest(String partialPath, String folder, String extension,
                                           char mode, boolean failExpected) throws ReadWriteException {
         FileIOBuilder.setupFileIOBuilders();
 
-        String dir = System.getProperty("user.dir");
-        String path = dir + "\\src\\test\\resources\\"+ folder +"\\test_inventory_" + partialPath + extension;
+        String path = getPath(partialPath, folder, extension);
 
         try {
             FileIO fileIO =  FileIOBuilder.buildNewFileIO(path, mode);
@@ -102,7 +106,7 @@ class FileIOBuilderTest {
             fail(fileIO.toString());
         } catch (ReadWriteException e) {
             BadExtensionException cause = new BadExtensionException("Bad extension.");
-            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
+            assertTrue(isSameCauseType(new ReadWriteException(cause), e));
         }
     }
 
@@ -113,7 +117,7 @@ class FileIOBuilderTest {
             fail(fileIO.toString());
         } catch (ReadWriteException e) {
             BadExtensionException cause = new BadExtensionException("Bad extension.");
-            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
+            assertTrue(isSameCauseType(new ReadWriteException(cause), e));
         }
     }
 }
