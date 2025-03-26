@@ -168,14 +168,16 @@ public class Dealership {
         try {
             vehicle = vehicleFactory.createVehicle(map);
         } catch (InvalidVehicleTypeException | InvalidPriceException e) {
-            Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());
+            ReadWriteException exception = new ReadWriteException(e);
+            Key.REASON_FOR_ERROR.putNonNull(map, exception);
             return false;
         }
 
         try {
             addIncomingVehicle(vehicle);
         } catch (VehicleAlreadyExistsException | DealershipNotAcceptingVehiclesException e) {
-            Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());
+            ReadWriteException exception = new ReadWriteException(e);
+            Key.REASON_FOR_ERROR.putNonNull(map, exception);
             return false;
         }
         return true;

@@ -1,6 +1,7 @@
 package javafiles.dataaccessfiles;
 
 import javafiles.Key;
+import javafiles.customexceptions.ReadDuplicateKeyException;
 import javafiles.customexceptions.ReadWriteException;
 
 import org.w3c.dom.*;
@@ -66,20 +67,22 @@ class XMLIO extends FileIO {
         for (XMLKey key: keys) {
 
             if (key.getName().equalsIgnoreCase(tagName)) {
+                // If there is an issue with the val, the first value is saved and the rest discarded.
+
                 Object nodeValCast = nodeValue;
                 if (key.getKey().getClassName().equals(Long.class.getName())) {
                     try {
                         nodeValCast = Long.parseLong(nodeValue);
                     } catch (NumberFormatException e) {
-                        map.put(XMLKey.REASON.getKey(), "Invalid number format on " + key.getName() +
-                                ". [" + nodeValue + "]");
+                        XMLKey.REASON.getKey().putNonNull(map, new ReadWriteException(e));
                         return;
                     }
                 }
                 if (map.containsKey(key.getKey()) && !map.get(key.getKey()).equals(nodeValCast)) {
                     String reason = "Key " + key.getName() + " already has a value and [";
                     reason += map.get(key.getKey()) + "] != [" + nodeValue + "].";
-                    map.put(XMLKey.REASON.getKey(), reason);
+                    ReadDuplicateKeyException cause = new ReadDuplicateKeyException(reason);
+                    XMLKey.REASON.getKey().putNonNull(map, new ReadWriteException(cause));
                     return;
                 }
                 map.put(key.getKey(), nodeValCast);
@@ -177,7 +180,7 @@ class XMLIO extends FileIO {
         } catch (ParserConfigurationException | SAXException | IOException e) {
             ArrayList<Map<Key, Object>> reasonList = new ArrayList<>();
             Map<Key, Object> reasonMap = new HashMap<>();
-            reasonMap.put(XMLKey.REASON.getKey(), e);
+            XMLKey.REASON.getKey().putNonNull(reasonMap, new ReadWriteException(e));
             reasonList.add(reasonMap);
             return reasonList;
         }

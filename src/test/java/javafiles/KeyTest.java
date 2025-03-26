@@ -2,6 +2,7 @@ package javafiles;
 
 import static javafiles.Key.*;
 
+import javafiles.customexceptions.ReadWriteException;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -40,7 +41,8 @@ class KeyTest {
                 DEALERSHIP_RENTING_STATUS,
                 VEHICLE_RENTAL_STATUS,
                 VEHICLE_PRICE,
-                VEHICLE_ACQUISITION_DATE
+                VEHICLE_ACQUISITION_DATE,
+                REASON_FOR_ERROR
         };
 
         putNonNullObjectTest("String", notAddedKeys);
@@ -110,7 +112,7 @@ class KeyTest {
         map.put(Key.VEHICLE_RENTAL_STATUS, true);
         map.put(Key.VEHICLE_ACQUISITION_DATE, 123L);
 
-        map.put(REASON_FOR_ERROR, "No error, just need all keys.");
+        map.put(REASON_FOR_ERROR, new ReadWriteException("No error, just need all keys."));
 
         return map;
     }
@@ -149,6 +151,8 @@ class KeyTest {
                 obj = key.getVal(map, Long.class);
             } else if (className.equals(Boolean.class.getName())) {
                 obj = key.getVal(map, Boolean.class);
+            } else if (className.equals(ReadWriteException.class.getName())) {
+                obj = key.getVal(map, ReadWriteException.class);
             }
 
             assertNotNull(obj);
@@ -192,6 +196,9 @@ class KeyTest {
                 calledFunction = true;
             } else if (className.equals(Boolean.class.getName())) {
                 obj = key.getVal(map, Long.class);
+                calledFunction = true;
+            } else if (className.equals(ReadWriteException.class.getName())) {
+                obj = key.getVal(map, Integer.class);
                 calledFunction = true;
             }
 
@@ -257,6 +264,9 @@ class KeyTest {
             } else if (className.equals(Boolean.class.getName())) {
                 obj = key.getVal(map, Boolean.class);
                 calledFunction = true;
+            } else if (className.equals(ReadWriteException.class.getName())) {
+                obj = key.getVal(map, ReadWriteException.class);
+                calledFunction = true;
             }
 
             assertTrue(calledFunction);
@@ -301,6 +311,9 @@ class KeyTest {
                 calledFunction = true;
             } else if (className.equals(Boolean.class.getName())) {
                 obj = key.getVal(map, Long.class);
+                calledFunction = true;
+            } else if (className.equals(ReadWriteException.class.getName())) {
+                obj = key.getVal(map, Integer.class);
                 calledFunction = true;
             }
 

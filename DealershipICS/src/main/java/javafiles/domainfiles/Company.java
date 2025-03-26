@@ -162,7 +162,9 @@ public class Company {
             String name = Key.DEALERSHIP_NAME.getVal(map, String.class);
 
             if (id == null) {
-                Key.REASON_FOR_ERROR.putNonNull(map, "No dealerID.");
+                MissingCriticalInfoException cause = new MissingCriticalInfoException("No dealerID.");
+                ReadWriteException exception = new ReadWriteException(cause);
+                Key.REASON_FOR_ERROR.putNonNull(map, exception);
                 badInventoryMaps.add(map);
                 continue;
             }

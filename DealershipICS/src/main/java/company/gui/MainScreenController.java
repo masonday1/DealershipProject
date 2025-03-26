@@ -6,14 +6,6 @@ import javafx.event.ActionEvent;
 
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javafiles.Key;
-import javafiles.customexceptions.ReadWriteException;
-import javafiles.dataaccessfiles.FileIOBuilder;
-import javafiles.dataaccessfiles.FileIO;
 import javafiles.domainfiles.Company;
 
 import static company.gui.FXMLPath.*;

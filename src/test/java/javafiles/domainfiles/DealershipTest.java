@@ -203,6 +203,18 @@ class DealershipTest {
         assertEquals(4, dataMapList.size());
     }
 
+    private void isSameCauseType(ReadWriteException expectedException, ReadWriteException testedException) {
+        assertNotNull(expectedException);
+        Throwable causeTarget = expectedException.getCause();
+        assertNotNull(causeTarget);
+
+        assertNotNull(testedException);
+        Throwable cause = testedException.getCause();
+        assertNotNull(cause);
+
+        assertEquals(causeTarget.getClass(), cause.getClass());
+    }
+
     @Test
     public void testDataToInventory() {
         Map<Key, Object> validMap = new HashMap<>();
@@ -224,14 +236,22 @@ class DealershipTest {
     
         boolean invalidTypeResult = dealership.dataToInventory(invalidTypeMap);
         assertFalse(invalidTypeResult);
-        assertEquals("spaceship is not a valid Vehicle Type.", invalidTypeMap.get(Key.REASON_FOR_ERROR));
-    
+
+        InvalidVehicleTypeException cause = new InvalidVehicleTypeException("spaceship is not a valid Vehicle Type.");
+        ReadWriteException testingException = Key.REASON_FOR_ERROR.getVal(invalidTypeMap, ReadWriteException.class);
+        isSameCauseType(new ReadWriteException(cause), testingException);
+
         Map<Key, Object> duplicateMap = new HashMap<>(validMap);
     
         boolean duplicateResult = dealership.dataToInventory(duplicateMap);
         assertFalse(duplicateResult);
-        assertEquals("This vehicle is already located in the sales inventory. Vehicle ID: V001 was not added to dealership D001.",
-                duplicateMap.get(Key.REASON_FOR_ERROR));
+
+        String reason = "This vehicle is already located in the sales inventory." +
+                         " Vehicle ID: V001 was not added to dealership D001.";
+        VehicleAlreadyExistsException causeVehicleExists = new VehicleAlreadyExistsException(reason);
+        ReadWriteException testingExceptionVehicleExists =
+                Key.REASON_FOR_ERROR.getVal(duplicateMap, ReadWriteException.class);
+        isSameCauseType(new ReadWriteException(causeVehicleExists), testingExceptionVehicleExists);
     }
 
     @Test

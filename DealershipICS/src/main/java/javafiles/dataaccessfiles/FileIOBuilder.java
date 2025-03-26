@@ -1,5 +1,7 @@
 package javafiles.dataaccessfiles;
 
+import javafiles.customexceptions.BadExtensionException;
+import javafiles.customexceptions.PathNotFoundException;
 import javafiles.customexceptions.ReadWriteException;
 
 import javax.swing.JFileChooser;
@@ -132,7 +134,9 @@ public abstract class FileIOBuilder {
         mode = FileIO.getLowercaseMode(mode);
         File file = new File(path);
         if (!file.exists() && mode == 'r') {
-            throw new ReadWriteException("Path: \"" + path + "\" does not exist, so it can't be read.");
+            String reason = "Path: \"" + path + "\" does not exist, so it can't be read.";
+            PathNotFoundException cause = new PathNotFoundException(reason);
+            throw new ReadWriteException(cause);
         }
 
         for (FileIOBuilder builder : BUILDERS) {
@@ -141,7 +145,8 @@ public abstract class FileIOBuilder {
                 return fileIO;
             }
         }
-        throw new ReadWriteException("Extension for \"" + path + " is invalid.");
+        BadExtensionException cause = new BadExtensionException("Extension for \"" + path + " is invalid.");
+        throw new ReadWriteException(cause);
     }
 
     /**

@@ -2,7 +2,7 @@ package company.gui;
 
 
 import javafiles.Key;
-import javafx.beans.value.ObservableValue;
+import javafiles.customexceptions.ReadWriteException;
 import javafx.geometry.Rectangle2D;
 
 import javafx.stage.Screen;
@@ -93,7 +93,22 @@ public class GuiUtility {
         for (int i = 0; i < data.size(); i++) {
             Map<Key, Object> rowMap = data.get(i);
             for (int j = 0; j < keyData.size(); j++) {
-                tableData[i][j] = rowMap.get( (Key) keyData.get(j).get("key") );
+                Key key = (Key) keyData.get(j).get("key");
+                Object dataPoint = rowMap.get(key);
+                if (key.equals(Key.REASON_FOR_ERROR)) {
+                    Throwable throwable = key.getVal(rowMap, ReadWriteException.class);
+                    Throwable finalThrowable = null;
+                    int limit = 10;
+                    while (throwable != null && limit > 0) {
+                        finalThrowable = throwable;
+                        throwable = throwable.getCause();
+                        limit--;
+                    }
+                    if (finalThrowable != null) {
+                        dataPoint = finalThrowable.getMessage();
+                    }
+                }
+                tableData[i][j] = dataPoint;
             }
         }
 

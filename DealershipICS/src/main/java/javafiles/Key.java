@@ -1,5 +1,7 @@
 package javafiles;
 
+import javafiles.customexceptions.ReadWriteException;
+
 import java.util.Map;
 
 public enum Key {
@@ -20,7 +22,7 @@ public enum Key {
 
     VEHICLE_ACQUISITION_DATE ("acquisition_date", Long.class, false),
 
-    REASON_FOR_ERROR ("error_reason", String.class, false);
+    REASON_FOR_ERROR ("error_reason", ReadWriteException.class, false);
 
     private final String KEY; // should be the same as JSONIO key
     private final Class<?> CLASS;

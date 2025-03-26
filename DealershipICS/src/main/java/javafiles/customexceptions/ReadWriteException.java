@@ -16,4 +16,13 @@ public class ReadWriteException extends Exception {
     public ReadWriteException(String message) {
         super(message);
     }
+
+    /**
+     * Creates a new ReadWriteException with the given cause.
+     *
+     * @param cause The cause of the Exception
+     */
+    public ReadWriteException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -1,5 +1,7 @@
 package javafiles.dataaccessfiles;
 
+import javafiles.customexceptions.BadCharException;
+import javafiles.customexceptions.PathNotFoundException;
 import javafiles.customexceptions.ReadWriteException;
 import org.junit.jupiter.api.Test;
 
@@ -10,12 +12,13 @@ class FileIOTest {
     @Test
     void getLowercaseModeBadChar() {
         char ch = 'x';
-        String message = "Mode '" + ch + "' is not in {'r', 'R', 'w', 'W'}, file not opened.";
+        String reason = "Mode '" + ch + "' is not in {'r', 'R', 'w', 'W'}, file not opened.";
         try {
             FileIO.getLowercaseMode(ch);
             fail("No ReadWriteException");
         } catch (ReadWriteException e) {
-            assertEquals(message, e.getMessage());
+            BadCharException cause = new BadCharException(reason);
+            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
         }
 
     }

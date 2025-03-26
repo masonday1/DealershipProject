@@ -1,6 +1,8 @@
 package javafiles.dataaccessfiles;
 
 import javafiles.Key;
+import javafiles.customexceptions.BadCharException;
+import javafiles.customexceptions.PathNotFoundException;
 import javafiles.customexceptions.ReadWriteException;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class JSONIOTest {
     private JSONIO getJSONIO(String partialPath, char mode, boolean failExpected) throws ReadWriteException {
-        return (JSONIO) FileIOBuilderTest.getFileIOForTest(partialPath, ".json", mode, failExpected);
+        return (JSONIO) FileIOBuilderTest.getFileIOForTest(partialPath, "jsonIOTests",".json", mode, failExpected);
     }
 
     @Test
@@ -25,7 +27,8 @@ class JSONIOTest {
             JSONIO jsonIO = getJSONIO("DNE", 'r', true);
             fail(jsonIO.toString());
         } catch (ReadWriteException e) {
-            assertTrue(FileIOBuilderTest.isPathNotFoundException(e));
+            PathNotFoundException cause = new PathNotFoundException("Path not found.");
+            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
         }
     }
 
@@ -44,7 +47,8 @@ class JSONIOTest {
             JSONIO jsonIO = getJSONIO("DNE", 'x', true);
             fail(jsonIO.toString());
         } catch (ReadWriteException e) {
-            assertTrue(FileIOBuilderTest.isBadCharException(e));
+            BadCharException cause = new BadCharException("Bad character.");
+            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
         }
     }
 
@@ -173,7 +177,7 @@ class JSONIOTest {
     void createJSONIOWithXMLFile() {
         FileIO fileIO = null;
         try {
-            fileIO = FileIOBuilderTest.getFileIOForTest("json", ".xml", 'r', false);
+            fileIO = FileIOBuilderTest.getFileIOForTest("json", "jsonIOTests",".xml", 'r', false);
         } catch (ReadWriteException e) {
             fail(e.getMessage());
         }

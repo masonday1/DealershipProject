@@ -1,6 +1,7 @@
 package javafiles.dataaccessfiles;
 
 import javafiles.Key;
+import javafiles.customexceptions.BadCharException;
 import javafiles.customexceptions.ReadWriteException;
 
 import java.io.File;
@@ -44,9 +45,9 @@ public abstract class FileIO {
             }
         }
 
-        String message = "Mode '" + mode +
-                "' is not in {'r', 'R', 'w', 'W'}, file not opened.";
-        throw new ReadWriteException(message);
+        String reason = "Mode '" + mode + "' is not in {'r', 'R', 'w', 'W'}, file not opened.";
+        BadCharException cause = new BadCharException(reason);
+        throw new ReadWriteException(cause);
     }
 
     @Override
