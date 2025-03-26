@@ -8,6 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a central manager for all dealerships within a vehicle dealership system.
+ * <p>
+ * This class maintains a list of Dealership objects and provides functionality to add and retrieve dealerships by ID or name.
+ * It supports operations for toggling rental status for vehicles, enabling or disabling vehicle receiving
+ * at dealerships, and transferring vehicles between rental and sales inventories. The class also handles
+ * data import by mapping structured input into dealership inventories.
+ * </p>
+ */
 public class Company {
     private ArrayList<Dealership> listDealerships;
 
