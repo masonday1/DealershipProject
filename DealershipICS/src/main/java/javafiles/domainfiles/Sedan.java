@@ -1,7 +1,7 @@
 package javafiles.domainfiles;
 
 /**
- * Sedan is a child class of Vehicle. Its constructor is called by {@link VehicleCreator#createVehicle(String, String)}.
+ * Sedan is a child class of Vehicle. Its constructor is called by {@link {@link VehicleCreator#createVehicle(String, String, String, Long)}.
  *
  * @author Christopher Engelhart
  */
