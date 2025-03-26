@@ -44,7 +44,7 @@ public class Company {
      * @param dealerId A String equal to the dealerID of the target Dealership.
      * @return The Dealership target dealership (null if absent).
      */
-    public Dealership findDealership(String dealerId) {
+    public Dealership findDealership(String dealerId)  {
         for (Dealership dealership : listDealerships) {
             if (dealership.getDealerId().equals(dealerId)) {
                 return dealership;
@@ -60,7 +60,7 @@ public class Company {
      * @param dealershipId The ID of the dealership to check.
      * @return true if the dealership has renting enabled, false otherwise.
      */
-    public boolean isDealershipRentingEnabled(String dealershipId) {
+    public boolean isDealershipRentingEnabled(String dealershipId){
         Dealership dealership = findDealership(dealershipId);
         if (dealership != null) {
             return dealership.getRentingVehicles();
@@ -75,8 +75,7 @@ public class Company {
      * @param dealershipId dealership ID of target dealership
      * @return a total collection of target dealership's sales and rental inventory
      */
-    public ArrayList <Vehicle> getDealershipCompleteInventory(String dealershipId)
-    {
+    public ArrayList <Vehicle> getDealershipCompleteInventory(String dealershipId){
         Dealership dealership = findDealership(dealershipId);
         return dealership.getTotalInventory();
     }
@@ -132,6 +131,34 @@ public class Company {
     public void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws  IllegalArgumentException{
         Dealership dealership = this.findDealership(dealershipId);
         dealership.removeVehicleFromInventory(targetVehicle);
+    }
+
+    /**
+     * Transfers a vehicle from one dealership's inventory to another.
+     * </p>
+     * Calls the {@link Dealership#addIncomingVehicle(Vehicle)} method
+     * to add the transfer vehicle to the receving dealership.
+     *
+     * @param senderId        The ID of the dealership sending the vehicle.
+     * @param receiverId      The ID of the dealership receiving the vehicle.
+     * @param transferVehicle The vehicle to be transferred.
+     * @throws DuplicateSenderException         If the sender and receiver dealership IDs are the same.
+     * @throws VehicleAlreadyExistsException    If the receiving dealership already has the vehicle in its inventory.
+     * @throws DealershipNotAcceptingVehiclesException If the receiving dealership is not accepting vehicles.
+     */
+    public void dealershipVehicleTransfer(String senderId, String receiverId, Vehicle transferVehicle)
+            throws DuplicateSenderException, VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException
+    {
+        Dealership senderDealer = this.findDealership(senderId);
+        Dealership receivingDealer = this.findDealership(receiverId);
+
+        if (senderId.equals(receiverId))
+        {
+            throw new DuplicateSenderException("Sender and receiver dealership can not be the same");
+        }
+
+        senderDealer.removeVehicleFromInventory(transferVehicle);
+        receivingDealer.addIncomingVehicle(transferVehicle);
     }
 
 

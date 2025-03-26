@@ -114,6 +114,25 @@ public class AppStateManager {
         company.addDealership(dealership);
     }
 
+    /**
+     * Transfers a vehicle from one dealership's inventory to another.
+     * </p>
+     * Calls {@link Company#dealershipVehicleTransfer(String, String, Vehicle)}.
+     *
+     * @param senderId        The ID of the dealership sending the vehicle.
+     * @param receiverId      The ID of the dealership receiving the vehicle.
+     * @param transferVehicle The vehicle to be transferred.
+     * @throws VehicleAlreadyExistsException       If the receiving dealership already has the vehicle in its inventory.
+     * @throws DealershipNotAcceptingVehiclesException If the receiving dealership is not accepting vehicles.
+     * @throws DuplicateSenderException            If the sender and receiver dealership IDs are the same.
+     */
+    public static void transferVehicle(String senderId, String receiverId, Vehicle transferVehicle) throws
+            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, DuplicateSenderException
+    {
+        company.dealershipVehicleTransfer(senderId,receiverId,transferVehicle);
+    }
+
+
     public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {
         return company.dataToInventory(maps);
     }

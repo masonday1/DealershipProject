@@ -70,7 +70,52 @@ class DealershipTest {
 
     @Test
     public void testManualVehicleAdd() throws Exception {
-        // TODO: Create Test for Manual Vehicle Add
+        String vehicleManufacturer = "Volkswagon";
+        String vehicleModel = "Tiguan";
+        Long vehiclePrice = 32000L;
+        Long acquisitionDate = 1515354694451L;
+        String vehicleType = "suv";
+        String priceUnit = "USD";
+
+        assertDoesNotThrow(() -> dealership.manualVehicleAdd("V001a", vehicleManufacturer, vehicleModel, 
+            vehiclePrice, acquisitionDate, vehicleType, priceUnit));
+
+        // Verifies vehicle was added to sales inventory
+        Vehicle addedVehicle = dealership.getVehicleFromSalesInventory("V001a");
+        assertNotNull(addedVehicle);
+        assertEquals("V001a", addedVehicle.getVehicleId());
+        assertEquals(vehicleModel, addedVehicle.getVehicleModel());
+        assertEquals(vehiclePrice, addedVehicle.getVehiclePrice());
+        
+        // Test invalid vehicle price
+        InvalidPriceException invalidPriceException = assertThrows(InvalidPriceException.class, () -> {
+            
+            dealership.manualVehicleAdd("V001b", vehicleManufacturer, vehicleModel, 
+            -1L, acquisitionDate, vehicleType, priceUnit);
+        });
+        assertEquals("Error: Vehicle price must be a positive value. Vehicle ID: V001b was not added.", invalidPriceException.getMessage());
+    
+        // Test invalid vehicle type
+        InvalidVehicleTypeException invalidTypeException = assertThrows(InvalidVehicleTypeException.class, () -> {
+            dealership.manualVehicleAdd("V001c", vehicleManufacturer, vehicleModel, 
+            vehiclePrice, acquisitionDate, "canyonero", priceUnit);
+        });
+        assertNotNull(invalidTypeException);
+
+        // Test duplicate vehicle addition
+        VehicleAlreadyExistsException duplicateException = assertThrows(VehicleAlreadyExistsException.class, () -> {
+            dealership.manualVehicleAdd("V001d", vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
+            dealership.manualVehicleAdd("V001d", vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
+        });
+        assertNotNull(duplicateException);
+
+        // Test when dealership is not accepting vehicles
+        dealership.setReceivingVehicle(false);
+        DealershipNotAcceptingVehiclesException notAcceptingException = assertThrows(DealershipNotAcceptingVehiclesException.class, () -> {
+            dealership.manualVehicleAdd("V001e", vehicleManufacturer, vehicleModel, 
+            vehiclePrice, acquisitionDate, vehicleType, priceUnit);
+        });
+        assertNotNull(notAcceptingException);
     }
 
     @Test
@@ -188,6 +233,23 @@ class DealershipTest {
 
         assertNotNull(exception);
         assertEquals("Vehicle with ID: R999 not found in rental inventory.", exception.getMessage());
+    }
+
+    @Test
+    public void testGetTotalInventory() {
+        dealership.getSaleVehicles().add(vehicle1);
+        dealership.getSaleVehicles().add(vehicle2);
+        dealership.getRentalVehicles().add(vehicle3);
+        dealership.getRentalVehicles().add(vehicle4);
+
+        ArrayList<Vehicle> totalInventory = dealership.getTotalInventory();
+
+        assertNotNull(totalInventory);
+        assertEquals(4, totalInventory.size());
+        assertTrue(totalInventory.contains(vehicle1));
+        assertTrue(totalInventory.contains(vehicle2));
+        assertTrue(totalInventory.contains(vehicle3));
+        assertTrue(totalInventory.contains(vehicle4));
     }
 
     @Test
