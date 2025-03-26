@@ -2,7 +2,7 @@ package javafiles.domainfiles;
 
 /**
  /**
- * SUV is a child class of Vehicle. Its constructor is called by {@link VehicleCreator#createVehicle(String, String)}.
+ * SUV is a child class of Vehicle. Its constructor is called by {@link VehicleCreator#createVehicle(String, String, String, Long)}.
  *
  * @author Christopher Engelhart
  */

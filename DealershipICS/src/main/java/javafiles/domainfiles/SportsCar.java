@@ -4,7 +4,7 @@ package javafiles.domainfiles;
  * SportsCar is a child class of Vehicle. It represents a sports car vehicle,
  * which has a special rental strategy that prevents it from being rented.
  * The constructor initializes the vehicle with the "Sports car" type and the
- * {@link SportsCarRentalStrategy}. SportsCar constructor is called by {@link VehicleCreator#createVehicle(String, String).
+ * {@link SportsCarRentalStrategy}. SportsCar constructor is called by {@link {@link VehicleCreator#createVehicle(String, String, String, Long)}.
  *
  * @author Christopher Engelhart
  */
