@@ -5,12 +5,23 @@ import javafiles.customexceptions.BadExtensionException;
 import javafiles.customexceptions.ReadWriteException;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileIOBuilderTest {
+    private static final List<String> pathsRun = new ArrayList<>();
+
+    /**
+     * Returns weather or not two {@link ReadWriteException} have the same cause.
+     * Fails if either {@link Object} is not a {@link ReadWriteException}.
+     *
+     * @param expectedException The expected value of the exception.
+     * @param testedException The tested value.
+     * @return weather or not the two causes of the {@link ReadWriteException} are of the same class.
+     */
     public static boolean isSameCauseType(Object expectedException, Object testedException) {
         assertInstanceOf(ReadWriteException.class, expectedException);
         Throwable causeTarget = ((ReadWriteException) expectedException).getCause();
@@ -21,16 +32,44 @@ class FileIOBuilderTest {
         return causeTarget.getClass().equals(cause.getClass());
     }
 
-    public static String getPath(String partialPath, String folder, String extension) {
+    /**
+     * Returns the path of the {@link FileIO} to be created from the given information.
+     *
+     * @param partialPath The name of the file after "test_inventory_" and before the extension.
+     * @param folder The folder within src/test/resources the file is in.
+     * @param extension The extension of the file.
+     * @param mode The mode that the file will be opened in.
+     * @return the full path of the file.
+     */
+    public static String getPath(String partialPath, String folder, String extension, char mode) {
         String dir = System.getProperty("user.dir");
-        return dir + "\\src\\test\\resources\\"+ folder +"\\test_inventory_" + partialPath + extension;
+
+        String path = dir + "\\src\\test\\resources\\"+ folder +"\\test_inventory_" + partialPath + extension;
+
+        if (pathsRun.contains(path + mode)) {fail("Path \"" + path + "\" already tested");}
+        pathsRun.add(path + mode);
+
+        return path;
     }
 
+    /**
+     * Returns a {@link FileIO} for testing. If retrieving a {@link FileIO} is expected to fail, it
+     * throws a {@link ReadWriteException} instead. If the {@link FileIO} is created when it is not
+     * expected to be or vise versa, the test fails.
+     *
+     * @param partialPath The ending part of the file before the extension
+     * @param folder The folder that the file to read is in.
+     * @param extension The extension of the file.
+     * @param mode The mode of the {@link FileIO} being created.
+     * @param failExpected If the creation of the {@link FileIO} is expected to fail.
+     * @return the newly created {@link FileIO}.
+     * @throws ReadWriteException If the creation of the {@link FileIO} was expected to fail and did.
+     */
     public static FileIO getFileIOForTest(String partialPath, String folder, String extension,
                                           char mode, boolean failExpected) throws ReadWriteException {
         FileIOBuilder.setupFileIOBuilders();
 
-        String path = getPath(partialPath, folder, extension);
+        String path = getPath(partialPath, folder, extension, mode);
 
         try {
             FileIO fileIO =  FileIOBuilder.buildNewFileIO(path, mode);
@@ -42,6 +81,15 @@ class FileIOBuilderTest {
         }
     }
 
+    /**
+     * Takes a {@link FileIO} and returns the {@link List} of {@link Map}s created from
+     * reading the file. Fails if it can not read the file or the number of maps read is
+     * incorrect.
+     *
+     * @param fileIO The {@link FileIO} being read.
+     * @param mapNum The expected number of {@link Map}s read
+     * @return a {@link List} of all {@link Map}s read.
+     */
     protected static List<Map<Key, Object>> getMaps(FileIO fileIO, int mapNum) {
         List<Map<Key, Object>> maps;
         try {
@@ -54,6 +102,13 @@ class FileIOBuilderTest {
         return null;
     }
 
+    /**
+     * Prints a representation of the difference between two {@link Map} that are supposed to be the same,
+     * but have different numbers of items. The test fails immediately after.
+     *
+     * @param map The expected {@link Map}.
+     * @param testingMap The calculated {@link Map}.
+     */
     private static void printBadMap(Map<Key, Object> map, Map<Key, Object> testingMap) {
         Map<Key, Object> maxMap, minMap;
         if (map.size() > testingMap.size()) {
@@ -71,6 +126,12 @@ class FileIOBuilderTest {
         }
     }
 
+    /**
+     * Tests if all {@link Map}s in testingMaps are the same as the expected {@link Map}s in maps.
+     *
+     * @param maps The {@link List} of the {@link Map}s that are expected.
+     * @param testingMaps The {@link List} of {@link Map}s that are being tested.
+     */
     protected static void testMaps(List<Map<Key, Object>> maps, List<Map<Key, Object>> testingMaps) {
         assertEquals(maps.size(), testingMaps.size());
         for (int i = 0; i < maps.size(); i++) {

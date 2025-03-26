@@ -24,9 +24,9 @@ class JSONIO extends FileIO {
      * Read mode allows the reading, but not writing of files, write mode allows for the
      * writing, but not reading of files.
      *
-     * @param filePath The full path of the file to be opened or created
+     * @param filePath The full path of the file to be opened or created.
      * @param mode A char representation of the type of file this is (read 'r' or write 'w')
-     * @throws ReadWriteException Thrown if the mode is an invalid char
+     * @throws ReadWriteException Thrown if the mode is an invalid char.
      */
     public JSONIO(String filePath, char mode) throws ReadWriteException {
         super(filePath, mode);
@@ -56,7 +56,7 @@ class JSONIO extends FileIO {
     /**
      * Reads and returns the data stored in the file of this object.
      *
-     * @return A List of Map<String, Object>s that correspond to the
+     * @return A List of Map<Key, Object>s that correspond to the
      *         JSONArray of data stored in the JSON file for this object.
      *         The Map has data in the same keys as keys.
      * @throws ReadWriteException Thrown if not in read ('r') mode.
@@ -90,7 +90,7 @@ class JSONIO extends FileIO {
     }
 
     /**
-     * Takes a Map<String, Object> of data with the same keys as keys
+     * Takes a Map<Key, Object> of data with the same keys as keys
      * and converts it to a JSONObject and returns it.
      *
      * @param data The Map of items to be ordered in a JSONObject with the keys for
@@ -111,7 +111,6 @@ class JSONIO extends FileIO {
      * Takes a List of Maps to write to the file stored in this object.
      *
      * @param data List of Maps to write to a file.
-     *             The array of String should have the keys in key.
      * @throws ReadWriteException Thrown if not in write ('w') mode.
      */
     public void writeInventory(List<Map<Key, Object>> data) throws ReadWriteException {

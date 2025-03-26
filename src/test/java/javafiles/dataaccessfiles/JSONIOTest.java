@@ -24,7 +24,7 @@ class JSONIOTest {
     @Test
     void fileDNERead() {
         try {
-            JSONIO jsonIO = getJSONIO("DNE", 'r', true);
+            JSONIO jsonIO = getJSONIO("DNE_R", 'r', true);
             fail(jsonIO.toString());
         } catch (ReadWriteException e) {
             PathNotFoundException cause = new PathNotFoundException("Path not found.");
@@ -35,7 +35,7 @@ class JSONIOTest {
     @Test
     void fileDNEWrite() {
         try {
-            getJSONIO("DNE", 'w', false);
+            getJSONIO("DNE_W", 'w', false);
         } catch (ReadWriteException e) {
             fail(e.getMessage());
         }
@@ -44,7 +44,7 @@ class JSONIOTest {
     @Test
     void fileDNEBadChar() {
         try {
-            JSONIO jsonIO = getJSONIO("DNE", 'x', true);
+            JSONIO jsonIO = getJSONIO("DNE_X", 'x', true);
             fail(jsonIO.toString());
         } catch (ReadWriteException e) {
             BadCharException cause = new BadCharException("Bad character.");
@@ -217,7 +217,7 @@ class JSONIOTest {
 
         JSONIO readJSONIO = null;
         try {
-            readJSONIO = getJSONIO("w1", mode, false);
+            readJSONIO = getJSONIO("w6", mode, false);
         } catch (ReadWriteException e) {
             fail(e.getMessage());
         }
@@ -320,18 +320,3 @@ class JSONIOTest {
         writeInventoryWithBadKeys("w5", new int[]{1}, badKey);
     }
 }
-
-/*
-    "price_unit": map.put(Key.VEHICLE_PRICE_UNIT,
-    "price": map.put(Key.VEHICLE_PRICE,
-    "vehicle_model": map.put(Key.VEHICLE_MODEL,
-    "dealership_rental_status": map.put(Key.DEALERSHIP_RENTING_STATUS,
-    "vehicle_type": map.put(Key.VEHICLE_TYPE,
-    "dealership_name": map.put(Key.DEALERSHIP_NAME,
-    "dealership_receiving_status": map.put(Key.DEALERSHIP_RECEIVING_STATUS,
-    "dealership_id": map.put(Key.DEALERSHIP_ID,
-    "vehicle_manufacturer": map.put(Key.VEHICLE_MANUFACTURER,
-    "vehicle_id": map.put(Key.VEHICLE_ID,
-    "vehicle_rental_status": map.put(Key.VEHICLE_RENTAL_STATUS,
-    "acquisition_date": map.put(Key.VEHICLE_ACQUISITION_DATE,
- */
