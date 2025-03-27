@@ -272,7 +272,6 @@ public class Company {
         }
     }
 
-    //TODO: Decide whether we need this method still called in javafiles.Main
     /**
      * Generates a formatted list of Dealership IDs.
      * <p>

@@ -299,8 +299,7 @@ public class Dealership {
     public List<Map<Key, Object>> getDataMap() {
         List<Map<Key, Object>> list = new ArrayList<>();
 
-        List<Vehicle> fullInventory = new ArrayList<>(salesInventory);
-        fullInventory.addAll(rentalInventory);
+        List<Vehicle> fullInventory = this.getTotalInventory();
 
         for (Vehicle vehicle: fullInventory) {
             Map<Key, Object> map = new HashMap<>();

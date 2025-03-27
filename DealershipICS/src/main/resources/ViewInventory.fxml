@@ -26,6 +26,7 @@
         <TableView fx:id="tableView" BorderPane.alignment="CENTER">
             <columns>
                 <TableColumn fx:id="dealershipIdColumn" text="Dealership ID" />
+                <TableColumn fx:id="dealershipNameColum" text ="Dealership Name" />
                 <TableColumn fx:id="vehicleIdColumn" text="Vehicle ID" />
                 <TableColumn fx:id="rentalColumn" text="Rentable" />
                 <TableColumn fx:id="vehicleTypeColumn" text="Type" />
