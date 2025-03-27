@@ -45,7 +45,6 @@ public class DealershipApp extends Application {
         AppStateManager.initializeCompany(company);
 
         FileIOBuilder.setupFileIOBuilders();
-        System.out.println("initial launch");
         List<Map<Key, Object>> badDataMaps = AppStateManager.loadInitialFiles();
 
         SceneManager sceneManger = SceneManager.getInstance(primaryStage);
