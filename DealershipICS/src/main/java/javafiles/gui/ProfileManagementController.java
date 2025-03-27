@@ -89,7 +89,6 @@ public class ProfileManagementController {
     @FXML
     private void handleEditDealershipName(ActionEvent event) {
         if (selectedDealershipRow != null) {
-            System.out.println("Edit Dealership Name button clicked for: " + selectedDealershipRow.getId());
 
             // Create a TextInputDialog to get the new name from the user
             TextInputDialog dialog = new TextInputDialog(selectedDealershipRow.getName());
@@ -106,7 +105,6 @@ public class ProfileManagementController {
 
                 // Refresh the table to reflect the change
                 dealershipTable.refresh();
-                System.out.println("Updated dealership name to: " + newName);
             });
         } else {
             showErrorAlert("No Dealership Selected", "Please select a dealership,");
@@ -122,7 +120,6 @@ public class ProfileManagementController {
      */
     @FXML
     private void handleAddDealership(ActionEvent event) {
-        System.out.println("Add a Dealership button clicked");
 
         String dealershipId = null;
         while (dealershipId == null || dealershipId.trim().isEmpty()) {
@@ -176,8 +173,6 @@ public class ProfileManagementController {
             // Create a new Dealership object and add it to the Company object
             Dealership dealership = new Dealership(finalDealershipId, finalDealershipName);
             AppStateManager.addADealership(dealership);
-
-            System.out.println("Added new dealership: ID = " + finalDealershipId + ", Name = " + finalDealershipName);
         });
     }
 
