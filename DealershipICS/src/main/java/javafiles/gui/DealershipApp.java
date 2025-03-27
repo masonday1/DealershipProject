@@ -1,17 +1,16 @@
-package company.gui;
+package javafiles.gui;
 
 
 import javafiles.Key;
 import javafiles.dataaccessfiles.FileIOBuilder;
 import javafiles.domainfiles.Company;
-import javafiles.domainfiles.Dealership;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Map;
 
-import static company.gui.FXMLPath.*;
+import static javafiles.gui.FXMLPath.*;
 
 /**
  * The main application class for the Dealership application.

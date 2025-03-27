@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafiles.Key;
 import javafiles.customexceptions.*;

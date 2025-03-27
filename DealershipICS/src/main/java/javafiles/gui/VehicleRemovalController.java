@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 
 import javafx.collections.FXCollections;
@@ -16,7 +16,7 @@ import javafiles.domainfiles.Vehicle;
 import java.io.IOException;
 import java.util.List;
 
-import static company.gui.FXMLPath.INVENTORY_SCREEN;
+import static javafiles.gui.FXMLPath.INVENTORY_SCREEN;
 
 
 /**

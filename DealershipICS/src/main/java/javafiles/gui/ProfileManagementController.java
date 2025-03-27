@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +15,7 @@ import javafiles.domainfiles.Dealership;
 import java.io.IOException;
 import java.util.Optional;
 
-import static company.gui.FXMLPath.*;
+import static javafiles.gui.FXMLPath.*;
 
 /**
  * Controller for the profile management screen.

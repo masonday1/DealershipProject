@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafiles.customexceptions.*;
 
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-import static company.gui.FXMLPath.INVENTORY_SCREEN;
+import static javafiles.gui.FXMLPath.INVENTORY_SCREEN;
 
 
 /**

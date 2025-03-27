@@ -10,7 +10,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="company.gui.VehicleRentalController">
+            fx:controller="javafiles.gui.VehicleRentalController">
 
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20">

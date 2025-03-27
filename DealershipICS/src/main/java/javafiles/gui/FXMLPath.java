@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 /**
  * A utility class containing constants for FXML file paths used in the application.

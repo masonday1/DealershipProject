@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +18,7 @@ import javafiles.domainfiles.Vehicle;
 import javafiles.customexceptions.*;
 import java.io.IOException;
 
-import static company.gui.FXMLPath.INVENTORY_SCREEN;
+import static javafiles.gui.FXMLPath.INVENTORY_SCREEN;
 
 /**
  * Controller for the Vehicle Transfer screen, handling vehicle transfer operations between dealerships.

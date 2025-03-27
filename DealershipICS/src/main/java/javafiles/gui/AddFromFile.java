@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafiles.Key;
 import javafiles.customexceptions.ReadWriteException;
@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static company.gui.FXMLPath.ADD_FROM_FILE;
-import static company.gui.FXMLPath.ADD_INVENTORY;
+import static javafiles.gui.FXMLPath.ADD_FROM_FILE;
+import static javafiles.gui.FXMLPath.ADD_INVENTORY;
 
 /**
  * Controller class for the "Add From File" functionality in the GUI.

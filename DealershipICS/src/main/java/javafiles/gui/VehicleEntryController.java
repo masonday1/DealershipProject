@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafiles.customexceptions.*;
 import javafx.event.ActionEvent;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static company.gui.FXMLPath.ADD_INVENTORY;
+import static javafiles.gui.FXMLPath.ADD_INVENTORY;
 
 /**
  * Controller class for the vehicle entry form.

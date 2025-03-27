@@ -1,11 +1,11 @@
-package company.gui;
+package javafiles.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import java.io.IOException;
 
-import static company.gui.FXMLPath.*;
+import static javafiles.gui.FXMLPath.*;
 
 
 /**

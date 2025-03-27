@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import javafiles.domainfiles.Company;
 
-import static company.gui.FXMLPath.*;
+import static javafiles.gui.FXMLPath.*;
 
 /**
  * Controller for the main screen of the application.

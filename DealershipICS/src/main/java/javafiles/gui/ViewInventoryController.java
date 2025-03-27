@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 import javafiles.Key;
 import javafiles.domainfiles.Vehicle;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import java.io.IOException;
 
-import static company.gui.FXMLPath.INVENTORY_SCREEN;
+import static javafiles.gui.FXMLPath.INVENTORY_SCREEN;
 
 /**
  * Controller class for the View Inventory screen.

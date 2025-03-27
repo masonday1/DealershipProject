@@ -7,7 +7,7 @@ module com.example.dealershipics {
     requires json.simple;
     requires java.desktop;
 
-    opens company.gui to javafx.fxml;
-    exports company.gui;
+    opens javafiles.gui to javafx.fxml;
+    exports javafiles.gui;
     opens javafiles.domainfiles to javafx.base, org.mockito;
 }

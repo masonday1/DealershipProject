@@ -1,4 +1,4 @@
-package company.gui;
+package javafiles.gui;
 
 
 import javafx.fxml.FXML;
@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 
 import java.io.IOException;
 
-import static company.gui.FXMLPath.*;
+import static javafiles.gui.FXMLPath.*;
 
 
 
