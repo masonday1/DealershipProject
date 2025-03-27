@@ -27,7 +27,12 @@ public class Dealership {
     private boolean receivingVehicle;
     private boolean rentingVehicles;
 
-    // Instantiation requires dealer_ID
+    /**
+     * Constructs a new Dealership with the specified dealer ID and name.
+     *
+     * @param dealerId The unique identifier for the dealership.
+     * @param name     The name of the dealership.
+     */
     public Dealership(String dealerId, String name) {
         // necessary
         this.dealerId = dealerId;
@@ -104,7 +109,7 @@ public class Dealership {
      * @author Christopher Engelhart
      */
     private boolean isVehicleInInventory(Vehicle newVehicle, List<Vehicle> inventory) {
-        // TODO: Check if getting the inventory vs. checking Dealership inventory is correct.
+
         for (Vehicle vehicle : inventory)
         {
             if (vehicle.getVehicleId().equals(newVehicle.getVehicleId()))
@@ -112,7 +117,6 @@ public class Dealership {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -317,12 +321,9 @@ public class Dealership {
      *
      * @param targetVehicle The vehicle to remove. Cannot be null.
      * @throws IllegalArgumentException If the {@code targetVehicle} is null.
-     * @throws EmptyInventoryException  If the inventory is empty.
      * @author Christopher Engelhart
      */
-    public void removeVehicleFromInventory(Vehicle targetVehicle) throws IllegalArgumentException
-
-    {
+    public void removeVehicleFromInventory(Vehicle targetVehicle) throws IllegalArgumentException {
         if (targetVehicle == null) {
             throw new IllegalArgumentException("Target vehicle is null.");
         }
@@ -339,7 +340,18 @@ public class Dealership {
         }
     }
 
-    // used by toString()
+
+    /**
+     * Appends a formatted string representation of a vehicle inventory list to a StringBuilder.
+     * <p>
+     * This private helper method iterates through a list of {@link Vehicle} objects and appends
+     * their string representations to the provided {@link StringBuilder}. It includes a header
+     * with the given inventory name and handles the case where the inventory is empty.
+     *
+     * @param inventory     The list of {@link Vehicle} objects in the inventory.
+     * @param stringBuilder The {@link StringBuilder} to append the formatted string to.
+     * @param name          The name of the inventory (e.g., "Sales", "Rental").
+     */
     private void listToStrBuilder(List<Vehicle> inventory, StringBuilder stringBuilder, String name) {
         if (!inventory.isEmpty()) {
             stringBuilder.append(name);
@@ -381,6 +393,14 @@ public class Dealership {
         return stringBuilder.toString();
     }
 
+    /**
+     * Returns a string representation of the dealership.
+     * <p>
+     * This method provides a concise summary of the dealership, including its ID, name,
+     * and the number of vehicles in its sales and rental inventories.
+     *
+     * @return A string representation of the dealership.
+     */
     public String toString() {
         String str = "Dealership ID: " + dealerId;
         str += "\nDealership Name: " + Objects.requireNonNullElse(name, "No name on file.");

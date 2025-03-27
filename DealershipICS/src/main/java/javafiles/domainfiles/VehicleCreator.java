@@ -70,6 +70,20 @@ class VehicleCreator implements VehicleFactory {
         };
     }
 
+
+    /**
+     * Creates a {@link Vehicle} object from a map of key-value pairs.
+     *
+     * <p>This method extracts the necessary vehicle information (type, ID, model, price, make, acquisition date,
+     * price unit, and rental status) from the provided map and creates a {@link Vehicle} object.
+     * It then uses the {@link #fillVehicle(Vehicle, String, Long, String, Boolean)} method to set additional
+     * vehicle attributes.</p>
+     *
+     * @param map A map containing the vehicle's attributes.
+     * @return A {@link Vehicle} object created from the map's data.
+     * @throws InvalidVehicleTypeException If the vehicle type is invalid.
+     * @throws InvalidPriceException If the price is invalid.
+     */
     @Override
     public Vehicle createVehicle(Map<Key, Object> map)
             throws InvalidVehicleTypeException, InvalidPriceException {

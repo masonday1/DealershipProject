@@ -114,14 +114,15 @@ public abstract class Vehicle {
     /**
      * Sets the rental state of the vehicle object.
      *
-     * @param state {@code true} to enable rentals, {@code false} to disable.
+     * @param state {@code true} vehicle is currently rented, {@code false} vehicle is no longer rented
+     *                          and is available for sale
      */
     public void setRental(boolean state) {this.rental = state;}
 
     public void setPriceUnit(String unit) {priceUnit = unit;}
 
     /**
-     * Enables rentals using the configured rental strategy.
+     * Enables rental, (vehicle is now rented) using the configured rental strategy.
      *
      * @throws RentalException If an error occurs during the rental enabling process.
      */
@@ -132,7 +133,8 @@ public abstract class Vehicle {
     }
 
     /**
-     * Disables rentals using the configured rental strategy.
+     * Disables rentals (vehicle is no longer rented, and is available for sale)
+     * using the configured rental strategy.
      *
      * @throws RentalException If an error occurs during the rental disabling process.
      */
@@ -154,9 +156,10 @@ public abstract class Vehicle {
 
     /**
      * Gets the acquisition date formatted as a String in "dd/MM/yyyy" format.
-     * If the acquisition date is 0 (epoch time), an empty String is returned.
+     * If the acquisition date null or if its en empty string "", an empty String
+     * returned.
      *
-     * @return The formatted acquisition date String, or an empty String if the epoch time is 0.
+     * @return The formatted acquisition date String
      * @throws InvalidAcquisitionDateException if the acquisitionDate is null or an invalid epoch time.
      */
     public String getFormattedAcquisitionDate() throws InvalidAcquisitionDateException {
