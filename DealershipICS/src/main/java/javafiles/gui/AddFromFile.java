@@ -12,6 +12,7 @@ import javafx.stage.Screen;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,45 +26,61 @@ import static javafiles.gui.FXMLPath.ADD_INVENTORY;
  */
 public class AddFromFile {
 
-    /**
-     * Initializes the controller and processes the file import.
-     * This method prompts the user to select a file, reads the inventory data from the file,
-     * and processes the data using {@link AppStateManager#dataToInventory(List)}.
-     * If any invalid data is found, it displays the errors in a Swing JTable within a JFrame.
-     */
     public void initialize() {
-        String path = FileIOBuilder.selectFilePath('r');
+    String path = FileIOBuilder.selectFilePath('r');
 
-        if (path == null) {return;}
-
-        try {
-            FileIO fileIO = FileIOBuilder.buildNewFileIO(path, 'r');
-            List<Map<Key, Object>> maps = fileIO.readInventory();
-            List<Map<Key, Object>> badMaps = AppStateManager.dataToInventory(maps);
-
-            if (badMaps != null && !badMaps.isEmpty()) {
-                List<Map<String, Object>> keyData = GuiUtility.createKeyData();
-
-                JTable jTable = GuiUtility.createTableFromMapList(badMaps, keyData);
-
-
-                JScrollPane pane = new JScrollPane(jTable);
-                JFrame jFrame = new JFrame();
-                jFrame.getContentPane().add(pane);
-
-                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-
-                jFrame.setSize( (int) screenBounds.getWidth(), (int) (screenBounds.getHeight()/ 4) );
-
-                jFrame.setVisible(true);
-
-
-                jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
-        } catch (ReadWriteException e) {
-            System.out.println(e.getMessage());
-        }
+    if (path == null) {
+        return;
     }
+
+    try {
+        FileIO fileIO = FileIOBuilder.buildNewFileIO(path, 'r');
+        List<Map<Key, Object>> maps = fileIO.readInventory();
+        List<Map<Key, Object>> badMaps = AppStateManager.dataToInventory(maps);
+
+        String[] columnNames = {"Vehicle ID", "Make", "Model", "Type", "Dealership ID"};
+        List<Object[]> successData = new ArrayList<>();
+        List<Object[]> invalidData = new ArrayList<>();
+
+        for (Map<Key, Object> map : maps) {
+            Object[] rowData = {
+                map.get(Key.VEHICLE_ID),
+                map.get(Key.VEHICLE_MANUFACTURER),
+                map.get(Key.VEHICLE_MODEL),
+                map.get(Key.VEHICLE_TYPE),
+                map.get(Key.DEALERSHIP_ID)
+            };
+
+            if (badMaps.contains(map)) {
+                invalidData.add(rowData);
+            } else {
+                successData.add(rowData);
+            }
+        }
+
+        JTable successTable = new JTable(successData.toArray(new Object[0][]), columnNames);
+        JTable invalidTable = new JTable(invalidData.toArray(new Object[0][]), columnNames);
+
+        JScrollPane successScrollPane = new JScrollPane(successTable);
+        successScrollPane.setBorder(BorderFactory.createTitledBorder("Successfully Added Vehicles"));
+        successScrollPane.setPreferredSize(new java.awt.Dimension(500, 200));
+
+        JScrollPane invalidScrollPane = new JScrollPane(invalidTable);
+        invalidScrollPane.setBorder(BorderFactory.createTitledBorder("Unable to Add Vehicles"));
+        invalidScrollPane.setPreferredSize(new java.awt.Dimension(500, 200));
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(successScrollPane);
+        panel.add(invalidScrollPane);
+
+        JOptionPane.showMessageDialog(null, panel, "Vehicle Import Results", JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (ReadWriteException e) {
+        System.out.println(e.getMessage());
+    }
+}
+
 
     /**
      * Handles the action when the back button is clicked.
