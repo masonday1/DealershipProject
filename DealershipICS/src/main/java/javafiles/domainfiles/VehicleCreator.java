@@ -3,6 +3,7 @@ package javafiles.domainfiles;
 import javafiles.Key;
 import javafiles.customexceptions.InvalidPriceException;
 import javafiles.customexceptions.InvalidVehicleTypeException;
+import javafiles.customexceptions.MissingCriticalInfoException;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -54,10 +55,10 @@ class VehicleCreator implements VehicleFactory {
      */
     @Override
     public Vehicle createVehicle(String type, String id, String model, Long price)
-            throws InvalidVehicleTypeException, InvalidPriceException {
+            throws InvalidVehicleTypeException, InvalidPriceException, MissingCriticalInfoException {
         if (type == null) {throw new InvalidVehicleTypeException("Null Vehicle type.");}
-        if (id == null || id.isBlank()) {throw new InvalidVehicleTypeException("Null Vehicle id.");}
-        if (model == null || model.isBlank()) {throw new InvalidVehicleTypeException("Null Vehicle model.");}
+        if (id == null || id.isBlank()) {throw new MissingCriticalInfoException("Null Vehicle id.");}
+        if (model == null || model.isBlank()) {throw new MissingCriticalInfoException("Null Vehicle model.");}
         if (price == null) {throw new InvalidPriceException("Null Vehicle price.");}
         if (price <= 0) {throw new InvalidPriceException("Price is invalid (" + price + " <= 0).");}
 
@@ -85,8 +86,8 @@ class VehicleCreator implements VehicleFactory {
      * @throws InvalidPriceException If the price is invalid.
      */
     @Override
-    public Vehicle createVehicle(Map<Key, Object> map)
-            throws InvalidVehicleTypeException, InvalidPriceException {
+    public Vehicle createVehicle(Map<Key, Object> map) throws InvalidVehicleTypeException,
+            InvalidPriceException, MissingCriticalInfoException {
 
         String type = Key.VEHICLE_TYPE.getVal(map, String.class);
         String id = Key.VEHICLE_ID.getVal(map, String.class);

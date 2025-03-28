@@ -43,11 +43,12 @@ class JSONIO extends FileIO {
         Map<Key, Object> map = new HashMap<>();
 
         for (Key key : Key.values()) {
-            String keyStr = key.getKey();
-
-            Object dataPoint = jObj.get(keyStr);
+            Object dataPoint = jObj.get(key.getKey());
             if (dataPoint == null) {continue;}
-            map.put(key, dataPoint);
+            if (!key.putNonNull(map, dataPoint)) {
+                ReadWriteException exception = new ReadWriteException("Unknown");
+                Key.REASON_FOR_ERROR.putNonNull(map, exception);
+            }
 
         }
         return map;
@@ -73,7 +74,7 @@ class JSONIO extends FileIO {
             jFile = (JSONObject) parser.parse(fileReader);
             fileReader.close();
         } catch (ParseException | IOException e) {
-            return new ArrayList<>();
+            throw new ReadWriteException(e);
         }
 
         jArray = (JSONArray)jFile.get("car_inventory");

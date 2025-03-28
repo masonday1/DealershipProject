@@ -82,7 +82,7 @@ class KeyTest {
     }
 
     @Test
-    public void putNonNullNullTest() {
+    public void putNonNullTest() {
         putNonNullObjectTest(null, Key.values());
     }
 

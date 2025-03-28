@@ -126,8 +126,7 @@ public class Dealership {
      * @param newId The id of the {@link Vehicle} to check for in the inventory.
      * @return {@code true} if the {@link Vehicle} is found in the inventory, {@code false} otherwise.
      */
-    protected boolean isVehicleInInventoryById(String newId)
-    {
+    protected boolean isVehicleInInventoryById(String newId) {
         newId = newId.trim().replaceAll("\\s+", "");
         for (Vehicle vehicle : getTotalInventory()) {
             String existingVehicleId = vehicle.getVehicleId().trim().replaceAll("\\s+", "");
@@ -188,7 +187,7 @@ public class Dealership {
 
         try {
             vehicle = vehicleFactory.createVehicle(map);
-        } catch (InvalidVehicleTypeException | InvalidPriceException e) {
+        } catch (InvalidVehicleTypeException | InvalidPriceException | MissingCriticalInfoException e) {
             ReadWriteException exception = new ReadWriteException(e);
             Key.REASON_FOR_ERROR.putNonNull(map, exception);
             return false;
@@ -250,7 +249,8 @@ public class Dealership {
      */
     public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, Long vehiclePrice,
                                  Long acquisitionDate, String vehicleType, String priceUnit) throws InvalidVehicleTypeException,
-            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
+                                 VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException,
+                                 InvalidPriceException, MissingCriticalInfoException {
 
         // Ensure the vehicle price is positive.
         if (vehiclePrice <= 0) {

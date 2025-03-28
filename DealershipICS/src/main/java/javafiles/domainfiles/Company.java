@@ -130,7 +130,8 @@ public class Company {
     }
 
     public void manualVehicleAdd(Map<Key, Object> map, Dealership dealer) throws InvalidVehicleTypeException,
-            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
+            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException,
+            InvalidPriceException, MissingCriticalInfoException {
         String id = Key.VEHICLE_ID.getVal(map, String.class);
         String make = Key.VEHICLE_MANUFACTURER.getVal(map, String.class);
         String model = Key.VEHICLE_MODEL.getVal(map, String.class);
@@ -229,12 +230,15 @@ public class Company {
                 continue;
             }
 
-            if (isVehicleInInventoryById(Key.VEHICLE_ID.getVal(map, String.class))) {
-                DuplicateKeyException cause = new DuplicateKeyException("Duplicate Vehicle ID in inventory");
-                ReadWriteException exception = new ReadWriteException(cause);
-                Key.REASON_FOR_ERROR.putNonNull(map, exception);
-                badInventoryMaps.add(map);
-                continue;
+            String v_id = Key.VEHICLE_ID.getVal(map, String.class);
+            if (v_id != null) {
+                if (isVehicleInInventoryById(v_id)) {
+                    VehicleAlreadyExistsException cause = new VehicleAlreadyExistsException("Duplicate Vehicle ID in inventory");
+                    ReadWriteException exception = new ReadWriteException(cause);
+                    Key.REASON_FOR_ERROR.putNonNull(map, exception);
+                    badInventoryMaps.add(map);
+                    continue;
+                }
             }
 
             Dealership dealership = findDealership(id);

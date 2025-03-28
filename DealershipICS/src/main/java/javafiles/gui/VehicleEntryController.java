@@ -148,7 +148,7 @@ public class VehicleEntryController implements Initializable {
         } catch (VehicleAlreadyExistsException | InvalidPriceException |
                  DealershipNotAcceptingVehiclesException | InvalidVehicleTypeException |
                  InvalidAcquisitionDateException | InvalidLongPriceException |
-                 DealershipNotSelectedException e) {
+                 DealershipNotSelectedException | MissingCriticalInfoException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }

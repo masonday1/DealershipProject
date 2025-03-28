@@ -2,6 +2,7 @@ package javafiles.domainfiles;
 
 import javafiles.customexceptions.InvalidPriceException;
 import javafiles.customexceptions.InvalidVehicleTypeException;
+import javafiles.customexceptions.MissingCriticalInfoException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +18,7 @@ public class VehicleCreatorTest {
     }
 
     @Test
-    public void testCreateSedan() throws InvalidVehicleTypeException, InvalidPriceException {
+    public void testCreateSedan() throws InvalidVehicleTypeException, InvalidPriceException, MissingCriticalInfoException {
         Vehicle vehicle = VehicleCreator.getInstance().createVehicle("sedan", "S001", "Camry", 20000L);
         assertTrue(vehicle instanceof Sedan);
         assertEquals("S001", vehicle.getVehicleId());
@@ -26,7 +27,7 @@ public class VehicleCreatorTest {
     }
 
     @Test
-    public void testCreateSUV() throws InvalidVehicleTypeException, InvalidPriceException {
+    public void testCreateSUV() throws InvalidVehicleTypeException, InvalidPriceException, MissingCriticalInfoException {
         Vehicle vehicle = VehicleCreator.getInstance().createVehicle("suv", "U001", "CR-V", 25000L);
         assertTrue(vehicle instanceof SUV);
         assertEquals("U001", vehicle.getVehicleId());
@@ -35,7 +36,7 @@ public class VehicleCreatorTest {
     }
 
     @Test
-    public void testCreatePickup() throws InvalidVehicleTypeException, InvalidPriceException {
+    public void testCreatePickup() throws InvalidVehicleTypeException, InvalidPriceException, MissingCriticalInfoException {
         Vehicle vehicle = VehicleCreator.getInstance().createVehicle("pickup", "P001", "F-150", 30000L);
         assertTrue(vehicle instanceof Pickup);
         assertEquals("P001", vehicle.getVehicleId());
@@ -44,7 +45,7 @@ public class VehicleCreatorTest {
     }
 
     @Test
-    public void testCreateSportsCar() throws InvalidVehicleTypeException, InvalidPriceException {
+    public void testCreateSportsCar() throws InvalidVehicleTypeException, InvalidPriceException, MissingCriticalInfoException {
         Vehicle vehicle = VehicleCreator.getInstance().createVehicle("sports car", "SC001", "911", 90000L);
         assertTrue(vehicle instanceof SportsCar);
         assertEquals("SC001", vehicle.getVehicleId());

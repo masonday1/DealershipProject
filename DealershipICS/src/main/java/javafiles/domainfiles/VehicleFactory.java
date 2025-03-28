@@ -3,6 +3,7 @@ package javafiles.domainfiles;
 import javafiles.Key;
 import javafiles.customexceptions.InvalidPriceException;
 import javafiles.customexceptions.InvalidVehicleTypeException;
+import javafiles.customexceptions.MissingCriticalInfoException;
 
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 interface VehicleFactory {
     void fillVehicle(Vehicle v, String make, Long date, String priceUnit, Boolean rentalStatus);
     Vehicle createVehicle(String type, String id, String model, Long price)
-            throws InvalidVehicleTypeException, InvalidPriceException;
-    Vehicle createVehicle(Map<Key, Object> map) throws InvalidVehicleTypeException, InvalidPriceException;
+            throws InvalidVehicleTypeException, InvalidPriceException, MissingCriticalInfoException;
+    Vehicle createVehicle(Map<Key, Object> map) throws InvalidVehicleTypeException,
+            InvalidPriceException, MissingCriticalInfoException;
 }

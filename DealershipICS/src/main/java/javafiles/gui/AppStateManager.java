@@ -244,7 +244,8 @@ public class AppStateManager {
     }
 
     public static void manualVehicleAdd(Map<Key, Object> map) throws VehicleAlreadyExistsException,
-            InvalidPriceException, DealershipNotAcceptingVehiclesException, InvalidVehicleTypeException {
+            InvalidPriceException, DealershipNotAcceptingVehiclesException,
+            InvalidVehicleTypeException, MissingCriticalInfoException {
         String dealershipID = Key.DEALERSHIP_ID.getVal(map, String.class);
         Dealership dealership = company.findDealership(dealershipID);
         if (dealership == null) {
@@ -255,42 +256,6 @@ public class AppStateManager {
 
         writeToInventory();
     }
-
-
-
-    /**
-     * Manually adds a vehicle to a dealership's inventory.
-     * This method locates the specified dealership, validates the vehicle data,
-     * and adds the vehicle to the dealership's inventory.
-     *
-     * @param dealershipID      The ID of the dealership to add the vehicle to.
-     * @param vehicleID         The unique ID of the vehicle.
-     * @param vehicleManufacturer The manufacturer of the vehicle.
-     * @param vehicleModel      The model of the vehicle.
-     * @param vehiclePrice      The price of the vehicle.
-     * @param acquisitionDate   The acquisition date of the vehicle.
-     * @param vehicleType       The type of the vehicle.
-     * @param priceUnit         The unit of the price.
-     * @throws VehicleAlreadyExistsException       If a vehicle with the same ID already exists in the dealership's inventory.
-     * @throws InvalidPriceException              If the vehicle price is invalid.
-     * @throws DealershipNotAcceptingVehiclesException If the dealership is not accepting vehicles.
-     * @throws InvalidVehicleTypeException         If the vehicle type is invalid.
-     * @throws IllegalArgumentException            If the dealership ID is not found.
-     */
-    public static void manualVehicleAdd(String dealershipID, String vehicleID, String vehicleManufacturer, String vehicleModel, Long vehiclePrice, Long acquisitionDate, String vehicleType, String priceUnit)
-            throws VehicleAlreadyExistsException, InvalidPriceException, DealershipNotAcceptingVehiclesException,
-            InvalidVehicleTypeException {
-
-        Dealership dealership = company.findDealership(dealershipID);
-        if (dealership == null) {
-            throw new IllegalArgumentException("Dealership ID not found: " + dealershipID);
-        }
-
-        dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
-
-        writeToInventory();
-    }
-
 
     /**
         Sets receiving status for a {@link Dealership} in the company.

@@ -79,10 +79,13 @@ public enum Key {
      *
      * @param map The {@link Map} that is being appended to.
      * @param object The {@link Object} being added as a value to the map.
+     * @return weather object was added to the {@link Map}.
      */
-    public void putNonNull(Map<Key, Object> map, Object object) {
+    public boolean putNonNull(Map<Key, Object> map, Object object) {
         if (validObjectType(object)) {
             map.put(this, object);
+            return true;
         }
+        return false;
     }
 }
