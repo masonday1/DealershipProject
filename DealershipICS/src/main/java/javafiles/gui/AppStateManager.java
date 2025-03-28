@@ -130,6 +130,7 @@ public class AppStateManager {
             VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, DuplicateSenderException
     {
         company.dealershipVehicleTransfer(senderId,receiverId,transferVehicle);
+        writeToInventory();
     }
 
 
@@ -141,7 +142,9 @@ public class AppStateManager {
      * @return A list of Maps representing invalid data entries, if any.
      */
     public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {
-        return company.dataToInventory(maps);
+        List<Map<Key, Object>> badMaps = company.dataToInventory(maps);
+        writeToInventory();
+        return badMaps;
     }
 
     /**
@@ -270,6 +273,7 @@ public class AppStateManager {
         }
 
         dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
+        writeToInventory();
     }
 
 
@@ -280,6 +284,7 @@ public class AppStateManager {
     public static void setDealershipReceivingStatus(Dealership dealership,boolean status)
     {
         dealership.setReceivingVehicle(status);
+        writeToInventory();
     }
 
     /**
@@ -289,6 +294,7 @@ public class AppStateManager {
     public static void setDealershipRentalStatus(Dealership dealership,boolean status)
     {
         dealership.setRentingVehicles(status);
+        writeToInventory();
     }
 
     /**
@@ -304,6 +310,7 @@ public class AppStateManager {
 
     {
         company.updateVehicleRental(dealershipid, vehicleToUpdate);
+        writeToInventory();
     }
 
 
@@ -348,6 +355,7 @@ public class AppStateManager {
     public static void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws IllegalArgumentException
     {
         company.removeVehicleFromDealership(dealershipId,targetVehicle);
+        writeToInventory();
     }
 
 }
