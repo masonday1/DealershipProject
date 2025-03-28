@@ -1,0 +1,31 @@
+@startuml
+participant Actor
+Actor -> ProfileManagementController : handleEditDealershipName()
+alt selectedDealershipRow != null
+    ProfileManagementController -> TextInputDialog: TextInputDialog(selectedDealershipRow.getName())
+    TextInputDialog -> TextInputDialog : setTitle("Edit Dealership Name")
+    TextInputDialog -> TextInputDialog : setHeaderText("Edit the name of the selected dealership")
+    TextInputDialog -> TextInputDialog : setContentText("Enter new name:")
+    TextInputDialog -> TextInputDialog: ShowAndWait()
+    TextInputDialog --> ProfileManagementController: newName
+    alt newName is present
+        ProfileManagementController -> DealershipRow : setName()
+        DealershipRow --> ProfileManagementController
+        ProfileManagementController -> AppStateManager : getCompany()
+        AppStateManager --> ProfileManagementController
+        ProfileManagementController -> DealershipRow : getId()
+        DealershipRow --> ProfileManagementController
+        ProfileManagementController -> Company : findDealership()
+        loop listDealerships
+            alt dealership.getDealerId().equals(dealerId)
+               Company --> ProfileManagementController: dealership
+            end
+            end
+            Company --> ProfileManagementController: null
+        Company --> ProfileManagementController
+        ProfileManagementController -> Dealership : setName()
+        Dealership --> ProfileManagementController
+else
+    ProfileManagementController -> ProfileManagementController : showErrorAlert()
+end
+@enduml

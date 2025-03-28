@@ -1,103 +1,67 @@
 @startuml
 participant Actor
 Actor -> VehicleRentalController : handleChangeRental()
-activate VehicleRentalController
 alt selectedDealershipId == null
-VehicleRentalController -> VehicleRentalController : showAlert()
-activate VehicleRentalController
-VehicleRentalController --> VehicleRentalController
-deactivate VehicleRentalController
+    VehicleRentalController -> VehicleRentalController : showAlert()
 end
 alt selectedVehicle == null
-VehicleRentalController -> VehicleRentalController : showAlert()
-activate VehicleRentalController
-VehicleRentalController --> VehicleRentalController
-deactivate VehicleRentalController
+    VehicleRentalController -> VehicleRentalController : showAlert()
 end
 VehicleRentalController -> AppStateManager : findADealership()
-activate AppStateManager
 AppStateManager -> Company : findDealership()
-activate Company
 loop listDealerships
-alt dealership.getDealerId().equals(dealerId)
-Company --> AppStateManager: Dealership
-end
+    alt dealership.getDealerId().equals(dealerId)
+        Company --> AppStateManager: Dealership
+    end
 end
 Company --> AppStateManager: null
-deactivate Company
 AppStateManager --> VehicleRentalController
-deactivate AppStateManager
 alt dealership == null
-VehicleRentalController -> VehicleRentalController : showAlert()
-activate VehicleRentalController
-VehicleRentalController --> VehicleRentalController
-deactivate VehicleRentalController
+    VehicleRentalController -> VehicleRentalController : showAlert()
 end
 alt
-VehicleRentalController -> AppStateManager : updateDealershipVehicleRentalState()
-activate AppStateManager
-AppStateManager -> Company : updateVehicleRental()
-activate Company
-Company -> Company : findDealership()
-activate Company
-loop listDealerships
-alt dealership.getDealerId().equals(dealerId)
-Company --> AppStateManager: Dealership
-end
-end
-Company --> AppStateManager: null
-Company --> Company
-deactivate Company
-alt !vehicle.getVehicleType().equalsIgnoreCase("Sports car")
-alt vehicle.getRentalStatus()
-Company -> Vehicle : disableRental()
-activate Vehicle
-Vehicle -> RentalStrategy : disableRental()
-activate RentalStrategy
-RentalStrategy --> Vehicle
-deactivate RentalStrategy
-Vehicle --> Company
-deactivate Vehicle
-else 
-Company -> Vehicle : enableRental()
-activate Vehicle
-Vehicle -> RentalStrategy : enableRental()
-activate RentalStrategy
-RentalStrategy --> Vehicle
-deactivate RentalStrategy
-Vehicle --> Company
-deactivate Vehicle
-end
-else 
-create VehicleNotRentableException
-Company -> VehicleNotRentableException : new
-activate VehicleNotRentableException
-create RentalException
-VehicleNotRentableException -> RentalException : new
-activate RentalException
-RentalException --> VehicleNotRentableException
-deactivate RentalException
-VehicleNotRentableException --> Company
-deactivate VehicleNotRentableException
-end
-alt dealership.getSaleVehicles().contains(vehicle)
-Company -> Dealership: getSaleVehicles()
-Dealership --> Company: salesInventory
-Company -> Company: remove(vehicle)
+    VehicleRentalController -> AppStateManager : updateDealershipVehicleRentalState()
+    AppStateManager -> Company : updateVehicleRental()
+    Company -> Company : findDealership()
+    loop listDealerships
+        alt dealership.getDealerId().equals(dealerId)
+            Company --> AppStateManager: Dealership
+        end
+    end
+    Company --> AppStateManager: null
+    Company --> Company
+    alt !vehicle.getVehicleType().equalsIgnoreCase("Sports car")
+        alt vehicle.getRentalStatus()
+            Company -> Vehicle : disableRental()
+            Vehicle -> RentalStrategy : disableRental()
+            RentalStrategy --> Vehicle
+            Vehicle --> Company
+        else
+            Company -> Vehicle : enableRental()
+            Vehicle -> RentalStrategy : enableRental()
+            RentalStrategy --> Vehicle
+            Vehicle --> Company
+        end
+    else
+        create VehicleNotRentableException
+        Company -> VehicleNotRentableException : new
+        create RentalException
+        VehicleNotRentableException -> RentalException : new
+        RentalException --> VehicleNotRentableException
+        VehicleNotRentableException --> Company
+    end
+    alt dealership.getSaleVehicles().contains(vehicle)
+        Company -> Dealership: getSaleVehicles()
+        Dealership --> Company: salesInventory
+        Company -> Company: remove(vehicle)
+    else
+        Company -> Dealership: getRentalVehicles()
+        Dealership --> Company: rentalInventory
+        Company -> Company: remove(vehicle)
+    end
+    Company --> AppStateManager
+    AppStateManager --> VehicleRentalController
 else
-Company -> Dealership: getRentalVehicles()
-Dealership --> Company: rentalInventory
-Company -> Company: remove(vehicle)
+    VehicleRentalController -> VehicleRentalController : showAlert()
 end
-Company --> AppStateManager
-deactivate Company
-AppStateManager --> VehicleRentalController
-deactivate AppStateManager
-else
-VehicleRentalController -> VehicleRentalController : showAlert()
-activate VehicleRentalController
-VehicleRentalController --> VehicleRentalController
-deactivate VehicleRentalController
-end
-return
 @enduml
