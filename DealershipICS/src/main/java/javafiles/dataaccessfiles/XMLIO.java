@@ -1,7 +1,7 @@
 package javafiles.dataaccessfiles;
 
 import javafiles.Key;
-import javafiles.customexceptions.ReadDuplicateKeyException;
+import javafiles.customexceptions.DuplicateKeyException;
 import javafiles.customexceptions.ReadWriteException;
 
 import org.w3c.dom.*;
@@ -113,9 +113,8 @@ class XMLIO extends FileIO {
                     }
                 }
                 if (map.containsKey(key.getKey()) && !map.get(key.getKey()).equals(nodeValCast)) {
-                    String reason = "Key " + key.getName() + " already has a value and [";
-                    reason += map.get(key.getKey()) + "] != [" + nodeValue + "].";
-                    ReadDuplicateKeyException cause = new ReadDuplicateKeyException(reason);
+                    String reason = "[" + map.get(key.getKey()) + "] != [" + nodeValue + "].";
+                    DuplicateKeyException cause = new DuplicateKeyException(reason);
                     XMLKey.REASON.getKey().putNonNull(map, new ReadWriteException(cause));
                     return;
                 }

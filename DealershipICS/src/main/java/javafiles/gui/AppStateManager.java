@@ -241,6 +241,18 @@ public class AppStateManager {
         return dealershipRows;
     }
 
+    public static void manualVehicleAdd(Map<Key, Object> map) throws VehicleAlreadyExistsException,
+            InvalidPriceException, DealershipNotAcceptingVehiclesException, InvalidVehicleTypeException {
+        String dealershipID = Key.DEALERSHIP_ID.getVal(map, String.class);
+        Dealership dealership = company.findDealership(dealershipID);
+        if (dealership == null) {
+            throw new IllegalArgumentException("Dealership ID not found: " + dealershipID);
+        }
+
+        company.manualVehicleAdd(map, dealership);
+
+        writeToInventory();
+    }
 
 
 
@@ -273,6 +285,7 @@ public class AppStateManager {
         }
 
         dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
+
         writeToInventory();
     }
 

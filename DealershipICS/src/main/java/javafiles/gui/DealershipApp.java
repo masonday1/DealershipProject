@@ -5,8 +5,11 @@ import javafiles.Key;
 import javafiles.dataaccessfiles.FileIOBuilder;
 import javafiles.domainfiles.Company;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +49,22 @@ public class DealershipApp extends Application {
 
         FileIOBuilder.setupFileIOBuilders();
         List<Map<Key, Object>> badDataMaps = AppStateManager.loadInitialFiles();
+        if (!badDataMaps.isEmpty()) {
+            List<Map<String, Object>> keyData =GuiUtility.createKeyData();
+            JTable jTable = GuiUtility.createTableFromMapList(badDataMaps,keyData);
+
+            JScrollPane pane = new JScrollPane(jTable);
+            JFrame jFrame = new JFrame();
+            jFrame.getContentPane().add(pane);
+
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            jFrame.setSize( (int) screenBounds.getWidth(), (int) (screenBounds.getHeight()/ 4) );
+
+            jFrame.setVisible(true);
+
+            jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
 
         SceneManager sceneManger = SceneManager.getInstance(primaryStage);
         sceneManger.switchScene(MAIN_SCREEN);

@@ -294,7 +294,7 @@ class XMLIOTest {
     private void putReasonDuplicate(XMLKey xmlKey, String firstFound, String lastVal, Map<Key, Object> map) {
         String reason = "Key " + xmlKey.getName() + " already has a value and [";
         reason += firstFound  + "] != [" + lastVal + "].";
-        ReadDuplicateKeyException cause = new ReadDuplicateKeyException(reason);
+        DuplicateKeyException cause = new DuplicateKeyException(reason);
         map.put(REASON_FOR_ERROR, new ReadWriteException(cause));
     }
 

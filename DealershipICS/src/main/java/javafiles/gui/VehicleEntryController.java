@@ -1,5 +1,6 @@
 package javafiles.gui;
 
+import javafiles.Key;
 import javafiles.customexceptions.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,8 @@ import javax.swing.*;
 import java.io.IOException;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import static javafiles.gui.FXMLPath.ADD_INVENTORY;
@@ -104,25 +107,41 @@ public class VehicleEntryController implements Initializable {
 
         try
         {
-        // Get input values, handling empty strings for optional fields
-        String dealerId = dealershipComboBox.getValue();
-        String vehicleId = vehicleIdField.getText();
-        String vehicleManufacturer = vehicleManufacturerField.getText().isEmpty() ? null : vehicleManufacturerField.getText();
-        String vehicleModel = vehicleModelField.getText();
-        String vehicleType = vehicleTypeField.getText();
-        String acquisitionDateStr = acquisitionDateField.getText();
-        Long acquisitionDate = acquisitionDateStr.isEmpty() ? null : parseAcquisitionDate(acquisitionDateStr);
-        String vehiclePriceStr = vehiclePriceField.getText();
-        Long vehiclePrice = parseVehiclePrice(vehiclePriceStr);
-        String priceUnit = priceUnitField.getText().isEmpty() ? null : priceUnitField.getText();
+            // Get input values, handling empty strings for optional fields
+            Map<Key, Object> map = new HashMap<>();
+            String dealerId = dealershipComboBox.getValue();
+            Key.DEALERSHIP_ID.putNonNull(map, dealerId);
 
+            String vehicleId = vehicleIdField.getText();
+            Key.VEHICLE_ID.putNonNull(map, vehicleId);
+
+            String vehicleManufacturer = vehicleManufacturerField.getText().isEmpty() ? null : vehicleManufacturerField.getText();
+            Key.VEHICLE_MANUFACTURER.putNonNull(map, vehicleManufacturer);
+
+            String vehicleModel = vehicleModelField.getText();
+            Key.VEHICLE_MODEL.putNonNull(map, vehicleModel);
+
+            String vehicleType = vehicleTypeField.getText();
+            Key.VEHICLE_TYPE.putNonNull(map, vehicleType);
+
+            String acquisitionDateStr = acquisitionDateField.getText();
+            Long acquisitionDate = acquisitionDateStr.isEmpty() ? null : parseAcquisitionDate(acquisitionDateStr);
+            Key.VEHICLE_ACQUISITION_DATE.putNonNull(map, acquisitionDate);
+
+            String vehiclePriceStr = vehiclePriceField.getText();
+            Long vehiclePrice = parseVehiclePrice(vehiclePriceStr);
+            Key.VEHICLE_PRICE.putNonNull(map, vehiclePrice);
+
+            String priceUnit = priceUnitField.getText().isEmpty() ? null : priceUnitField.getText();
+            Key.VEHICLE_PRICE_UNIT.putNonNull(map, priceUnit);
 
             if (dealerId == null) {
                 throw new DealershipNotSelectedException("No dealership has been selected yet");
             }
 
             // Call AppStateManager to add the vehicle
-            AppStateManager.manualVehicleAdd(dealerId, vehicleId, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
+            // AppStateManager.manualVehicleAdd(dealerId, vehicleId, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
+            AppStateManager.manualVehicleAdd(map);
 
             JOptionPane.showMessageDialog(null, "Vehicle ID " + vehicleId + " has been successfully added");
             resetFields();

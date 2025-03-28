@@ -18,7 +18,7 @@ import java.util.Map;
  * </p>
  */
 public class Company {
-    private ArrayList<Dealership> listDealerships;
+    private final ArrayList<Dealership> listDealerships;
 
     public Company() {
         this.listDealerships = new ArrayList<>();
@@ -129,6 +129,21 @@ public class Company {
         }
     }
 
+    public void manualVehicleAdd(Map<Key, Object> map, Dealership dealer) throws InvalidVehicleTypeException,
+            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
+        String id = Key.VEHICLE_ID.getVal(map, String.class);
+        String make = Key.VEHICLE_MANUFACTURER.getVal(map, String.class);
+        String model = Key.VEHICLE_MODEL.getVal(map, String.class);
+        Long price = Key.VEHICLE_PRICE.getVal(map, Long.class);
+        Long acqDate = Key.VEHICLE_ACQUISITION_DATE.getVal(map, Long.class);
+        String type = Key.VEHICLE_TYPE.getVal(map, String.class);
+        String unit = Key.VEHICLE_PRICE_UNIT.getVal(map, String.class);
+        if (isVehicleInInventoryById(id)) {
+            throw new VehicleAlreadyExistsException("This vehicle is already located in the rental inventory. " +
+                    "Vehicle ID: " + id + " was not added to dealership " + dealer.getDealerId() + ".");
+        }
+        dealer.manualVehicleAdd(id, make, model, price, acqDate, type, unit);
+    }
 
     /**
      * Removes target {@link Vehicle} from a {@link Dealership} inventory.
@@ -136,7 +151,6 @@ public class Company {
      *
      * @param dealershipId target dealership to remove vehicle from
      * @param targetVehicle vehicle to be removed
-     * @throws EmptyInventoryException if target dealership's inventory is empty
      * @throws IllegalArgumentException if target vehicle is null
      */
     public void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws  IllegalArgumentException{
@@ -172,6 +186,14 @@ public class Company {
         receivingDealer.addIncomingVehicle(transferVehicle);
     }
 
+    private boolean isVehicleInInventoryById(String id){
+        for (Dealership dealership : listDealerships) {
+            if (dealership.isVehicleInInventoryById(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Takes a List of Map<Key, Object>s representing a List of Vehicle information
@@ -207,6 +229,14 @@ public class Company {
                 continue;
             }
 
+            if (isVehicleInInventoryById(Key.VEHICLE_ID.getVal(map, String.class))) {
+                DuplicateKeyException cause = new DuplicateKeyException("Duplicate Vehicle ID in inventory");
+                ReadWriteException exception = new ReadWriteException(cause);
+                Key.REASON_FOR_ERROR.putNonNull(map, exception);
+                badInventoryMaps.add(map);
+                continue;
+            }
+
             Dealership dealership = findDealership(id);
             if (dealership == null) {
                 dealership = new Dealership(id, name);
@@ -214,6 +244,7 @@ public class Company {
 
                 newDealershipStat.put(dealership, map);
             }
+
             if ( !dealership.dataToInventory(map) ) {
                 badInventoryMaps.add(map);
             }
