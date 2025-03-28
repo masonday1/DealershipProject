@@ -19,7 +19,7 @@ AppStateManager --> VehicleRentalController
 alt dealership == null
     VehicleRentalController -> VehicleRentalController : showAlert()
 end
-alt
+alt success
     VehicleRentalController -> AppStateManager : updateDealershipVehicleRentalState()
     AppStateManager -> Company : updateVehicleRental()
     Company -> Company : findDealership()
@@ -61,7 +61,7 @@ alt
     end
     Company --> AppStateManager
     AppStateManager --> VehicleRentalController
-else
+else error alert
     VehicleRentalController -> VehicleRentalController : showAlert()
 end
 @enduml

@@ -1,0 +1,23 @@
+@startuml
+participant Actor
+Actor -> ProfileManagementController : handleChangeRentalStatus()
+alt selectedDealershipRow != null
+    AppStateManager -> Company : findDealership()
+    loop listDealerships
+        alt dealership.getDealerId().equals(dealerId)
+            Company --> AppStateManager: dealership
+        end
+    end
+    Company --> AppStateManager: null
+    AppStateManager --> ProfileManagementController:
+    alt dealership != null
+       ProfileManagementController -> selectedDealershipRow: getRentingEnabled()
+       selectedDealershipRow --> ProfileManagementController:
+       AppStateManager -> AppStateManager: setDealershipRentalStatus()
+       AppStateManager --> ProfileManagementController:
+       ProfileManagementController -> selectedDealershipRow: setRentingEnabled()
+    end
+else
+    ProfileManagementController -> ProfileManagementController : showErrorAlert()
+end
+@enduml
