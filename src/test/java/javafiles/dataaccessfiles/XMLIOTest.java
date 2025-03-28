@@ -29,9 +29,9 @@ class XMLIOTest {
         return (XMLIO) FileIOBuilderTest.getFileIOForTest(partialPath, "xmlIOTests", ".xml", mode, failExpected);
     }
 
+    // Expected: Creation of XMLIO throws an exception
     @Test
     void fileDNERead() {
-        // Expected: Creation of XMLIO throws an exception
         try {
             XMLIO xmlIO = getXMLIO("DNE_R", 'r', true);
             fail(xmlIO.toString());
@@ -41,9 +41,9 @@ class XMLIOTest {
         }
     }
 
+    // Expected: Creation of XMLIO throws an exception
     @Test
     void fileDNEWrite() {
-        // Expected: Creation of XMLIO throws an exception
         try {
             XMLIO xmlIO = getXMLIO("DNE_W", 'w', true);
             fail(xmlIO.toString());
@@ -348,12 +348,14 @@ class XMLIOTest {
         }
     }
 
+    // Expected: XMLIO.readInventory() throws a ReadWriteException
     @Test
     void readInventoryInvalidXML() {
-        // Expected: XMLIO.readInventory() throws a ReadWriteException
+        String partialPath = "missing_data";
+        System.out.println("Expected [fatal error] (from DocumentBuilder) for file ending in " + partialPath + ".xml");
         XMLIO xmlIO = null;
         try {
-            xmlIO = getXMLIO("missing_data", 'r', false);
+            xmlIO = getXMLIO(partialPath, 'r', false);
         } catch (ReadWriteException e) {
             fail(e);
         }
@@ -386,12 +388,14 @@ class XMLIOTest {
         runDealershipStateFullDealership("r9");
     }
 
+    // Expected: XMLIO.readInventory() throws a ReadWriteException
     @Test
     void readInventoryTwoDealersRoots() {
-        // Expected: XMLIO.readInventory() throws a ReadWriteException
+        String partialPath = "r10";
+        System.out.println("Expected [fatal error] (from DocumentBuilder) for file ending in " + partialPath + ".xml");
         XMLIO xmlIO = null;
         try {
-            xmlIO = getXMLIO("r10", 'r', false);
+            xmlIO = getXMLIO(partialPath, 'r', false);
         } catch (ReadWriteException e) {
             fail(e);
         }
@@ -491,9 +495,9 @@ class XMLIOTest {
         runDealershipStateFullDealership("r20");
     }
 
+    // Expected: FileIOBuilder.buildNewFileIO() throws exception.
     @Test
     void writeInventoryThroughFileIOBuilder() {
-        // Expected: FileIOBuilder.buildNewFileIO() throws exception.
         XMLIO xmlIO;
         try {
             xmlIO = getXMLIO("w2", 'w', true);
