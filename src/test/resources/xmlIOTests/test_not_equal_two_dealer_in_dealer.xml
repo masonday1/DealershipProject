@@ -1,7 +1,7 @@
 <Dealers>
     <Dealer id="d_id2">
         <Dealer id="d_id">
-            <Name>name</Name>
+            <Name>name2</Name>
             <Vehicle type="pickup" id="v_id0">
                 <Price>17000</Price>
                 <Model>model</Model>

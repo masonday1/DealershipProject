@@ -1,14 +1,13 @@
 package javafiles.dataaccessfiles;
 
 import javafiles.customexceptions.BadCharException;
-import javafiles.customexceptions.PathNotFoundException;
 import javafiles.customexceptions.ReadWriteException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileIOTest {
-
+    // Expected: FileIO.getLowercaseMode() throws a ReadWriteException.
     @Test
     void getLowercaseModeBadChar() {
         char ch = 'x';
@@ -18,11 +17,12 @@ class FileIOTest {
             fail("No ReadWriteException");
         } catch (ReadWriteException e) {
             BadCharException cause = new BadCharException(reason);
-            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
+            FileIOBuilderTest.assertSameCauseType(new ReadWriteException(cause), e);
         }
 
     }
 
+    // Expected: FileIO.getLowercaseMode() returns lowercase 'r'.
     @Test
     void getLowercaseModeGoodLowerR() {
         char ch = 'r';
@@ -36,6 +36,7 @@ class FileIOTest {
 
     }
 
+    // Expected: FileIO.getLowercaseMode() returns lowercase 'w'.
     @Test
     void getLowercaseModeGoodLowerW() {
         char ch = 'w';
@@ -49,6 +50,7 @@ class FileIOTest {
 
     }
 
+    // Expected: FileIO.getLowercaseMode() returns lowercase 'r'.
     @Test
     void getLowercaseModeGoodUpperR() {
         char ch = 'R';
@@ -62,6 +64,7 @@ class FileIOTest {
 
     }
 
+    // Expected: FileIO.getLowercaseMode() returns lowercase 'w'.
     @Test
     void getLowercaseModeGoodUpperW() {
         char ch = 'W';

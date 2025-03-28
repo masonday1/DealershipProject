@@ -3,6 +3,7 @@ package javafiles.dataaccessfiles;
 import javafiles.Key;
 import javafiles.customexceptions.BadExtensionException;
 import javafiles.customexceptions.ReadWriteException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -13,24 +14,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileIOBuilderTest {
     private static final List<String> pathsRun = new ArrayList<>();
+    private static String lastPath = null;
 
     /**
-     * Returns weather or not two {@link ReadWriteException} have the same cause.
-     * Fails if either {@link Object} is not a {@link ReadWriteException}.
-     *
-     * @param expectedException The expected value of the exception.
-     * @param testedException The tested value.
-     * @return weather or not the two causes of the {@link ReadWriteException} are of the same class.
+     * Used to ensure that two files don't get evaluated twice in different tests, while allowing
+     * for the same test to use the same path.
      */
-    public static boolean isSameCauseType(Object expectedException, Object testedException) {
-        assertInstanceOf(ReadWriteException.class, expectedException);
-        Throwable causeTarget = ((ReadWriteException) expectedException).getCause();
-
-        assertInstanceOf(ReadWriteException.class, testedException);
-        Throwable cause = ((ReadWriteException) testedException).getCause();
-
-        return causeTarget.getClass().equals(cause.getClass());
+    static void updatePathsRun() {
+        if (lastPath == null) {return;}
+        pathsRun.add(lastPath);
+        lastPath = null;
     }
+
+    @AfterEach
+    void updatePathsRunAfterEach() {
+        updatePathsRun();
+    }
+
 
     /**
      * Returns the path of the {@link FileIO} to be created from the given information.
@@ -38,16 +38,14 @@ class FileIOBuilderTest {
      * @param partialPath The name of the file after "test_inventory_" and before the extension.
      * @param folder The folder within src/test/resources the file is in.
      * @param extension The extension of the file.
-     * @param mode The mode that the file will be opened in.
      * @return the full path of the file.
      */
-    public static String getPath(String partialPath, String folder, String extension, char mode) {
+    public static String getPath(String partialPath, String folder, String extension) {
         String dir = System.getProperty("user.dir");
+        String path = dir + "\\src\\test\\resources\\" + folder + "\\test_" + partialPath + extension;
 
-        String path = dir + "\\src\\test\\resources\\"+ folder +"\\test_inventory_" + partialPath + extension;
-
-        if (pathsRun.contains(path + mode)) {fail("Path \"" + path + "\" already tested");}
-        pathsRun.add(path + mode);
+        if (pathsRun.contains(path)) {fail("Path \"" + path + "\" already tested");}
+        lastPath = path;
 
         return path;
     }
@@ -57,7 +55,7 @@ class FileIOBuilderTest {
      * throws a {@link ReadWriteException} instead. If the {@link FileIO} is created when it is not
      * expected to be or vise versa, the test fails.
      *
-     * @param partialPath The ending part of the file before the extension
+     * @param partialPath The ending part of the file before the extension.
      * @param folder The folder that the file to read is in.
      * @param extension The extension of the file.
      * @param mode The mode of the {@link FileIO} being created.
@@ -69,7 +67,7 @@ class FileIOBuilderTest {
                                           char mode, boolean failExpected) throws ReadWriteException {
         FileIOBuilder.setupFileIOBuilders();
 
-        String path = getPath(partialPath, folder, extension, mode);
+        String path = getPath(partialPath, folder, extension);
 
         try {
             FileIO fileIO =  FileIOBuilder.buildNewFileIO(path, mode);
@@ -127,6 +125,25 @@ class FileIOBuilderTest {
     }
 
     /**
+     * Returns weather or not two {@link ReadWriteException} have the same cause.
+     * Fails if either {@link Object} is not a {@link ReadWriteException}.
+     *
+     * @param expectedException The expected value of the exception.
+     * @param testedException The tested value.
+     */
+    public static void assertSameCauseType(Object expectedException, Object testedException) {
+        assertInstanceOf(ReadWriteException.class, expectedException);
+        Throwable causeTarget = ((ReadWriteException) expectedException).getCause();
+        assertNotNull(causeTarget);
+
+        assertInstanceOf(ReadWriteException.class, testedException);
+        Throwable cause = ((ReadWriteException) testedException).getCause();
+        assertNotNull(cause);
+
+        assertEquals(causeTarget.getClass(), cause.getClass());
+    }
+
+    /**
      * Tests if all {@link Map}s in testingMaps are the same as the expected {@link Map}s in maps.
      *
      * @param maps The {@link List} of the {@link Map}s that are expected.
@@ -146,7 +163,7 @@ class FileIOBuilderTest {
                 Object testVal = testingMap.get(key);
 
                 if (key.equals(Key.REASON_FOR_ERROR)) {
-                    assertTrue(isSameCauseType(mapVal, testVal));
+                    assertSameCauseType(mapVal, testVal);
                     continue;
                 }
 
@@ -160,25 +177,27 @@ class FileIOBuilderTest {
         }
     }
 
+    // Expected: Creation of FileIO fails and an exception is thrown.
     @Test
     void buildableBadExtensionRead() {
         try {
-            FileIO fileIO = getFileIOForTest("r1", "",".txt", 'r', true);
+            FileIO fileIO = getFileIOForTest("r_bad_extension", "",".txt", 'r', true);
             fail(fileIO.toString());
         } catch (ReadWriteException e) {
             BadExtensionException cause = new BadExtensionException("Bad extension.");
-            assertTrue(isSameCauseType(new ReadWriteException(cause), e));
+            assertSameCauseType(new ReadWriteException(cause), e);
         }
     }
 
+    // Expected: Creation of FileIO fails and an exception is thrown.
     @Test
     void buildableBadExtensionWrite() {
         try {
-            FileIO fileIO = getFileIOForTest("w1", "", ".txt", 'w', true);
+            FileIO fileIO = getFileIOForTest("w_bad_extension", "", ".txt", 'w', true);
             fail(fileIO.toString());
         } catch (ReadWriteException e) {
             BadExtensionException cause = new BadExtensionException("Bad extension.");
-            assertTrue(isSameCauseType(new ReadWriteException(cause), e));
+            assertSameCauseType(new ReadWriteException(cause), e);
         }
     }
 }

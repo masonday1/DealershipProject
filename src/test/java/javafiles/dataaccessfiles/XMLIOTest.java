@@ -2,6 +2,7 @@ package javafiles.dataaccessfiles;
 
 import javafiles.Key;
 import javafiles.customexceptions.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import static javafiles.dataaccessfiles.FileIOBuilderTest.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class XMLIOTest {
+    @AfterEach
+    void updatePathsRun() {
+        FileIOBuilderTest.updatePathsRun();
+    }
+
     /**
      * Returns a {@link XMLIO} for testing. If retrieving a {@link XMLIO} is expected to fail, it
      * throws a {@link ReadWriteException} instead. If the {@link XMLIO} is created when it is not
@@ -29,7 +35,7 @@ class XMLIOTest {
         return (XMLIO) FileIOBuilderTest.getFileIOForTest(partialPath, "xmlIOTests", ".xml", mode, failExpected);
     }
 
-    // Expected: Creation of XMLIO throws an exception
+    // Expected: Creation of XMLIO throws an exception.
     @Test
     void fileDNERead() {
         try {
@@ -37,11 +43,11 @@ class XMLIOTest {
             fail(xmlIO.toString());
         } catch (ReadWriteException e) {
             PathNotFoundException cause = new PathNotFoundException("Path not found.");
-            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
+            FileIOBuilderTest.assertSameCauseType(new ReadWriteException(cause), e);
         }
     }
 
-    // Expected: Creation of XMLIO throws an exception
+    // Expected: Creation of XMLIO throws an exception.
     @Test
     void fileDNEWrite() {
         try {
@@ -49,25 +55,25 @@ class XMLIOTest {
             fail(xmlIO.toString());
         } catch (ReadWriteException e) {
             BadExtensionException cause = new BadExtensionException("Bad extension.");
-            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
+            FileIOBuilderTest.assertSameCauseType(new ReadWriteException(cause), e);
         }
     }
 
+    // Expected: Creation of XMLIO throws an exception.
     @Test
     void fileDNEBadChar() {
-        // Expected: Creation of XMLIO throws an exception
         try {
             XMLIO xmlIO = getXMLIO("DNE_X", 'x', true);
             fail(xmlIO.toString());
         } catch (ReadWriteException e) {
             BadCharException cause = new BadCharException("Bad character.");
-            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
+            FileIOBuilderTest.assertSameCauseType(new ReadWriteException(cause), e);
         }
     }
 
     /**
-     * Creates and returns a new {@link Map} of an example Vehicle with the minimum possible reqs
-     * to be created.
+     * Creates and returns a new {@link Map} of an example Vehicle with the minimum possible
+     * requirements to be created.
      *
      * @return The created {@link Map}.
      */
@@ -133,7 +139,7 @@ class XMLIOTest {
     }
 
     /**
-     * Creates and returns a new {@link Map} of an example Vehicle with the minimum possible reqs
+     * Creates and returns a new {@link Map} of an example Vehicle with the minimum possible requirements
      * and that belongs to a different Dealership than the other Vehicles.
      *
      * @return The created {@link Map}.
@@ -204,6 +210,15 @@ class XMLIOTest {
         return maps;
     }
 
+    /**
+     * Tests that a .xml can be interpreted as the state:
+     * <AnyTagName>
+     *     <Dealer>
+     *         <Min Map Vehicle Info>
+     *     </Dealer>
+     * </AnyTagName>
+     * @param partialPath The path of the .xml file after "test_inventory_" and before ".xml".
+     */
     private void runDealershipStateMin(String partialPath) {
         List<Map<Key, Object>> mapsToTest = readInventory(partialPath, 1);
 
@@ -213,57 +228,58 @@ class XMLIOTest {
         testMaps(mapsToTestAgainst, mapsToTest);
     }
 
-    @Test
-    void readInventoryMinMap() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateMin("r1");
-    }
-
-    @Test
-    void readInventoryFullMap() {
-        // Expected: No issues, all Vehicles read.
-        List<Map<Key, Object>> mapsToTest = readInventory("r2", 1);
-
-        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
-        mapsToTestAgainst.add(getFullMap());
-
-        testMaps(mapsToTestAgainst, mapsToTest);
-
-    }
-
-    @Test
-    void readInventoryMultipleMaps() {
-        // Expected: No issues, all Vehicles read.
-        List<Map<Key, Object>> mapsToTest = readInventory("r3", 3);
+    /**
+     * Tests that a .xml can be interpreted as the state:
+     * <AnyTagName>
+     *     <Dealer>
+     *         <Min Map Vehicle Info>
+     *         <Full Map Vehicle Info>
+     *         <Extra Map Vehicle Info>
+     *     </Dealer>
+     * </AnyTagName>
+     * @param partialPath The path of the .xml file after "test_inventory_" and before ".xml".
+     */
+    private void runDealershipStateFullDealership(String partialPath) {
+        List<Map<Key, Object>> mapsToTest = readInventory(partialPath, 3);
 
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
 
         Map<Key, Object> minMap = getMinMap();
-        minMap.put(DEALERSHIP_NAME, "name"); // dealership has name this time
+        minMap.put(DEALERSHIP_NAME, "name");
         mapsToTestAgainst.add(minMap);
         mapsToTestAgainst.add(getFullMap());
         mapsToTestAgainst.add(getExtraMap());
 
         testMaps(mapsToTestAgainst, mapsToTest);
-
     }
 
-    @Test
-    void readInventoryMultipleDealers() {
-        // Expected: No issues, all Vehicles read.
-        List<Map<Key, Object>> mapsToTest = readInventory("r4", 2);
+    /**
+     * Tests that a .xml can be interpreted as the state:
+     * <AnyTagName>
+     *     <Dealer>
+     *         <Min Map Vehicle Info>
+     *         <Full Map Vehicle Info>
+     *         <Extra Map Vehicle Info>
+     *     </Dealer>
+     *     <Dealer2>
+     *         <Min Map New Dealer Vehicle Info>
+     *     </Dealer2>
+     * </AnyTagName>
+     * @param partialPath The path of the .xml file after "test_inventory_" and before ".xml".
+     */
+    private void runDealershipStateAllVehicles(String partialPath) {
+        List<Map<Key, Object>> mapsToTest = readInventory(partialPath, 4);
 
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
+        mapsToTestAgainst.add(getMinMap());
         mapsToTestAgainst.add(getFullMap());
+        mapsToTestAgainst.add(getExtraMap());
         mapsToTestAgainst.add(getMinMapNewDealer());
 
-        testMaps(mapsToTestAgainst, mapsToTest);
-    }
+        mapsToTestAgainst.getFirst().put(DEALERSHIP_NAME, "name");
+        mapsToTestAgainst.getLast().put(DEALERSHIP_NAME, "name2");
 
-    @Test
-    void readInventoryDealerInDealerSameID() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateMin("r5");
+        testMaps(mapsToTestAgainst, mapsToTest);
     }
 
     /**
@@ -282,9 +298,64 @@ class XMLIOTest {
         map.put(REASON_FOR_ERROR, new ReadWriteException(cause));
     }
 
+    // Expected: No issues, all Vehicles read.
+    @Test
+    void readInventoryMinMap() {
+        runDealershipStateMin("min_car");
+    }
+
+    // Expected: No issues, all Vehicles read.
+    @Test
+    void readInventoryFullMap() {
+        List<Map<Key, Object>> mapsToTest = readInventory("full_car", 1);
+
+        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
+        mapsToTestAgainst.add(getFullMap());
+
+        testMaps(mapsToTestAgainst, mapsToTest);
+
+    }
+
+    // Expected: No issues, all Vehicles read.
+    @Test
+    void readInventoryMultipleMaps() {
+        List<Map<Key, Object>> mapsToTest = readInventory("multi_car", 3);
+
+        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
+
+        Map<Key, Object> minMap = getMinMap();
+        minMap.put(DEALERSHIP_NAME, "name"); // dealership has name this time
+        mapsToTestAgainst.add(minMap);
+        mapsToTestAgainst.add(getFullMap());
+        mapsToTestAgainst.add(getExtraMap());
+
+        testMaps(mapsToTestAgainst, mapsToTest);
+
+    }
+
+    // Expected: No issues, all Vehicles read.
+    @Test
+    void readInventoryMultipleDealers() {
+        List<Map<Key, Object>> mapsToTest = readInventory("multi_dealer", 2);
+
+        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
+        mapsToTestAgainst.add(getFullMap());
+        mapsToTestAgainst.add(getMinMapNewDealer());
+
+        testMaps(mapsToTestAgainst, mapsToTest);
+    }
+
+    // Expected: No issues, all Vehicles read.
+    @Test
+    void readInventoryDealerInDealerSameID() {
+        runDealershipStateMin("equal_dealer_in_dealer");
+    }
+
+    // Expected: Key.REASON_FOR_ERROR is added to map, marking last duplicate.
     @Test
     void readInventoryDealerInDealerDifferentID() {
-        // Expected: Key.REASON_FOR_ERROR is added to map, marking last duplicate.
+        List<Map<Key, Object>> mapsToTest = readInventory("not_equal_dealer_in_dealer", 1);
+
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
         Map<Key, Object> fullMap = getFullMap();
 
@@ -297,14 +368,14 @@ class XMLIOTest {
 
         mapsToTestAgainst.add(fullMap);
 
-
-        List<Map<Key, Object>> mapsToTest = readInventory("r6", 1);
         testMaps(mapsToTestAgainst, mapsToTest);
     }
 
+    // Expected: Key.REASON_FOR_ERROR is added to maps, marking last duplicate for each.
     @Test
     void readInventoryMultipleDealerInsideDealer() {
-        // Expected: Key.REASON_FOR_ERROR is added to maps, marking last duplicate for each.
+        List<Map<Key, Object>> mapsToTest = readInventory("not_equal_two_dealer_in_dealer", 4);
+
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
         mapsToTestAgainst.add(getMinMap());
         mapsToTestAgainst.add(getFullMap());
@@ -314,29 +385,40 @@ class XMLIOTest {
         mapsToTestAgainst.getFirst().put(DEALERSHIP_NAME, "name");
         for (int i = 0; i < 4; i++) {
             Map<Key, Object> map = mapsToTestAgainst.get(i);
+            map.put(DEALERSHIP_NAME, "name2");
             putReasonDuplicate(XMLKey.D_ID, "d_id", "d_id2", map);
             map.put(DEALERSHIP_ID, "d_id");
         }
-        mapsToTestAgainst.getLast().put(DEALERSHIP_NAME, "name");
 
-
-        List<Map<Key, Object>> mapsToTest = readInventory("r7", 4);
         testMaps(mapsToTestAgainst, mapsToTest);
     }
 
+    // Expected: Key.REASON_FOR_ERROR is added to maps, marking last duplicate.
+    @Test
+    void readInventoryDealerInDealerErrorAfterVehicle() {
+        List<Map<Key, Object>> mapsToTest = readInventory("after_car_error", 1);
+
+        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
+        Map<Key, Object> map = getFullMap();
+        putReasonDuplicate(XMLKey.D_NAME, "name", "name2", map);
+        mapsToTestAgainst.add(map);
+
+        testMaps(mapsToTestAgainst, mapsToTest);
+    }
+
+    // Expected: Key.REASON_FOR_ERROR is added to map, marking last invalid Long.
     @Test
     void readInventoryBadNumber() {
-        // Expected: Key.REASON_FOR_ERROR is added to map, marking last invalid Long.
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
         mapsToTestAgainst.add(getBadPriceMap());
 
-        List<Map<Key, Object>> mapsToTest = readInventory("r8", 1);
+        List<Map<Key, Object>> mapsToTest = readInventory("bad_price", 1);
         testMaps(mapsToTestAgainst, mapsToTest);
     }
 
+    // Expected: Creation of XMLIO throws an exception.
     @Test
     void readPomFile() {
-        // Expected: Creation of XMLIO throws an exception
         String reason = "Can't read or write to Maven's pom.xml file.\n" +
                         "If this is not Maven's pom.xml file, rename it and try again.";
         try {
@@ -348,7 +430,7 @@ class XMLIOTest {
         }
     }
 
-    // Expected: XMLIO.readInventory() throws a ReadWriteException
+    // Expected: XMLIO.readInventory() throws a ReadWriteException.
     @Test
     void readInventoryInvalidXML() {
         String partialPath = "missing_data";
@@ -364,34 +446,21 @@ class XMLIOTest {
             xmlIO.readInventory();
             fail(xmlIO.toString());
         } catch (ReadWriteException e) {
+            System.out.println();
             assertInstanceOf(Exception.class, e.getCause());
         }
     }
 
-    private void runDealershipStateFullDealership(String partialPath) {
-        List<Map<Key, Object>> mapsToTest = readInventory(partialPath, 3);
-
-        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
-
-        Map<Key, Object> minMap = getMinMap();
-        minMap.put(DEALERSHIP_NAME, "name");
-        mapsToTestAgainst.add(minMap);
-        mapsToTestAgainst.add(getFullMap());
-        mapsToTestAgainst.add(getExtraMap());
-
-        testMaps(mapsToTestAgainst, mapsToTest);
-    }
-
+    // Expected: No issues, all Vehicles read.
     @Test
     void readInventoryNoOverallDealersRoot() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateFullDealership("r9");
+        runDealershipStateFullDealership("dealer_as_root");
     }
 
-    // Expected: XMLIO.readInventory() throws a ReadWriteException
+    // Expected: XMLIO.readInventory() throws a ReadWriteException.
     @Test
     void readInventoryTwoDealersRoots() {
-        String partialPath = "r10";
+        String partialPath = "no_root_tag";
         System.out.println("Expected [fatal error] (from DocumentBuilder) for file ending in " + partialPath + ".xml");
         XMLIO xmlIO = null;
         try {
@@ -404,69 +473,71 @@ class XMLIOTest {
             xmlIO.readInventory();
             fail(xmlIO.toString());
         } catch (ReadWriteException e) {
+            System.out.println();
             assertInstanceOf(Exception.class, e.getCause());
         }
     }
 
+    // Expected: No data found.
     @Test
     void readInventoryNoDealerTags() {
-        // Expected: No data found.
-        List<Map<Key, Object>> mapsToTest = readInventory("r11", 0);
+        List<Map<Key, Object>> mapsToTest = readInventory("no_dealers", 0);
 
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
 
         testMaps(mapsToTestAgainst, mapsToTest);
     }
 
+    // Expected: No data found.
+    @Test
+    void readInventoryNoVehicleTags() {
+        List<Map<Key, Object>> mapsToTest = readInventory("no_cars", 0);
+
+        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
+
+        testMaps(mapsToTestAgainst, mapsToTest);
+    }
+
+    // Expected: No issues, all Vehicles read.
     @Test
     void readInventoryLowerCaseTags() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateFullDealership("r12");
+        runDealershipStateFullDealership("lowercase_tags");
     }
 
-    private void runDealershipStateAllVehicles(String partialPath) {
-        List<Map<Key, Object>> mapsToTest = readInventory(partialPath, 4);
-
-        List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
-        mapsToTestAgainst.add(getMinMap());
-        mapsToTestAgainst.add(getFullMap());
-        mapsToTestAgainst.add(getExtraMap());
-        mapsToTestAgainst.add(getMinMapNewDealer());
-
-        mapsToTestAgainst.getFirst().put(DEALERSHIP_NAME, "name");
-        mapsToTestAgainst.getLast().put(DEALERSHIP_NAME, "name2");
-
-        testMaps(mapsToTestAgainst, mapsToTest);
-    }
-
+    // Expected: No issues, all Vehicles read.
     @Test
     void readInventoryAllAttributes() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateAllVehicles("r13");
+        runDealershipStateAllVehicles("all_vals_in_atr");
     }
 
+    // Expected: No issues, all Vehicles read.
     @Test
     void readInventoryAllTags() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateAllVehicles("r14");
+        runDealershipStateAllVehicles("all_vals_in_tags");
     }
 
+    // Expected: No issues, all Vehicles read.
+    @Test
+    void readInventoryExtraWhitespace() {
+        runDealershipStateAllVehicles("extra_whitespace");
+    }
+
+    // Expected: No issues, all Vehicles read.
     @Test
     void readInventoryAllTagsAndAttributes() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateAllVehicles("r16");
+        runDealershipStateAllVehicles("equal_dupe_atr_tag");
     }
 
+    // Expected: No issues, all Vehicles read.
     @Test
     void readInventoryTagsWithinTags() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateAllVehicles("r17");
+        runDealershipStateAllVehicles("tags_in_tags");
     }
 
+    // Expected: Key.REASON_FOR_ERROR is added to map, marking last duplicate.
     @Test
     void readInventoryVehicleWithinVehicle() {
-        // Expected: Key.REASON_FOR_ERROR is added to map, marking last duplicate.
-        List<Map<Key, Object>> mapsToTest = readInventory("r18", 1);
+        List<Map<Key, Object>> mapsToTest = readInventory("car_in_car", 1);
 
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
         Map<Key, Object> fullMap = getFullMap();
@@ -478,10 +549,10 @@ class XMLIOTest {
         testMaps(mapsToTestAgainst, mapsToTest);
     }
 
+    // Expected: Vehicle outside of Dealership is discarded. Other Vehicle is read fine.
     @Test
     void readInventoryVehicleOutSideDealership() {
-        // Expected: Vehicle outside of Dealership is discarded. Other Vehicle is read fine.
-        List<Map<Key, Object>> mapsToTest = readInventory("r19", 1);
+        List<Map<Key, Object>> mapsToTest = readInventory("car_outside_dealer", 1);
 
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
         mapsToTestAgainst.add(getExtraMap());
@@ -489,10 +560,10 @@ class XMLIOTest {
         testMaps(mapsToTestAgainst, mapsToTest);
     }
 
+    // Expected: No issues, all Vehicles read.
     @Test
     void readInventoryWithSomeGibberishTagsAndAttributes() {
-        // Expected: No issues, all Vehicles read.
-        runDealershipStateFullDealership("r20");
+        runDealershipStateFullDealership("nonsense_tags");
     }
 
     // Expected: FileIOBuilder.buildNewFileIO() throws exception.
@@ -504,14 +575,14 @@ class XMLIOTest {
             fail(xmlIO.toString());
         } catch (ReadWriteException e) {
             BadExtensionException cause = new BadExtensionException("Bad extension.");
-            assertTrue(FileIOBuilderTest.isSameCauseType(new ReadWriteException(cause), e));
+            FileIOBuilderTest.assertSameCauseType(new ReadWriteException(cause), e);
         }
     }
 
+    // Expected: writeInventory() throws exception.
     @Test
     void writeInventoryManually() {
-        // Expected: writeInventory() throws exception.
-        String path = FileIOBuilderTest.getPath("w3", "xmlIOTests", ".xml", 'w');
+        String path = FileIOBuilderTest.getPath("w3", "xmlIOTests", ".xml");
         XMLIO xmlIO = null;
         try {
             xmlIO = new XMLIO(path, 'w');
@@ -531,10 +602,10 @@ class XMLIOTest {
         }
     }
 
+    // Expected: readInventory() throws exception.
     @Test
     void writeInventoryReadFromWriteXML() {
-        // Expected: readInventory() throws exception.
-        String path = FileIOBuilderTest.getPath("w1", "xmlIOTests", ".xml", 'w');
+        String path = FileIOBuilderTest.getPath("w1", "xmlIOTests", ".xml");
         XMLIO xmlIO = null;
         try {
             xmlIO = new XMLIO(path, 'w');
@@ -551,9 +622,9 @@ class XMLIOTest {
         }
     }
 
+    // Expected: writeInventory() throws exception.
     @Test
     void writeInventoryWriteFromReadXML() {
-        // Expected: writeInventory() throws exception.
         XMLIO xmlIO = null;
         try {
             xmlIO = getXMLIO("w4", 'r', false);
