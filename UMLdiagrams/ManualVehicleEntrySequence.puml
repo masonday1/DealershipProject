@@ -1,0 +1,77 @@
+@startuml
+participant Actor
+Actor -> VehicleEntryController : handleAddVehicleButton()
+alt vehicleTypeField.getText().isEmpty()
+    note right of VehicleEntryController : Error message
+else vehicleIdField.getText().isEmpty()
+    note right of VehicleEntryController : Error message
+else vehicleModelField.getText().isEmpty()
+    note right of VehicleEntryController : Error message
+else vehiclePriceField.getText().isEmpty()
+    note right of VehicleEntryController : Error message
+else
+    alt success
+        alt dealerId == null
+            create DealershipNotSelectedException
+            VehicleEntryController -> DealershipNotSelectedException : new
+        end
+        VehicleEntryController -> AppStateManager : manualVehicleAdd()
+        AppStateManager -> Company : findDealership()
+        loop listDealerships
+            Company -> Dealership: getDealerId()
+            Dealership --> Company:
+            alt dealership.getDealerId().equals(dealerId)
+                Company --> AppStateManager: dealership
+            end
+        end
+        Company --> AppStateManager: null
+        alt dealership == null
+            create IllegalArgumentException
+            AppStateManager -> IllegalArgumentException: new
+        end
+        AppStateManager -> Dealership : manualVehicleAdd()
+        alt vehiclePrice <= 0
+            create InvalidPriceException
+            Dealership -> InvalidPriceException : new
+        end
+        Dealership -> VehicleFactory : createVehicle()
+        Dealership -> VehicleFactory : fillVehicle()
+        Dealership -> Dealership : addIncomingVehicle()
+        alt dealership !receivingVehicle
+            create DealershipNotAcceptingVehiclesException
+            Dealership -> DealershipNotAcceptingVehiclesException : new
+        end
+        Dealership -> Dealership : isVehicleInInventory(newVehicle, salesInventory)
+        loop inventory
+            Dealership -> Vehicle : getVehicleId
+            Vehicle --> Dealership:
+            alt vehicle.getVehicleId().equals(newVehicle.getVehicleId())
+                Dealership --> Dealership: true
+                create VehicleAlreadyExistsException
+                Dealership -> VehicleAlreadyExistsException: new
+            end
+        end
+        Dealership --> Dealership: false
+
+        loop inventory
+            Dealership -> Vehicle : getVehicleId
+            Vehicle --> Dealership:
+            alt vehicle.getVehicleId().equals(newVehicle.getVehicleId())
+                Dealership --> Dealership: true
+                create VehicleAlreadyExistsException
+                Dealership -> VehicleAlreadyExistsException: new
+            end
+        end
+        Dealership --> Dealership: false
+        Dealership -> Dealership: salesInventory.add(newVehicle)
+        Dealership --> AppStateManager:
+        AppStateManager --> VehicleEntryController:
+        VehicleEntryController -> VehicleEntryController: success message
+    else  exception thrown
+          VehicleEntryController -> AppStateManager : manualVehicleAdd()
+          AppStateManager --> VehicleEntryController: exception
+          note right of VehicleEntryController: VehicleAlreadyExistsException, \nInvalidPriceException ,\nDealershipNotAcceptingVehiclesException,\nInvalidVehicleTypeException
+          VehicleEntryController -> VehicleEntryController : showAlert(e.getMessage())
+    end
+end
+@enduml
