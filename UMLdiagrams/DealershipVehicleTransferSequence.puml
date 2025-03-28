@@ -1,0 +1,81 @@
+@startuml
+participant Actor
+Actor -> VehicleTransferController : handleTransferVehicle()
+alt senderDealershipId == null || receiverDealershipId == null
+    VehicleTransferController -> VehicleTransferController : showAlert()
+end
+alt selectedVehicle == null
+    VehicleTransferController -> VehicleTransferController : showAlert()
+end
+
+alt success
+VehicleTransferController -> AppStateManager : transferVehicle()
+AppStateManager -> Company : dealershipVehicleTransfer()
+Company -> Company : findDealership()
+loop listDealerships
+    alt dealership.getDealerId().equals(dealerId)
+        Company --> Company: senderDealer
+    end
+end
+Company --> Company: null
+
+Company -> Company: findDealership()
+loop listDealerships
+    alt dealership.getDealerId().equals(dealerId)
+        Company --> Company: receiverDealer
+    end
+end
+Company --> Company: null
+
+alt senderDealershipId.equals(receiverDealershipId)
+    create DuplicateSenderException
+    Company -> DuplicateSenderException: new
+end
+
+Company -> Dealership: removeVehicleFromInventory(targetVehicle)
+alt targetVehicle == null
+    create IllegalArgumentException
+    Dealership -> IllegalArgumentException: new
+end
+
+alt getSaleVehicles.contains(targetVehicle)
+    Dealership -> Dealership: getSaleVehicles().remove(targetVehicle)
+end
+
+alt getRentalVehicles().contains(targetVehicle)
+    Dealership -> Dealership: getRentalVehicles().remove(targetVehicle)
+end
+
+Dealership --> Company:
+
+Company -> Dealership: addIncomingVehicle()
+
+alt dealership !receivingVehicle
+    create DealershipNotAcceptingVehiclesException
+    Dealership -> DealershipNotAcceptingVehiclesException: new
+end
+
+alt isVehicleInInventory(newVehicle,salesInventory)
+    create VehicleAlreadyExistsException
+    Dealership -> VehicleAlreadyExistsException: new
+end
+
+alt isVehicleInInventory(newVehicle,rentalInventory)
+    create VehicleAlreadyExistsException
+    Dealership -> VehicleAlreadyExistsException: new
+end
+
+Dealership -> Dealership: salesInventory.add(newVehicle)
+
+Dealership --> Company:
+Company --> AppStateManager:
+AppStateManager --> VehicleTransferController
+
+else exception thrown
+     VehicleTransferController -> AppStateManager : transferVehicle(senderDealershipId, receiverDealershipId, selectedVehicle)
+     AppStateManager --> VehicleTransferController: exception
+     note right of VehicleTransferController: VehicleNotFoundException,\nVehicleAlreadyExistsException,\nDealershipNotAcceptingVehiclesException,\nDuplicateSenderException
+     VehicleTransferController -> VehicleTransferController : showAlert(e.getMessage())
+
+end
+@enduml
