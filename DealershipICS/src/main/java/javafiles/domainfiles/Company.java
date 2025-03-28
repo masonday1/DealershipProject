@@ -139,7 +139,7 @@ public class Company {
         String type = Key.VEHICLE_TYPE.getVal(map, String.class);
         String unit = Key.VEHICLE_PRICE_UNIT.getVal(map, String.class);
         if (isVehicleInInventoryById(id)) {
-            throw new VehicleAlreadyExistsException("This vehicle is already located in the rental inventory. " +
+            throw new VehicleAlreadyExistsException("This vehicle is already located in the inventory. " +
                     "Vehicle ID: " + id + " was not added to dealership " + dealer.getDealerId() + ".");
         }
         dealer.manualVehicleAdd(id, make, model, price, acqDate, type, unit);

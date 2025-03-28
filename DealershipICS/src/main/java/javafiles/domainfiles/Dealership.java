@@ -123,12 +123,15 @@ public class Dealership {
     /**
      * Checks if a vehicle is already present in the given {@link Dealership}.
      *
-     * @param id The id of the {@link Vehicle} to check for in the inventory.
+     * @param newId The id of the {@link Vehicle} to check for in the inventory.
      * @return {@code true} if the {@link Vehicle} is found in the inventory, {@code false} otherwise.
      */
-    protected boolean isVehicleInInventoryById(String id) {
+    protected boolean isVehicleInInventoryById(String newId)
+    {
+        newId = newId.trim().replaceAll("\\s+", "");
         for (Vehicle vehicle : getTotalInventory()) {
-            if (vehicle.getVehicleId().equals(id)) {
+            String existingVehicleId = vehicle.getVehicleId().trim().replaceAll("\\s+", "");
+            if (existingVehicleId.equalsIgnoreCase(newId)) {
                 return true;
             }
         }
