@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
+import static javafiles.Key.DEALERSHIP_ID;
+import static javafiles.Key.VEHICLE_ID;
+
 
 /**
  * Manages the application's state, specifically the Company instance and its data.
@@ -269,7 +272,15 @@ public class AppStateManager {
             throw new IllegalArgumentException("Dealership ID not found: " + dealershipID);
         }
 
-        dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
+        List<Map<Key, Object>> existingVehicles = AppStateManager.getCompanyData();
+
+        for (Map<Key, Object> vehicleMap : existingVehicles) {
+            if (vehicleMap.containsKey(VEHICLE_ID) && vehicleID.equalsIgnoreCase(vehicleMap.get(VEHICLE_ID).toString())) {
+                throw new VehicleAlreadyExistsException("Vehicle ID " + vehicleID + " already exists in dealership " +
+                        vehicleMap.get(DEALERSHIP_ID) + ".");
+            }
+            dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
+        }
     }
 
 

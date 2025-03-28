@@ -1,0 +1,439 @@
+Index: DealershipICS/src/main/java/company/gui/AddInventoryController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\nimport javafx.event.ActionEvent;\r\nimport javafx.fxml.FXML;\r\n\r\nimport java.io.IOException;\r\n\r\nimport static company.gui.FXMLPath.*;\r\n\r\n\r\npublic class AddInventoryController {\r\n\r\n\r\n    @FXML\r\n    private void handleBack(ActionEvent event) throws IOException {\r\n        SceneManager sceneManager = SceneManager.getInstance(null);\r\n        sceneManager.switchScene(INVENTORY_SCREEN);\r\n    }\r\n\r\n\r\n    @FXML\r\n    private void handleLoadFromFile(ActionEvent event) throws IOException {\r\n        SceneManager sceneManager = SceneManager.getInstance(null);\r\n        sceneManager.switchScene(ADD_FROM_FILE);\r\n    }\r\n\r\n    @FXML\r\n    private void handleEnterManually(ActionEvent event) {\r\n        System.out.println(\"Enter Manually button clicked\");\r\n        // Add logic to enter inventory manually\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/AddInventoryController.java b/DealershipICS/src/main/java/company/gui/AddInventoryController.java
+--- a/DealershipICS/src/main/java/company/gui/AddInventoryController.java	(revision e86ae6a4964454efcb7c5acef873193dc210ed04)
++++ b/DealershipICS/src/main/java/company/gui/AddInventoryController.java	(date 1742712469325)
+@@ -25,9 +25,9 @@
+     }
+ 
+     @FXML
+-    private void handleEnterManually(ActionEvent event) {
+-        System.out.println("Enter Manually button clicked");
+-        // Add logic to enter inventory manually
++    private void handleEnterManually(ActionEvent event) throws IOException {
++        SceneManager sceneManager = SceneManager.getInstance(null);
++        sceneManager.switchScene(VEHICLE_ENTRY);
+     }
+ 
+ 
+Index: DealershipICS/src/main/java/company/gui/AppStateManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\nimport javafiles.Key;\r\nimport javafiles.domainfiles.Company;\r\nimport javafiles.domainfiles.Dealership;\r\n\r\nimport java.util.List;\r\nimport java.util.Map;\r\n\r\n\r\n/**\r\n * Manages the application's state, specifically the Company instance and its data.\r\n * This class provides static methods to initialize, access, and modify the Company object,\r\n * as well as retrieve data related to the company's inventory and dealerships.\r\n */\r\npublic class AppStateManager {\r\n\r\n    private static Company company;\r\n\r\n    /**\r\n     * Private constructor to prevent instantiation of this utility class.\r\n     */\r\n    private AppStateManager() {}\r\n\r\n    /**\r\n     * Initializes the Company instance with the provided Company object.\r\n     * If the Company instance already exists, this method will not overwrite it.\r\n     *\r\n     * @param newCompany The Company object to initialize the application state with.\r\n     */\r\n    public static void initializeCompany(Company newCompany)\r\n    {\r\n        if (company == null)\r\n        {\r\n            company = newCompany;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Retrieves the current Company instance.\r\n     *\r\n     * @return The Company object representing the application's state.\r\n     */\r\n    public static Company getCompany()\r\n    {\r\n        return company;\r\n    }\r\n\r\n    /**\r\n     * Retrieves a List of Maps representing all vehicle data within the Company instance.\r\n     * </p>\r\n     * Each Map contains key-value pairs representing vehicle attributes.\r\n     * Method calls {@link Company#getDataMap()}.\r\n     *\r\n     * @return A List of Maps containing vehicle data.\r\n     */\r\n    public static List<Map<Key, Object>> getCompanyData()\r\n    {\r\n        return company.getDataMap();\r\n    }\r\n\r\n    /**\r\n     * Retrieves a List of Dealership objects associated with the Company instance.\r\n     * </p>\r\n     * Method calls {@link Company#getListDealerships()}.\r\n     *\r\n     * @return A List of Dealership objects.\r\n     */\r\n    public static List getListDealerships()\r\n    {\r\n        return company.getListDealerships();\r\n    }\r\n\r\n\r\n    /**\r\n     * Adds a Dealership object to the Company instance.\r\n     * </p>\r\n     * Method calls {@link Company#addDealership(Dealership)}\r\n     * \r\n     *\r\n     * @param dealership The Dealership object to add to the Company.\r\n     */\r\n    public static void addADealership(Dealership dealership)\r\n    {\r\n        company.addDealership(dealership);\r\n    }\r\n\r\n    public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {\r\n        return company.dataToInventory(maps);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/AppStateManager.java b/DealershipICS/src/main/java/company/gui/AppStateManager.java
+--- a/DealershipICS/src/main/java/company/gui/AppStateManager.java	(revision e86ae6a4964454efcb7c5acef873193dc210ed04)
++++ b/DealershipICS/src/main/java/company/gui/AppStateManager.java	(date 1742724164627)
+@@ -1,9 +1,14 @@
+ package company.gui;
+ 
+ import javafiles.Key;
++import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
++import javafiles.customexceptions.InvalidPriceException;
++import javafiles.customexceptions.InvalidVehicleTypeException;
++import javafiles.customexceptions.VehicleAlreadyExistsException;
+ import javafiles.domainfiles.Company;
+ import javafiles.domainfiles.Dealership;
+ 
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Map;
+ 
+@@ -88,4 +93,23 @@
+     public static List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> maps) {
+         return company.dataToInventory(maps);
+     }
++
++    public static ArrayList<String> getDealershipIDs()
++    {
++        return company.getAllDealershipIds();
++    }
++
++
++    public static void manualVehicleAdd(String dealershipID, String vehicleID, String vehicleManufacturer, String vehicleModel, Long vehiclePrice, Long acquisitionDate, String vehicleType, String priceUnit)
++            throws VehicleAlreadyExistsException, InvalidPriceException, DealershipNotAcceptingVehiclesException,
++            InvalidVehicleTypeException {
++
++        Dealership dealership = company.findDealership(dealershipID);
++        if (dealership == null) {
++            throw new IllegalArgumentException("Dealership ID not found: " + dealershipID);
++        }
++
++        dealership.manualVehicleAdd(vehicleID, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType,priceUnit);
++    }
++
+ }
+Index: DealershipICS/src/main/java/company/gui/VehicleEntryController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/VehicleEntryController.java b/DealershipICS/src/main/java/company/gui/VehicleEntryController.java
+new file mode 100644
+--- /dev/null	(date 1742724610286)
++++ b/DealershipICS/src/main/java/company/gui/VehicleEntryController.java	(date 1742724610286)
+@@ -0,0 +1,143 @@
++package company.gui;
++
++import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
++import javafiles.customexceptions.InvalidPriceException;
++import javafiles.customexceptions.InvalidVehicleTypeException;
++import javafiles.customexceptions.VehicleAlreadyExistsException;
++import javafx.event.ActionEvent;
++import javafx.fxml.FXML;
++import javafx.fxml.Initializable;
++import javafx.scene.control.Button;
++import javafx.scene.control.ComboBox;
++import javafx.scene.control.TextField;
++
++import javax.swing.*;
++
++import java.io.IOException;
++
++import java.net.URL;
++import java.util.ResourceBundle;
++
++import static company.gui.FXMLPath.ADD_INVENTORY;
++
++public class VehicleEntryController implements Initializable {
++
++    @FXML
++    private Button backButton;
++
++    @FXML
++    private ComboBox<String> dealershipComboBox;
++
++    @FXML
++    private Button addVehicleButton;
++
++    @FXML
++    private Button resetButton;
++
++    @FXML
++    private TextField vehicleTypeField;
++
++    @FXML
++    private TextField vehicleIdField;
++
++    @FXML
++    private TextField vehicleModelField;
++
++    @FXML
++    private TextField vehiclePriceField;
++
++    @FXML
++    private TextField vehicleManufacturerField;
++
++    @FXML
++    private TextField acquisitionDateField;
++
++    @FXML
++    private TextField priceUnitField;
++
++    @Override
++    public void initialize(URL url, ResourceBundle resourceBundle) {
++        // Populate dealershipComboBox
++        dealershipComboBox.getItems().addAll(AppStateManager.getDealershipIDs());
++    }
++
++
++    @FXML
++    private void handleBackButton(ActionEvent event) throws IOException {
++      SceneManager sceneManager = SceneManager.getInstance(null);
++      sceneManager.switchScene(ADD_INVENTORY);
++    }
++
++    @FXML
++    private void handleAddVehicleButton(ActionEvent event) {
++        // Validation
++        if (vehicleTypeField.getText().isEmpty() || vehicleIdField.getText().isEmpty() ||
++                vehicleModelField.getText().isEmpty() || vehiclePriceField.getText().isEmpty()) {
++            // Display error message (e.g., using an alert)
++            JOptionPane.showMessageDialog(null, "Missing Required Vehicle Information");
++            return;
++        }
++
++        // Get input values
++        String dealerId = dealershipComboBox.getValue();
++        String vehicleId = vehicleIdField.getText();
++        String vehicleManufacturer = vehicleManufacturerField.getText();
++        String vehicleModel = vehicleModelField.getText();
++        String vehicleType = vehicleTypeField.getText();
++        String acquisitionDateStr = acquisitionDateField.getText();
++        String vehiclePriceStr = vehiclePriceField.getText();
++        String priceUnit = priceUnitField.getText();
++
++        try {
++            // Parse input values
++            Long vehiclePrice = Long.parseLong(vehiclePriceStr);
++            Long acquisitionDate = Long.parseLong(acquisitionDateStr);
++
++            // Call AppStateManager to add the vehicle
++            AppStateManager.manualVehicleAdd(dealerId, vehicleId, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
++
++            System.out.println("Vehicle added successfully.");
++            // Reset fields
++            resetFields();
++
++
++        }
++        catch (NumberFormatException e) {
++            JOptionPane.showMessageDialog(null, "Invalid format for price.");
++        }
++        catch (VehicleAlreadyExistsException e)
++        {
++            JOptionPane.showMessageDialog(null, "Vehicle ID already exists in inventory");
++        }
++        catch (InvalidPriceException e)
++        {
++            JOptionPane.showMessageDialog(null, "Price is invalid, please enter an integer greater than 0");
++        }
++        catch (DealershipNotAcceptingVehiclesException e)
++        {
++            JOptionPane.showMessageDialog(null, "Dealership is not currently accepting vehicles");
++        }
++        catch (InvalidVehicleTypeException e)
++        {
++            JOptionPane.showMessageDialog(null,"Invalid vehicle type, valid vehicle types are SUV, Sedan, Sports Car, Pickup");
++        }
++
++        // Reset Fields
++        resetFields();
++    }
++
++    @FXML
++    private void handleResetButton(ActionEvent event) {
++        resetFields();
++    }
++
++    private void resetFields() {
++        vehicleTypeField.clear();
++        vehicleIdField.clear();
++        vehicleModelField.clear();
++        vehiclePriceField.clear();
++        vehicleManufacturerField.clear();
++        acquisitionDateField.clear();
++        priceUnitField.clear();
++    }
++}
+\ No newline at end of file
+Index: DealershipICS/src/main/java/javafiles/domainfiles/Company.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package javafiles.domainfiles;\r\n\r\nimport javafiles.Key;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\nimport java.util.Map;\r\n\r\npublic class Company {\r\n    private ArrayList<Dealership> listDealerships;\r\n\r\n    public Company() {\r\n        this.listDealerships = new ArrayList<>();\r\n    }\r\n\r\n    public void addDealership(Dealership dealership) {listDealerships.add(dealership);}\r\n\r\n    public ArrayList<Dealership> getListDealerships() {return listDealerships;}\r\n\r\n    /**\r\n     * Takes a String representing a Dealership ID and returns the index of that\r\n     * Dealership in this Company's listDealerships.\r\n     *\r\n     * @param dealerId A String equal to the dealerId of the Dealership we are searching for.\r\n     * @return The index of the searched for Dealership in listDealerships (-1 if absent).\r\n     */\r\n    public int getDealershipIndex(String dealerId) {\r\n        Dealership dealership;\r\n        for (int i = 0; i < listDealerships.size(); i++) {\r\n            dealership = listDealerships.get(i);\r\n            if (dealership.getDealerId().equals(dealerId)) {\r\n                return i;\r\n            }\r\n        }\r\n        return -1;\r\n    }\r\n\r\n    /**\r\n     * Takes a String representing a Dealership ID and returns the given\r\n     * Dealership in this Company's listDealerships.\r\n     *\r\n     * @param dealerId A String equal to the dealerID of the Dealership we are searching for.\r\n     * @return The Dealership we are searching for in listDealerships (null if absent).\r\n     */\r\n    private Dealership findDealership(String dealerId) {\r\n        for (Dealership dealership : listDealerships) {\r\n            if (dealership.getDealerId().equals(dealerId)) {\r\n                return dealership;\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n    /**\r\n     * Takes a List of Map<Key, Object>s representing a List of Vehicle information\r\n     * and writes the data in each map to the corresponding Dealership.\r\n     *\r\n     * @param data The List of Maps containing Vehicle information to be added to inventory.\r\n     */\r\n    public List<Map<Key, Object>> dataToInventory(List<Map<Key, Object>> data) {\r\n        List<Map<Key, Object>> badInventoryMaps = new ArrayList<>();\r\n\r\n        if (data == null) {return badInventoryMaps;}\r\n\r\n        // Used to ensure that the cars for new Dealerships are\r\n        // added before considering rental or receiving statuses.\r\n        // Assumes that all Vehicles from the same dealership have\r\n        // the same rental and receiving statuses.\r\n        Map<Dealership, Map<Key, Object>> newDealershipStat = new HashMap<>();\r\n\r\n        for (Map<Key, Object> map: data) {\r\n            if (map.containsKey(Key.REASON_FOR_ERROR)) {\r\n                badInventoryMaps.add(map);\r\n                continue;\r\n            }\r\n\r\n            String id = Key.DEALERSHIP_ID.getVal(map, String.class);\r\n            String name = Key.DEALERSHIP_NAME.getVal(map, String.class);\r\n\r\n            if (id == null) {\r\n                Key.REASON_FOR_ERROR.putNonNull(map, \"No dealerID.\");\r\n                badInventoryMaps.add(map);\r\n                continue;\r\n            }\r\n\r\n            Dealership dealership = findDealership(id);\r\n            if (dealership == null) {\r\n                dealership = new Dealership(id, name);\r\n                addDealership(dealership);\r\n\r\n                newDealershipStat.put(dealership, map);\r\n            }\r\n            if ( !dealership.dataToInventory(map) ) {\r\n                badInventoryMaps.add(map);\r\n            }\r\n        }\r\n\r\n        for (Dealership dealership : newDealershipStat.keySet()) {\r\n            Map<Key, Object> map = newDealershipStat.get(dealership);\r\n            dealership.setReceivingVehicle(Key.DEALERSHIP_RECEIVING_STATUS.getVal(map, Boolean.class));\r\n            dealership.setRentingVehicles(Key.DEALERSHIP_RENTING_STATUS.getVal(map, Boolean.class));\r\n        }\r\n\r\n        return badInventoryMaps;\r\n    }\r\n\r\n    /**\r\n     * Retrieves Vehicle data for all Dealerships within the Company.\r\n     * <p>\r\n     * This method gathers Vehicle information from all Dealerships associated with the\r\n     * Company and compiles it into a single list of Maps. Each Map in the List\r\n     * represents a Vehicle and contains its attributes.\r\n     *\r\n     * @return A {@link List} of {@link Map} Objects. Each {@link Map} represents a Vehicle\r\n     *         and contains its attributes (dealership ID, vehicle type, manufacturer, model,\r\n     *         vehicle ID, price, and acquisition date) as key-value pairs. Returns all vehicles from each\r\n     *         Dealership in the Company. Returns an empty list if the Company has no Dealerships\r\n     *         or if none of the Dealerships have any Vehicles.\r\n     */\r\n    public List<Map<Key, Object>> getDataMap() {\r\n        List<Map<Key, Object>> list = new ArrayList<>();\r\n        for (Dealership dealership : listDealerships) {\r\n            list.addAll(dealership.getDataMap());\r\n        }\r\n        return list;\r\n    }\r\n\r\n    /**\r\n     * Prints the inventory of Vehicles for each Dealership in the Company.\r\n     * <p>\r\n     * This method iterates through the List of Dealerships associated in the Company.\r\n     * For each {@link Dealership} it retrieves the Vehicle inventory and prints\r\n     * information about each {@link Vehicle}. If a Dealership has no inventory, a message\r\n     * indicating this is printed. If the Company has no Dealerships, a message is\r\n     * printed to the console.\r\n     */\r\n    public void printInventory() {\r\n        // if company does not have any dealerships, print message and return to menu\r\n        if(listDealerships.isEmpty())\r\n        {\r\n            System.out.println(\"There are currently no dealerships in the company\");\r\n            return;\r\n        }\r\n\r\n        for(Dealership dealership : listDealerships)\r\n        {\r\n            System.out.println(dealership.toFullString());\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Generates a formatted list of Dealership IDs.\r\n     * <p>\r\n     * This method retrieves all Dealerships associated with the Company and\r\n     * creates a String containing their IDs, separated by tabs. The IDs are arranged\r\n     * with a maximum of 6 IDs per line. If the Company has no Dealerships,\r\n     * the method returns a message indicating this.\r\n     *\r\n     * @return A string containing the formatted list of dealership IDs, or the\r\n     *         message \"No valid Dealerships.\" if the company has no dealerships.\r\n     */\r\n    public String getDealershipIdList() {\r\n        StringBuilder output = new StringBuilder();\r\n        int added = 0;\r\n        int idPerLine = 6;\r\n        for (Dealership dealership : listDealerships) {\r\n            output.append(dealership.getDealerId()).append(\"\\t\");\r\n            if (added % idPerLine == idPerLine - 1) {\r\n                output.append(\"\\n\");\r\n            }\r\n            added++;\r\n        }\r\n        if (output.isEmpty()) {\r\n            return \"No valid Dealerships.\";\r\n        }\r\n        return output.toString();\r\n    }\r\n\r\n    /**\r\n     * Returns a String displaying the current receiving status of the\r\n     * Dealership at index dealerIndex in listDealerships.\r\n     *\r\n     * @param dealerIndex The index of the dealership that is being evaluated\r\n     * @return A String displaying the receiving status of the Dealership.\r\n     */\r\n    public String changeReceivingStatusIntroString(int dealerIndex) {\r\n        Dealership dealer = listDealerships.get(dealerIndex);\r\n        return \"Enable or disable vehicle receiving status for dealership \"\r\n                + dealer.getDealerId() + \"? (Enter 'enable' or 'disable')\\n\" +\r\n                \"Currently enabled? (\" + dealer.getStatusAcquiringVehicle() + \")\";\r\n    }\r\n\r\n    /**\r\n     * Updates the Dealership receiving status for Vehicles and prints the appropriate\r\n     * message for that update based on what the userInput read from the user.\r\n     *\r\n     * @param dealerIndex The index of the Dealership to be updated in listDealerships.\r\n     * @param userInput The input provided by the user that is being processed.\r\n     * @return Whether the input is invalid, true if it is invalid, false otherwise.\r\n     */\r\n    public boolean changeReceivingStatus(int dealerIndex, String userInput) {\r\n        Dealership dealer = listDealerships.get(dealerIndex);\r\n        if (userInput.equalsIgnoreCase(\"enable\")) {\r\n            // Check if the dealership's vehicle receiving status is already enabled\r\n            if (dealer.getStatusAcquiringVehicle()) {\r\n                System.out.println(\"Dealership \" + dealer.getDealerId() + \" is already set to receive vehicles.\");\r\n            } else {\r\n                // Enable vehicle receiving for the dealership\r\n                dealer.setReceivingVehicle(true);\r\n                System.out.println(\"Vehicle receiving status for dealership \" + dealer.getDealerId() + \" has been enabled.\");\r\n            }\r\n            return false;\r\n        } else if (userInput.equalsIgnoreCase(\"disable\")) {\r\n            // Disable the vehicle receiving status\r\n            if (!dealer.getStatusAcquiringVehicle()) {\r\n                System.out.println(\"Dealership \" + dealer.getDealerId() + \" is already set to not receive vehicles.\");\r\n            } else {\r\n                dealer.setReceivingVehicle(false);\r\n                System.out.println(\"Vehicle receiving status for dealership \" + dealer.getDealerId() + \" has been disabled.\");\r\n            }\r\n            return false;\r\n        }\r\n        System.out.println(\"Invalid input. Please enter 'enable' or 'disable'.\");\r\n        return true;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/javafiles/domainfiles/Company.java b/DealershipICS/src/main/java/javafiles/domainfiles/Company.java
+--- a/DealershipICS/src/main/java/javafiles/domainfiles/Company.java	(revision e86ae6a4964454efcb7c5acef873193dc210ed04)
++++ b/DealershipICS/src/main/java/javafiles/domainfiles/Company.java	(date 1742718462099)
+@@ -43,7 +43,7 @@
+      * @param dealerId A String equal to the dealerID of the Dealership we are searching for.
+      * @return The Dealership we are searching for in listDealerships (null if absent).
+      */
+-    private Dealership findDealership(String dealerId) {
++    public Dealership findDealership(String dealerId) {
+         for (Dealership dealership : listDealerships) {
+             if (dealership.getDealerId().equals(dealerId)) {
+                 return dealership;
+@@ -149,6 +149,7 @@
+         }
+     }
+ 
++    //TODO: Decide whether we need this method still called in javafiles.Main
+     /**
+      * Generates a formatted list of Dealership IDs.
+      * <p>
+@@ -177,6 +178,20 @@
+         return output.toString();
+     }
+ 
++    /**
++     * Returns an ArrayList of Strings representing all Dealership IDs in the company.
++     *
++     * @return An ArrayList of Strings containing all Dealership IDs.
++     */
++    public ArrayList<String> getAllDealershipIds() {
++        ArrayList<String> dealershipIds = new ArrayList<>();
++        for (Dealership dealership : listDealerships) {
++            dealershipIds.add(dealership.getDealerId());
++        }
++        return dealershipIds;
++    }
++
++
+     /**
+      * Returns a String displaying the current receiving status of the
+      * Dealership at index dealerIndex in listDealerships.
+Index: DealershipICS/src/main/java/company/gui/DealershipApp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\n\r\nimport javafiles.domainfiles.Company;\r\nimport javafiles.domainfiles.Dealership;\r\nimport javafx.application.Application;\r\nimport javafx.stage.Stage;\r\n\r\nimport static company.gui.FXMLPath.*;\r\n\r\npublic class DealershipApp extends Application {\r\n    \r\n    @Override\r\n    public void start(Stage primaryStage) throws Exception {\r\n\r\n        // create and intialize company instance\r\n        Company company = new Company();\r\n\r\n        // just for testing purposes **************\r\n        Dealership d1 = new Dealership(\"123\",\"ICS372\");\r\n        d1.manualVehicleAdd(\"abc\",\"Toyota\",\"Prius\",50000L,1742696542L,\"Sedan\");\r\n        d1.manualVehicleAdd(\"cde\",\"Toyota\",\"Prius\",50000L,1742696542L,\"Sedan\");\r\n        d1.manualVehicleAdd(\"efg\",\"Toyota\",\"Prius\",50000L,1742696542L,\"Sedan\");\r\n\r\n        // test *******************\r\n        AppStateManager.initializeCompany(company);\r\n        AppStateManager.addADealership(d1);\r\n\r\n\r\n\r\n        SceneManager sceneManger = SceneManager.getInstance(primaryStage);\r\n        sceneManger.switchScene(MAIN_SCREEN);\r\n        primaryStage.show();\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        launch(args);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/DealershipApp.java b/DealershipICS/src/main/java/company/gui/DealershipApp.java
+--- a/DealershipICS/src/main/java/company/gui/DealershipApp.java	(revision e86ae6a4964454efcb7c5acef873193dc210ed04)
++++ b/DealershipICS/src/main/java/company/gui/DealershipApp.java	(date 1742723988309)
+@@ -18,9 +18,9 @@
+ 
+         // just for testing purposes **************
+         Dealership d1 = new Dealership("123","ICS372");
+-        d1.manualVehicleAdd("abc","Toyota","Prius",50000L,1742696542L,"Sedan");
+-        d1.manualVehicleAdd("cde","Toyota","Prius",50000L,1742696542L,"Sedan");
+-        d1.manualVehicleAdd("efg","Toyota","Prius",50000L,1742696542L,"Sedan");
++        d1.manualVehicleAdd("abc","Toyota","Prius",50000L,1742696542L,"Sedan",null);
++        d1.manualVehicleAdd("cde","Toyota","Prius",50000L,1742696542L,"Sedan",null);
++        d1.manualVehicleAdd("efg","Toyota","Prius",50000L,1742696542L,"Sedan",null);
+ 
+         // test *******************
+         AppStateManager.initializeCompany(company);
+Index: DealershipICS/src/main/java/company/gui/InventoryScreenController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\nimport javafiles.Key;\r\nimport javafx.fxml.FXML;\r\nimport javafx.event.ActionEvent;\r\n\r\nimport javax.swing.*;\r\nimport java.io.IOException;\r\nimport java.util.List;\r\nimport java.util.Map;\r\nimport static company.gui.FXMLPath.*;\r\n\r\n\r\n\r\n/**\r\n * Controller for the inventory management screen.\r\n * Handles actions related to vehicle inventory.\r\n */\r\npublic class InventoryScreenController\r\n{\r\n\r\n\r\n    @FXML\r\n    private void handleBack(ActionEvent event) throws IOException\r\n        {\r\n            SceneManager sceneManager = SceneManager.getInstance(null);\r\n            sceneManager.switchScene(MAIN_SCREEN);\r\n\r\n        }\r\n\r\n    @FXML\r\n    private void handleAddVehicleToDealership(ActionEvent event) throws IOException {\r\n        SceneManager sceneManager = SceneManager.getInstance(null);\r\n        sceneManager.switchScene(ADD_INVENTORY);\r\n\r\n\r\n    }\r\n\r\n    @FXML\r\n    private void handleRemoveVehicleFromDealership() {\r\n        System.out.println(\"Remove vehicle clicked\");\r\n    }\r\n\r\n    @FXML\r\n    private void handleTransferVehicleBetweenDealerships() {\r\n        System.out.println(\"Transfer vehicle clicked\");\r\n    }\r\n\r\n    @FXML\r\n    private void handleEnableVehicleRental() {\r\n        System.out.println(\"Enable rental clicked\");\r\n    }\r\n\r\n    @FXML\r\n    private void handleDisableVehicleRental() {\r\n        System.out.println(\"Disable rental clicked\");\r\n    }\r\n\r\n    @FXML\r\n    private void handleViewCompanyInventory()\r\n    {\r\n        List<Map<Key, Object>> vehicleData = AppStateManager.getCompanyData();\r\n\r\n        JTable vehicleTable = GuiUtility.createTableFromMapList(vehicleData);\r\n\r\n        if (vehicleTable != null) {\r\n\r\n            // remove column for error reason\r\n            GuiUtility.removeColumnByName(vehicleTable,\"error_reason\");\r\n\r\n            JFrame inventoryFrame = new JFrame(\"Vehicle Inventory\");\r\n            inventoryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the inventory frame\r\n\r\n            JScrollPane scrollPane = new JScrollPane(vehicleTable);\r\n            inventoryFrame.getContentPane().add(scrollPane);\r\n\r\n            inventoryFrame.pack();\r\n            inventoryFrame.setVisible(true);\r\n\r\n        } else {\r\n            JOptionPane.showMessageDialog(null, \"No vehicle data available.\");\r\n        }\r\n    }\r\n\r\n    }\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/InventoryScreenController.java b/DealershipICS/src/main/java/company/gui/InventoryScreenController.java
+--- a/DealershipICS/src/main/java/company/gui/InventoryScreenController.java	(revision e86ae6a4964454efcb7c5acef873193dc210ed04)
++++ b/DealershipICS/src/main/java/company/gui/InventoryScreenController.java	(date 1742712311761)
+@@ -32,8 +32,6 @@
+     private void handleAddVehicleToDealership(ActionEvent event) throws IOException {
+         SceneManager sceneManager = SceneManager.getInstance(null);
+         sceneManager.switchScene(ADD_INVENTORY);
+-
+-
+     }
+ 
+     @FXML
+Index: DealershipICS/src/main/resources/VehicleEntry.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/resources/VehicleEntry.fxml b/DealershipICS/src/main/resources/VehicleEntry.fxml
+new file mode 100644
+--- /dev/null	(date 1742713940622)
++++ b/DealershipICS/src/main/resources/VehicleEntry.fxml	(date 1742713940622)
+@@ -0,0 +1,62 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<?import javafx.geometry.Insets?>
++<?import javafx.scene.control.Button?>
++<?import javafx.scene.control.ComboBox?>
++<?import javafx.scene.control.Label?>
++<?import javafx.scene.control.TextField?>
++<?import javafx.scene.layout.ColumnConstraints?>
++<?import javafx.scene.layout.GridPane?>
++<?import javafx.scene.layout.HBox?>
++<?import javafx.scene.layout.RowConstraints?>
++<?import javafx.scene.layout.VBox?>
++
++<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="company.gui.VehicleEntryController">
++    <HBox alignment="TOP_CENTER" spacing="10.0" VBox.vgrow="NEVER">
++        <padding>
++            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
++        </padding>
++        <Button fx:id="backButton" mnemonicParsing="false" text="Back" onAction="#handleBackButton" />
++        <HBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
++            <ComboBox fx:id="dealershipComboBox" promptText="Select Dealership" />
++        </HBox>
++        <VBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS" spacing="5.0">
++            <Button fx:id="addVehicleButton" mnemonicParsing="false" text="Add Vehicle" onAction="#handleAddVehicleButton" />
++            <Button fx:id="resetButton" mnemonicParsing="false" text="Reset" onAction="#handleResetButton" />
++        </VBox>
++    </HBox>
++    <GridPane alignment="CENTER" hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
++        <padding>
++            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
++        </padding>
++        <columnConstraints>
++            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
++            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
++            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
++            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
++        </columnConstraints>
++        <rowConstraints>
++            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
++            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
++            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
++            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
++            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
++            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
++            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
++        </rowConstraints>
++        <Label text="* Vehicle Type:" />
++        <TextField fx:id="vehicleTypeField" GridPane.columnIndex="1" />
++        <Label text="* Vehicle ID:" GridPane.rowIndex="1" />
++        <TextField fx:id="vehicleIdField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
++        <Label text="* Vehicle Model:" GridPane.rowIndex="2" />
++        <TextField fx:id="vehicleModelField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
++        <Label text="* Vehicle Price:" GridPane.rowIndex="3" />
++        <TextField fx:id="vehiclePriceField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
++        <Label text="Vehicle Manufacturer:" GridPane.columnIndex="2" />
++        <TextField fx:id="vehicleManufacturerField" GridPane.columnIndex="3" />
++        <Label text="Acquisition Date:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
++        <TextField fx:id="acquisitionDateField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
++        <Label text="Price Unit:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
++        <TextField fx:id="priceUnitField" GridPane.columnIndex="3" GridPane.rowIndex="2" />
++    </GridPane>
++</VBox>
+\ No newline at end of file
+Index: DealershipICS/src/main/java/javafiles/domainfiles/Dealership.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package javafiles.domainfiles;\r\n\r\nimport javafiles.customexceptions.*;\r\nimport javafiles.Key;\r\n\r\nimport java.util.*;\r\n\r\n/**\r\n * Represents a dealership that manages vehicle sales and rentals.\r\n * <p>\r\n * This class provides functionality to add, remove, and retrieve vehicles from the dealership's\r\n * sales and rental inventories. It also allows for enabling and disabling vehicle acquisition\r\n * and rental services.\r\n * <p>\r\n * The dealership is identified by a unique dealer ID and maintains separate inventories for\r\n * vehicles available for sale and rental.\r\n * <p>\r\n * Authors: Patrick McLucas, Christopher Engelhart\r\n */\r\n\r\npublic class Dealership {\r\n    private final String dealerId;\r\n    private String name;\r\n    private final ArrayList<Vehicle> salesInventory;\r\n    private final ArrayList<Vehicle> rentalInventory;\r\n    private static final VehicleFactory vehicleFactory = VehicleCreator.getInstance(); // Singleton\r\n    private boolean receivingVehicle;\r\n    private boolean rentingVehicles;\r\n\r\n    // Instantiation requires dealer_ID\r\n    public Dealership(String dealerId, String name) {\r\n        // necessary\r\n        this.dealerId = dealerId;\r\n\r\n        // defaults\r\n        this.name = name;\r\n        this.receivingVehicle = true;\r\n        this.rentingVehicles = false;\r\n\r\n        salesInventory = new ArrayList<>();\r\n        rentalInventory = new ArrayList<>();\r\n    }\r\n\r\n    // Getters:\r\n    public String getDealerId () {return dealerId;}\r\n    public boolean getStatusAcquiringVehicle() {return receivingVehicle;}\r\n    public boolean getRentingVehicles() {return rentingVehicles;}\r\n    public ArrayList<Vehicle> getSaleVehicles() {return salesInventory;}\r\n    public ArrayList<Vehicle> getRentalVehicles() {return rentalInventory;}\r\n\r\n    // Setters:\r\n    public void setName(String name) {this.name = name;}\r\n    public void setReceivingVehicle(Boolean status) {\r\n        receivingVehicle = Objects.requireNonNullElse(status, true);\r\n    }\r\n    public void setRentingVehicles(Boolean status) {\r\n        rentingVehicles = Objects.requireNonNullElse(status, false);\r\n    }\r\n\r\n    /**\r\n     * Retrieves a vehicle from the sales inventory by its ID.\r\n     *\r\n     * @param vehicleID The ID of the vehicle to retrieve.\r\n     * @return The Vehicle object.\r\n     * @throws VehicleNotFoundException if the vehicle is not found.\r\n     */\r\n    public Vehicle getVehicleFromSalesInventory(String vehicleID) throws VehicleNotFoundException {\r\n        for (Vehicle vehicle : salesInventory) {\r\n            if (vehicle.getVehicleId()!= null && vehicle.getVehicleId().equals(vehicleID)) {\r\n                return vehicle;\r\n            }\r\n        }\r\n        throw new VehicleNotFoundException(\"Vehicle with ID: \" + vehicleID + \" not found in sales inventory.\");\r\n    }\r\n\r\n    /**\r\n     * Retrieves a vehicle from the rental inventory by its ID.\r\n     *\r\n     * @param vehicleID The ID of the vehicle to retrieve.\r\n     * @return The Vehicle object.\r\n     * @throws VehicleNotFoundException if the vehicle is not found.\r\n     */\r\n    public Vehicle getVehicleFromRentalInventory(String vehicleID) throws VehicleNotFoundException {\r\n\r\n\r\n        for (Vehicle vehicle : rentalInventory) {\r\n            if (vehicle.getVehicleId()!= null && vehicle.getVehicleId().equals(vehicleID)) {\r\n                return vehicle;\r\n            }\r\n        }\r\n        throw new VehicleNotFoundException(\"Vehicle with ID: \" + vehicleID + \" not found in rental inventory.\");\r\n    }\r\n\r\n\r\n\r\n    /**\r\n     * Checks if a vehicle is already present in the given inventory.\r\n     *\r\n     * @param newVehicle The vehicle to check for in the inventory.\r\n     * @param inventory The inventory (list) where the vehicle might be located.\r\n     * @return {@code true} if the vehicle is found in the inventory, {@code false} otherwise.\r\n     *\r\n     * @author Christopher Engelhart\r\n     */\r\n    private boolean isVehicleInInventory(Vehicle newVehicle, List<Vehicle> inventory) {\r\n        // TODO: Check if getting the inventory vs. checking Dealership inventory is correct.\r\n        for (Vehicle vehicle : inventory)\r\n        {\r\n            if (vehicle.getVehicleId().equals(newVehicle.getVehicleId()))\r\n            {\r\n                return true;\r\n            }\r\n        }\r\n\r\n        return false;\r\n    }\r\n\r\n\r\n\r\n    /**\r\n     * Adds a new vehicle to the dealership's sales inventory.\r\n     * <p>\r\n     * This method checks if the dealership is currently accepting new vehicles and if the vehicle is already\r\n     * present in either the sales or rental inventory. If the dealership is not accepting new vehicles or if\r\n     * the vehicle already exists, an exception is thrown.\r\n     *\r\n     * @param newVehicle The {@link Vehicle} object to be added to the inventory.\r\n     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.\r\n     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.\r\n     */\r\n    public void addIncomingVehicle(Vehicle newVehicle) throws DealershipNotAcceptingVehiclesException,\r\n            VehicleAlreadyExistsException\r\n    {\r\n        // Checks if the dealership is accepting new vehicles.\r\n        if (!receivingVehicle) {\r\n            throw new DealershipNotAcceptingVehiclesException(\"Dealership \" + this.dealerId + \" is not accepting new \" +\r\n                    \"vehicles at this time. \" + \"Vehicle ID: \" + newVehicle.getVehicleId() +\r\n                    \" was not added to Dealership: \" + this.dealerId + \".\");\r\n        }\r\n\r\n        if (isVehicleInInventory(newVehicle, salesInventory))\r\n        {\r\n            throw new VehicleAlreadyExistsException(\"This vehicle is already located in the sales inventory. Vehicle ID: \"\r\n                    + newVehicle.getVehicleId() + \" was not added to dealership \" + this.dealerId + \".\");\r\n        }\r\n\r\n        if (isVehicleInInventory(newVehicle, rentalInventory))\r\n        {\r\n            throw new VehicleAlreadyExistsException(\"This vehicle is already located in the rental inventory. Vehicle ID: \"\r\n                    + newVehicle.getVehicleId() + \" was not added to dealership \" + this.dealerId + \".\");\r\n        }\r\n\r\n\r\n        this.salesInventory.add(newVehicle);\r\n    }\r\n\r\n    /**\r\n     * Takes a Map with information about a Vehicle, creates that Vehicle and adds to inventory.\r\n     *\r\n     * @param map The data needed to create the new Vehicle.\r\n     * @return Returns true if the Vehicle was added, false otherwise.\r\n     */\r\n    public boolean dataToInventory(Map<Key, Object> map) {\r\n        Vehicle vehicle;\r\n\r\n        try {\r\n            vehicle = vehicleFactory.createVehicle(map);\r\n        } catch (InvalidVehicleTypeException | InvalidPriceException e) {\r\n            Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());\r\n            return false;\r\n        }\r\n\r\n        try {\r\n            addIncomingVehicle(vehicle);\r\n        } catch (VehicleAlreadyExistsException | DealershipNotAcceptingVehiclesException e) {\r\n            Key.REASON_FOR_ERROR.putNonNull(map, e.getMessage());\r\n            return false;\r\n        }\r\n        return true;\r\n    }\r\n\r\n    /**\r\n     * Adds a new vehicle to the dealership inventory based on the provided vehicle details.\r\n     * This method creates a new vehicle based on the vehicle type and sets its attributes\r\n     * using the provided parameters.\r\n     *</p>\r\n     * {@link VehicleFactory#createVehicle(String, String, String, Long)} is used to create and validate the vehicle type.\r\n     * If the vehicle type is unsupported, the method will print an error message and return without\r\n     * making any changes to the inventory. If the vehicle is created successfully, it will be added\r\n     * to the dealership's inventory using the {@link #addIncomingVehicle(Vehicle)} method.\r\n     *\r\n     *\r\n     * @param vehicleId The unique identifier for the vehicle.\r\n     * @param vehicleManufacturer The manufacturer of the vehicle.\r\n     * @param vehicleModel The model of the vehicle.\r\n     * @param vehiclePrice The price of the vehicle. The price must be a positive value representing the\r\n     *                     cost of the vehicle.\r\n     * @param acquisitionDate The date when the vehicle was acquired by the dealership.\r\n     *                        @note acquisitionDate is a long value representing milliseconds\r\n     *                        since the epoch.\r\n     * @param vehicleType The type of the vehicle. This should be one of the following types:\r\n     *                    \"suv\", \"sedan\", \"pickup\", or \"sports car\". If an unsupported type is provided,\r\n     *                    the method will not add the vehicle and will print an error message.\r\n     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.\r\n     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.\r\n     * @throws InvalidVehicleTypeException If the vehicle type is not supported.\r\n     * @throws InvalidPriceException if the vehicle price is not a positive value\r\n     *\r\n     * @author Christopher Engelhart\r\n     */\r\n    public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, Long vehiclePrice,\r\n                                 Long acquisitionDate, String vehicleType) throws InvalidVehicleTypeException,\r\n            VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {\r\n        // TODO: include price unit in function call (for fillVehicle)\r\n\r\n        // Ensure the vehicle price is positive.\r\n        if (vehiclePrice <= 0) {\r\n            throw new InvalidPriceException(\"Error: Vehicle price must be a positive value. Vehicle ID: \" + vehicleId + \" was not added.\");\r\n        }\r\n\r\n        Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleId, vehicleModel, vehiclePrice);\r\n\r\n        vehicleFactory.fillVehicle(newVehicle, vehicleManufacturer, acquisitionDate, null, null);\r\n\r\n        this.addIncomingVehicle(newVehicle);\r\n    }\r\n\r\n\r\n    /**\r\n     * Adds a vehicle to the dealership's rental inventory.\r\n     *\r\n     * @param rental The vehicle to add to the rental inventory. Cannot be null.\r\n     *\r\n     * @throws IllegalArgumentException If the rental parameter is null.\r\n     * @throws VehicleAlreadyExistsException If the vehicle is already in the rental inventory.\r\n     * @throws DealershipNotRentingException If the dealership does not currently provide rental services.\r\n     * @throws VehicleNotRentableException If the vehicle is not currently rentable.\r\n     *\r\n     * @author Christopher Engelhart\r\n     */\r\n    public void addRentalVehicle(Vehicle rental) throws IllegalArgumentException,VehicleAlreadyExistsException,\r\n            DealershipNotRentingException, VehicleNotRentableException {\r\n\r\n        if (rental == null) {\r\n            throw new IllegalArgumentException(\"Rental vehicle is null.\");\r\n        }\r\n\r\n        if (!this.getRentingVehicles()) {\r\n            throw new DealershipNotRentingException(\"Dealership \" + this.getDealerId() + \" is not currently providing rental services.\");\r\n        }\r\n\r\n        if (!rental.getRentalStatus()) {\r\n            throw new VehicleNotRentableException(\"Vehicle \" + rental.getVehicleId() + \" is not currently rentable.\");\r\n        }\r\n\r\n        if (this.isVehicleInInventory(rental,this.rentalInventory)) {\r\n            throw new VehicleAlreadyExistsException(\"Vehicle \" + rental.getVehicleId() + \" is already in the rental inventory.\");\r\n        }\r\n\r\n        this.rentalInventory.add(rental);\r\n    }\r\n\r\n\r\n\r\n\r\n    /**\r\n     * Retrieves Vehicle data for the Dealership.\r\n     * <p>\r\n     * This method generates a List of Maps, where each Map represents a Vehicle\r\n     * in the specified Dealership's inventory. Each Map contains key-value pairs\r\n     * representing the vehicle's attributes.\r\n     *\r\n     *@return {@link List} of {@link Map} Objects where each Map object holds a specific vehicle\r\n     *         and its data.(dealership ID, vehicle type, manufacturer, model,\r\n     *         vehicle ID, price, and acquisition date) as key-value pairs.\r\n     */\r\n    public List<Map<Key, Object>> getDataMap() {\r\n        List<Map<Key, Object>> list = new ArrayList<>();\r\n\r\n        List<Vehicle> fullInventory = new ArrayList<>(salesInventory);\r\n        fullInventory.addAll(rentalInventory);\r\n\r\n        for (Vehicle vehicle: fullInventory) {\r\n            Map<Key, Object> map = new HashMap<>();\r\n            Key.DEALERSHIP_ID.putNonNull(map, dealerId);\r\n            Key.DEALERSHIP_NAME.putNonNull(map, name);\r\n            Key.DEALERSHIP_RECEIVING_STATUS.putNonNull(map, receivingVehicle);\r\n            Key.DEALERSHIP_RENTING_STATUS.putNonNull(map, rentingVehicles);\r\n            vehicle.getDataMap(map);\r\n            list.add(map);\r\n        }\r\n        return list;\r\n    }\r\n\r\n    /**\r\n     * Removes a vehicle from the inventory. Returns true if vehicle is removed and false otherwise.\r\n     *\r\n     * @param targetVehicle The vehicle to remove. Cannot be null.\r\n     * @param inventory     The inventory from which to remove the vehicle.\r\n     * @return {@code true} if the vehicle was successfully removed, {@code false} otherwise.\r\n     * @throws IllegalArgumentException If the {@code targetVehicle} is null.\r\n     * @throws EmptyInventoryException  If the inventory is empty.\r\n     *\r\n     * @author Christopher Engelhart\r\n     */\r\n    public boolean tryRemoveVehicleFromInventory(Vehicle targetVehicle, ArrayList<Vehicle> inventory) throws IllegalArgumentException\r\n            ,EmptyInventoryException\r\n    {\r\n\r\n        if (targetVehicle == null) {\r\n            throw new IllegalArgumentException(\"target vehicle is null.\");\r\n        }\r\n\r\n        if (inventory.isEmpty())\r\n        {\r\n            throw new EmptyInventoryException(\"Inventory is already empty \" + \" Could not remove vehicle\" + targetVehicle.getVehicleId());\r\n        }\r\n\r\n        return inventory.remove(targetVehicle);\r\n\r\n    }\r\n\r\n    // used by toString()\r\n    private void listToStrBuilder(List<Vehicle> inventory, StringBuilder stringBuilder, String name) {\r\n        if (!inventory.isEmpty()) {\r\n            stringBuilder.append(name);\r\n            stringBuilder.append(\": \");\r\n            for (Vehicle vehicle : inventory) {\r\n                stringBuilder.append(\"\\n\\n\");\r\n                stringBuilder.append(vehicle.toString());\r\n            }\r\n        } else {\r\n            stringBuilder.append(name);\r\n            stringBuilder.append(\" does not currently have any inventory.\");\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Prints the inventory of Vehicles for the Dealership.\r\n     * <p>\r\n     * This method iterates through both the sales and rental inventory of vehicles in the Dealership.\r\n     * It prints the Dealership ID followed by the inventory of Vehicles\r\n     * separated by an empty line If a Dealership has no inventory,\r\n     * a message indicating this is printed.\r\n     */\r\n    public String toFullString() {\r\n        String sep = \"\\n---------------------------------------------\\n\";\r\n        StringBuilder stringBuilder = new StringBuilder(\"Dealership ID: \" + dealerId);\r\n        stringBuilder.append(\"\\n\");\r\n\r\n        stringBuilder.append(\"Dealership Name: \");\r\n        stringBuilder.append(Objects.requireNonNullElse(name, \"No name on file.\"));\r\n\r\n        stringBuilder.append(sep);\r\n        listToStrBuilder(salesInventory, stringBuilder, \"Sales\");\r\n\r\n        stringBuilder.append(sep);\r\n        listToStrBuilder(rentalInventory, stringBuilder, \"Rental\");\r\n\r\n        stringBuilder.append(sep);\r\n\r\n        return stringBuilder.toString();\r\n    }\r\n\r\n    public String toString() {\r\n        String str = \"Dealership ID: \" + dealerId;\r\n        str += \"\\nDealership Name: \" + Objects.requireNonNullElse(name, \"No name on file.\");\r\n        str += \"\\nSales Inventory Num: \" + salesInventory.size();\r\n        str += \"\\nRental Inventory Num: \" + rentalInventory.size();\r\n        return str;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/javafiles/domainfiles/Dealership.java b/DealershipICS/src/main/java/javafiles/domainfiles/Dealership.java
+--- a/DealershipICS/src/main/java/javafiles/domainfiles/Dealership.java	(revision e86ae6a4964454efcb7c5acef873193dc210ed04)
++++ b/DealershipICS/src/main/java/javafiles/domainfiles/Dealership.java	(date 1742723932007)
+@@ -209,9 +209,8 @@
+      * @author Christopher Engelhart
+      */
+     public void manualVehicleAdd(String vehicleId, String vehicleManufacturer, String vehicleModel, Long vehiclePrice,
+-                                 Long acquisitionDate, String vehicleType) throws InvalidVehicleTypeException,
++                                 Long acquisitionDate, String vehicleType, String priceUnit) throws InvalidVehicleTypeException,
+             VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, InvalidPriceException {
+-        // TODO: include price unit in function call (for fillVehicle)
+ 
+         // Ensure the vehicle price is positive.
+         if (vehiclePrice <= 0) {
+@@ -220,7 +219,7 @@
+ 
+         Vehicle newVehicle = vehicleFactory.createVehicle(vehicleType, vehicleId, vehicleModel, vehiclePrice);
+ 
+-        vehicleFactory.fillVehicle(newVehicle, vehicleManufacturer, acquisitionDate, null, null);
++        vehicleFactory.fillVehicle(newVehicle, vehicleManufacturer, acquisitionDate, priceUnit, null);
+ 
+         this.addIncomingVehicle(newVehicle);
+     }
+Index: DealershipICS/src/main/java/company/gui/FXMLPath.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\n/**\r\n * A utility class containing constants for FXML file paths used in the application.\r\n * This class centralizes FXML path definitions to improve maintainability and reduce redundancy.\r\n */\r\nenum FXMLPath {\r\n    MAIN_SCREEN (\"/MainScreen.fxml\", \"Main Menu\"),\r\n    INVENTORY_SCREEN (\"/InventoryScreen.fxml\", \"Inventory Management\"),\r\n    LOAD_INVENTORY (\"/LoadInventory.fxml\", \"Load Inventory\"),\r\n    PROFILE_MANAGEMENT (\"/ProfileManagement.fxml\", \"Profile Management\"),\r\n    ADD_INVENTORY (\"/AddInventory.fxml\", \"Add Inventory\"),\r\n    ADD_FROM_FILE (\"/AddFromFile.fxml\",\"Load From File\");\r\n    // Add other FXML paths as needed\r\n\r\n    private final String PATH;\r\n    private final String SCREEN_TITLE;\r\n    \r\n    FXMLPath(String path, String screenTitle) {\r\n        PATH = path;\r\n        SCREEN_TITLE = screenTitle;\r\n    }\r\n\r\n    public String getPath() {return PATH;}\r\n    public String getScreenTitle() {return SCREEN_TITLE;}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/FXMLPath.java b/DealershipICS/src/main/java/company/gui/FXMLPath.java
+--- a/DealershipICS/src/main/java/company/gui/FXMLPath.java	(revision e86ae6a4964454efcb7c5acef873193dc210ed04)
++++ b/DealershipICS/src/main/java/company/gui/FXMLPath.java	(date 1742712120790)
+@@ -10,7 +10,8 @@
+     LOAD_INVENTORY ("/LoadInventory.fxml", "Load Inventory"),
+     PROFILE_MANAGEMENT ("/ProfileManagement.fxml", "Profile Management"),
+     ADD_INVENTORY ("/AddInventory.fxml", "Add Inventory"),
+-    ADD_FROM_FILE ("/AddFromFile.fxml","Load From File");
++    ADD_FROM_FILE ("/AddFromFile.fxml","Load From File"),
++    VEHICLE_ENTRY ("/VehicleEntry.fxml", "Add Inventory Manually");
+     // Add other FXML paths as needed
+ 
+     private final String PATH;

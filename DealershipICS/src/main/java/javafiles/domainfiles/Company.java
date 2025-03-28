@@ -120,7 +120,8 @@ public class Company {
         }
 
         // Remove from the source inventory and add vehicle to opposite inventory
-        if (dealership.getSaleVehicles().contains(vehicle)) {
+        if (dealership.getSaleVehicles().contains(vehicle))
+        {
             dealership.getSaleVehicles().remove(vehicle);
             dealership.getRentalVehicles().add(vehicle);
         } else {

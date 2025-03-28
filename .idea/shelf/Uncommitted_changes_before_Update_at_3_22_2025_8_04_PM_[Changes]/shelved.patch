@@ -1,0 +1,217 @@
+Index: DealershipICS/src/main/java/company/gui/DealershipApp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\n\r\nimport javafx.application.Application;\r\nimport javafx.stage.Stage;\r\n\r\nimport static company.gui.FXMLPaths.*;\r\n\r\nimport javafiles.domainfiles.Company;\r\n\r\npublic class DealershipApp extends Application {\r\n\r\n    @Override\r\n    public void start(Stage primaryStage) throws Exception {\r\n       SceneManager sceneManger = SceneManager.getInstance(primaryStage);\r\n       sceneManger.switchScene(MAIN_SCREEN);\r\n       primaryStage.show();\r\n    }\r\n\r\n\r\n    private static void loadInitialFiles(Company company) {\r\n        // TODO: Create method to load saved data on application start\r\n        // File found: Read masterInventoryFile.json → call Company.dataToInventory()\r\n        // Not found: Create masterInventoryFile.json\r\n        \r\n        // Create class boolean initialLaunch = true\r\n        // Set to false when loadInitialFiles is called  \r\n\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        launch(args);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/DealershipApp.java b/DealershipICS/src/main/java/company/gui/DealershipApp.java
+--- a/DealershipICS/src/main/java/company/gui/DealershipApp.java	(revision ea01b79a949574d588a974735e4dfaeedd0959da)
++++ b/DealershipICS/src/main/java/company/gui/DealershipApp.java	(date 1742638048219)
+@@ -1,6 +1,10 @@
+ package company.gui;
+ 
+ 
++import javafiles.customexceptions.ReadWriteException;
++import javafiles.dataaccessfiles.FileIO;
++import javafiles.dataaccessfiles.FileIOBuilder;
++import javafiles.domainfiles.Dealership;
+ import javafx.application.Application;
+ import javafx.stage.Stage;
+ 
+@@ -10,11 +14,23 @@
+ 
+ public class DealershipApp extends Application {
+ 
++   public static Company testComp = new Company();
++
+     @Override
+     public void start(Stage primaryStage) throws Exception {
+-       SceneManager sceneManger = SceneManager.getInstance(primaryStage);
+-       sceneManger.switchScene(MAIN_SCREEN);
+-       primaryStage.show();
++        //Company testComp = new Company();
++        Dealership d1 = new Dealership("123", "Test");
++        testComp.addDealership(d1);
++        d1.manualVehicleAdd("aa","Toyota","Prius",5000L,1515354694451L,"sedan");
++        d1.manualVehicleAdd("bb","Toyota","Camry",5000L,1515354694451L,"sedan");
++        d1.manualVehicleAdd("cc","Toyota","Corolla",5000L,1515354694451L,"sedan");
++
++
++
++
++        SceneManager sceneManger = SceneManager.getInstance(primaryStage);
++        sceneManger.switchScene(MAIN_SCREEN);
++        primaryStage.show();
+     }
+ 
+ 
+Index: DealershipICS/src/main/java/company/gui/GuiUtility.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\n\r\nimport javafx.geometry.Rectangle2D;\r\nimport javafx.stage.Screen;\r\nimport javafx.stage.Stage;\r\n\r\n\r\n/**\r\n * A utility class that contains commonly used functions for managing GUI elements,\r\n * such as navigating between screens and setting the window size.\r\n */\r\npublic class GuiUtility {\r\n\r\n    /**\r\n     * Helper method to get the screen title based on the FXML path.\r\n     * @param fxmlPath The FXML path to determine the screen title.\r\n     * @return The screen title corresponding to the given FXML path.\r\n     */\r\n    public static String getScreenTitle(String fxmlPath) {\r\n        switch (fxmlPath) {\r\n            case FXMLPaths.MAIN_SCREEN:\r\n                return \"Main Menu\";\r\n            case FXMLPaths.INVENTORY_SCREEN:\r\n                return \"Inventory Management\";\r\n            case FXMLPaths.LOAD_INVENTORY:\r\n                return \"Load Inventory\";\r\n            case FXMLPaths.PROFILE_MANAGEMENT:\r\n                return \"Profile Management\";\r\n            case FXMLPaths.ADD_INVENTORY:\r\n                return \"Add Inventory\";\r\n            default:\r\n                return \"Unknown Screen\";\r\n        }\r\n    }\r\n\r\n\r\n\r\n\r\n    /**\r\n     * Sets the size of the stage and ensures the size is retained across scene changes.\r\n     * This method calculates the window size as a percentage of the screen size, and\r\n     * allows you to keep that size even after scene transitions.\r\n     *\r\n     * @param stage The stage whose size is to be set.\r\n     * @param widthPercentage The percentage of the screen width to be used for the stage's width.\r\n     * @param heightPercentage The percentage of the screen height to be used for the stage's height.\r\n     */\r\n    public static void setScreenSize(Stage stage, double widthPercentage, double heightPercentage) {\r\n        // Get screen bounds\r\n        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();\r\n        double screenWidth = screenBounds.getWidth();\r\n        double screenHeight = screenBounds.getHeight();\r\n\r\n        // Calculate the size based on the given percentage\r\n        double stageWidth = screenWidth * widthPercentage;\r\n        double stageHeight = screenHeight * heightPercentage;\r\n\r\n        // Set the stage size\r\n        stage.setWidth(stageWidth);\r\n        stage.setHeight(stageHeight);\r\n\r\n        //set minimum size to 50% of the screen size or any other desired value\r\n        stage.setMinWidth(screenWidth * 0.5);\r\n        stage.setMinHeight(screenHeight * 0.5);\r\n    }\r\n\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/GuiUtility.java b/DealershipICS/src/main/java/company/gui/GuiUtility.java
+--- a/DealershipICS/src/main/java/company/gui/GuiUtility.java	(revision ea01b79a949574d588a974735e4dfaeedd0959da)
++++ b/DealershipICS/src/main/java/company/gui/GuiUtility.java	(date 1742686520255)
+@@ -1,9 +1,15 @@
+ package company.gui;
+ 
+ 
++import javafiles.dataaccessfiles.Key;
+ import javafx.geometry.Rectangle2D;
+ import javafx.stage.Screen;
+ import javafx.stage.Stage;
++import javax.swing.*;
++import javax.swing.table.DefaultTableModel;
++import java.util.List;
++import java.util.Map;
++
+ 
+ 
+ /**
+@@ -14,6 +20,7 @@
+ 
+     /**
+      * Helper method to get the screen title based on the FXML path.
++     *
+      * @param fxmlPath The FXML path to determine the screen title.
+      * @return The screen title corresponding to the given FXML path.
+      */
+@@ -35,15 +42,13 @@
+     }
+ 
+ 
+-
+-
+     /**
+      * Sets the size of the stage and ensures the size is retained across scene changes.
+      * This method calculates the window size as a percentage of the screen size, and
+      * allows you to keep that size even after scene transitions.
+      *
+-     * @param stage The stage whose size is to be set.
+-     * @param widthPercentage The percentage of the screen width to be used for the stage's width.
++     * @param stage            The stage whose size is to be set.
++     * @param widthPercentage  The percentage of the screen width to be used for the stage's width.
+      * @param heightPercentage The percentage of the screen height to be used for the stage's height.
+      */
+     public static void setScreenSize(Stage stage, double widthPercentage, double heightPercentage) {
+@@ -66,5 +71,35 @@
+     }
+ 
+ 
++    /**
++     * Creates a JTable from a List of Maps.
++     *
++     * @param data The List of Maps containing vehicle data.
++     * @return A JTable displaying the vehicle data, or null if the input list is null or empty.
++     */
++    public static JTable createTableFromMapList (List <Map<Key,Object>> data){
++        if (data == null || data.isEmpty()) {
++                return null;
++        }
++
++        // Use Key enum values for column names (maintains order)
++        Key[] keys = Key.values();
++        String[] columnNames = new String[keys.length];
++        for (int i = 0; i < keys.length; i++) {
++            columnNames[i] = keys[i].getKey();
++        }
+ 
+-}
++        // Prepare table data
++        Object[][] tableData = new Object[data.size()][columnNames.length];
++        for (int i = 0; i < data.size(); i++) {
++            Map<Key, Object> rowMap = data.get(i);
++            for (int j = 0; j < keys.length; j++) {
++                tableData[i][j] = rowMap.get(keys[j]);
++                }
++            }
++
++            // Create the JTable
++            DefaultTableModel model = new DefaultTableModel(tableData, columnNames);
++            return new JTable(model);
++        }
++    }
+Index: DealershipICS/src/main/resources/InventoryScreen.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<?import javafx.geometry.Insets?>\r\n<?import javafx.scene.control.Button?>\r\n<?import javafx.scene.layout.GridPane?>\r\n<?import javafx.scene.layout.ColumnConstraints?>\r\n<?import javafx.scene.layout.RowConstraints?>\r\n\r\n<GridPane xmlns=\"http://javafx.com/javafx\"\r\n          xmlns:fx=\"http://javafx.com/fxml\"\r\n          fx:controller=\"company.gui.InventoryScreenController\"\r\n          alignment=\"CENTER\" hgap=\"10\" vgap=\"10\"\r\n          GridPane.fillWidth=\"true\" GridPane.fillHeight=\"true\">\r\n    <padding>\r\n        <Insets topRightBottomLeft=\"20\"/>\r\n    </padding>\r\n\r\n    <columnConstraints>\r\n        <ColumnConstraints hgrow=\"ALWAYS\" halignment=\"CENTER\" />\r\n        <ColumnConstraints hgrow=\"ALWAYS\" halignment=\"CENTER\" />\r\n    </columnConstraints>\r\n\r\n    <rowConstraints>\r\n        <RowConstraints vgrow=\"ALWAYS\" />\r\n        <RowConstraints vgrow=\"ALWAYS\" />\r\n        <RowConstraints vgrow=\"ALWAYS\" />\r\n        <RowConstraints vgrow=\"ALWAYS\" />\r\n    </rowConstraints>\r\n\r\n    <Button text=\"Back\" onAction=\"#handleBack\"\r\n            GridPane.columnIndex=\"0\" GridPane.rowIndex=\"0\"\r\n            GridPane.halignment=\"LEFT\" GridPane.valignment=\"TOP\"/>\r\n\r\n    <Button text=\"Add Vehicle to Dealership\" fx:id=\"btnAddVehicle\"\r\n            onAction=\"#handleAddVehicleToDealership\"\r\n            GridPane.columnIndex=\"0\" GridPane.rowIndex=\"1\"\r\n            GridPane.halignment=\"CENTER\" GridPane.valignment=\"CENTER\"/>\r\n\r\n    <Button text=\"Remove Vehicle from Dealership\" fx:id=\"btnRemoveVehicle\"\r\n            onAction=\"#handleRemoveVehicleFromDealership\"\r\n            GridPane.columnIndex=\"0\" GridPane.rowIndex=\"2\"\r\n            GridPane.halignment=\"CENTER\" GridPane.valignment=\"CENTER\"/>\r\n\r\n    <Button text=\"Transfer Vehicle Between Dealerships\" fx:id=\"btnTransferVehicle\"\r\n            onAction=\"#handleTransferVehicleBetweenDealerships\"\r\n            GridPane.columnIndex=\"0\" GridPane.rowIndex=\"3\"\r\n            GridPane.halignment=\"CENTER\" GridPane.valignment=\"CENTER\"/>\r\n\r\n    <Button text=\"Enable Vehicle Rental\" fx:id=\"btnEnableRental\"\r\n            onAction=\"#handleEnableVehicleRental\"\r\n            GridPane.columnIndex=\"1\" GridPane.rowIndex=\"1\"\r\n            GridPane.halignment=\"CENTER\" GridPane.valignment=\"CENTER\"/>\r\n\r\n    <Button text=\"Disable Vehicle Rental\" fx:id=\"btnDisableRental\"\r\n            onAction=\"#handleDisableVehicleRental\"\r\n            GridPane.columnIndex=\"1\" GridPane.rowIndex=\"2\"\r\n            GridPane.halignment=\"CENTER\" GridPane.valignment=\"CENTER\"/>\r\n\r\n</GridPane>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/resources/InventoryScreen.fxml b/DealershipICS/src/main/resources/InventoryScreen.fxml
+--- a/DealershipICS/src/main/resources/InventoryScreen.fxml	(revision ea01b79a949574d588a974735e4dfaeedd0959da)
++++ b/DealershipICS/src/main/resources/InventoryScreen.fxml	(date 1742635546943)
+@@ -56,4 +56,9 @@
+             GridPane.columnIndex="1" GridPane.rowIndex="2"
+             GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+ 
++    <Button text="View Company Inventory" fx:id="btnViewInventory"
++            onAction="#handleViewCompanyInventory"
++            GridPane.columnIndex="1" GridPane.rowIndex="3"
++            GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
++
+ </GridPane>
+\ No newline at end of file
+Index: DealershipICS/src/main/java/company/gui/InventoryScreenController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\nimport javafx.fxml.FXML;\r\nimport javafx.event.ActionEvent;\r\nimport java.io.IOException;\r\nimport static company.gui.FXMLPaths.*;\r\n\r\n\r\n/**\r\n * Controller for the inventory management screen.\r\n * Handles actions related to vehicle inventory.\r\n */\r\npublic class InventoryScreenController\r\n{\r\n\r\n\r\n    @FXML\r\n    private void handleBack(ActionEvent event) throws IOException\r\n        {\r\n            SceneManager sceneManager = SceneManager.getInstance(null);\r\n            sceneManager.switchScene(MAIN_SCREEN);\r\n\r\n        }\r\n\r\n    @FXML\r\n    private void handleAddVehicleToDealership(ActionEvent event) throws IOException {\r\n        SceneManager sceneManager = SceneManager.getInstance(null);\r\n        sceneManager.switchScene(ADD_INVENTORY);\r\n\r\n\r\n    }\r\n\r\n    @FXML\r\n    private void handleRemoveVehicleFromDealership() {\r\n        System.out.println(\"Remove vehicle clicked\");\r\n    }\r\n\r\n    @FXML\r\n    private void handleTransferVehicleBetweenDealerships() {\r\n        System.out.println(\"Transfer vehicle clicked\");\r\n    }\r\n\r\n    @FXML\r\n    private void handleEnableVehicleRental() {\r\n        System.out.println(\"Enable rental clicked\");\r\n    }\r\n\r\n    @FXML\r\n    private void handleDisableVehicleRental() {\r\n        System.out.println(\"Disable rental clicked\");\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/InventoryScreenController.java b/DealershipICS/src/main/java/company/gui/InventoryScreenController.java
+--- a/DealershipICS/src/main/java/company/gui/InventoryScreenController.java	(revision ea01b79a949574d588a974735e4dfaeedd0959da)
++++ b/DealershipICS/src/main/java/company/gui/InventoryScreenController.java	(date 1742638208246)
+@@ -1,8 +1,15 @@
+ package company.gui;
+ 
++import javafiles.dataaccessfiles.Key;
+ import javafx.fxml.FXML;
+ import javafx.event.ActionEvent;
++
++import javax.swing.*;
+ import java.io.IOException;
++import java.util.List;
++import java.util.Map;
++
++import static company.gui.DealershipApp.testComp;
+ import static company.gui.FXMLPaths.*;
+ 
+ 
+@@ -49,4 +56,30 @@
+     private void handleDisableVehicleRental() {
+         System.out.println("Disable rental clicked");
+     }
+-}
+\ No newline at end of file
++
++    @FXML
++    private void handleViewCompanyInventory()
++    {
++        List<Map<Key, Object>> vehicleData = testComp.getDataMap();
++
++        JTable vehicleTable = GuiUtility.createTableFromMapList(vehicleData);
++
++        if (vehicleTable != null) {
++            JFrame inventoryFrame = new JFrame("Vehicle Inventory");
++            inventoryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the inventory frame
++
++            JScrollPane scrollPane = new JScrollPane(vehicleTable);
++            inventoryFrame.getContentPane().add(scrollPane);
++
++            inventoryFrame.pack();
++            inventoryFrame.setVisible(true);
++
++        } else {
++            JOptionPane.showMessageDialog(null, "No vehicle data available.");
++        }
++    }
++
++    }
++
++
++

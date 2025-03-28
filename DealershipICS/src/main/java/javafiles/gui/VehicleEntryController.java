@@ -106,7 +106,7 @@ public class VehicleEntryController implements Initializable {
         {
         // Get input values, handling empty strings for optional fields
         String dealerId = dealershipComboBox.getValue();
-        String vehicleId = vehicleIdField.getText();
+        String vehicleId = vehicleIdField.getText().trim().replaceAll("\\s+", "");
         String vehicleManufacturer = vehicleManufacturerField.getText().isEmpty() ? null : vehicleManufacturerField.getText();
         String vehicleModel = vehicleModelField.getText();
         String vehicleType = vehicleTypeField.getText();
@@ -120,6 +120,7 @@ public class VehicleEntryController implements Initializable {
             if (dealerId == null) {
                 throw new DealershipNotSelectedException("No dealership has been selected yet");
             }
+
 
             // Call AppStateManager to add the vehicle
             AppStateManager.manualVehicleAdd(dealerId, vehicleId, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);

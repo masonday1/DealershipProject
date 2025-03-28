@@ -109,11 +109,10 @@ public class Dealership {
      * @author Christopher Engelhart
      */
     private boolean isVehicleInInventory(Vehicle newVehicle, List<Vehicle> inventory) {
-
-        for (Vehicle vehicle : inventory)
-        {
-            if (vehicle.getVehicleId().equals(newVehicle.getVehicleId()))
-            {
+        String newVehicleId = newVehicle.getVehicleId().trim().replaceAll("\\s+", "");
+        for (Vehicle vehicle : inventory) {
+            String existingVehicleId = vehicle.getVehicleId().trim().replaceAll("\\s+", "");
+            if (existingVehicleId.equalsIgnoreCase(newVehicleId)) {
                 return true;
             }
         }

@@ -1,0 +1,226 @@
+Index: DealershipICS/src/main/java/company/gui/VehicleRentalController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\nimport javafiles.customexceptions.*;\r\n\r\nimport javafx.collections.FXCollections;\r\nimport javafx.collections.ObservableList;\r\n\r\nimport javafx.event.ActionEvent;\r\nimport javafx.fxml.FXML;\r\nimport javafx.scene.control.*;\r\nimport javafx.scene.control.cell.PropertyValueFactory;\r\n\r\nimport javafiles.domainfiles.Dealership;\r\nimport javafiles.domainfiles.Vehicle;\r\nimport java.io.IOException;\r\n\r\nimport java.util.List;\r\n\r\n\r\nimport static company.gui.FXMLPath.INVENTORY_SCREEN;\r\n\r\n\r\n/**\r\n * Controller for the Vehicle Rental screen, handling vehicle rental operations.\r\n */\r\npublic class VehicleRentalController {\r\n\r\n    @FXML\r\n    private ComboBox<String> dealershipComboBox;\r\n\r\n    @FXML\r\n    private TableView<Vehicle> vehicleTable;\r\n\r\n    @FXML\r\n    private TableColumn<Vehicle, String> vehicleIdColumn;\r\n\r\n    @FXML\r\n    private TableColumn<Vehicle, Long> vehicleTypeColumn;\r\n\r\n    @FXML\r\n    private TableColumn<Vehicle, String> vehicleManufacturerColumn;\r\n\r\n    @FXML\r\n    private TableColumn<Vehicle, String> vehicleModelColumn;\r\n\r\n    @FXML\r\n    private TableColumn<Vehicle, Boolean> rentalColumn;\r\n\r\n    @FXML\r\n    private TableColumn<Vehicle, Long> acquisitionDateColumn;\r\n\r\n    private Vehicle selectedVehicle;\r\n\r\n    /**\r\n     * Initializes the controller, setting up the combo box and table.\r\n     */\r\n    @FXML\r\n    public void initialize() {\r\n        // Populate the combo box with dealerships that have renting enabled\r\n        List<String> rentingEnabledDealershipIDs = AppStateManager.getRentingEnabledDealershipIDs();\r\n        dealershipComboBox.setItems(FXCollections.observableArrayList(rentingEnabledDealershipIDs));\r\n\r\n        // Set up the table columns\r\n        vehicleIdColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleId\"));\r\n        vehicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleType\"));\r\n        rentalColumn.setCellValueFactory(new PropertyValueFactory<>(\"rentalStatus\"));\r\n        vehicleModelColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleModel\"));\r\n        vehicleManufacturerColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleManufacturer\"));\r\n        acquisitionDateColumn.setCellValueFactory(new PropertyValueFactory<>(\"formattedAcquisitionDate\"));\r\n\r\n        // Add a listener to the selected item in the table\r\n        vehicleTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {\r\n            if (newValue != null) {\r\n                selectedVehicle = newValue;\r\n            }\r\n        });\r\n\r\n        //Add a listener to the combo box to update the table when a new dealership is selected.\r\n        dealershipComboBox.setOnAction(this::handleDealershipSelection);\r\n    }\r\n\r\n    /**\r\n     * Handles the \"Back\" button action, switching to the main screen.\r\n     *\r\n     * @param event The action event.\r\n     * @throws IOException If an I/O error occurs.\r\n     */\r\n    @FXML\r\n    private void handleBack(ActionEvent event) throws IOException {\r\n        SceneManager sceneManager = SceneManager.getInstance(null);\r\n        sceneManager.switchScene(INVENTORY_SCREEN);\r\n    }\r\n\r\n    /**\r\n     * Handles the \"Change Rental\" button action, toggling the rental status of the selected vehicle.\r\n     *\r\n     * @param event The action event.\r\n     */\r\n    @FXML\r\n    private void handleChangeRental(ActionEvent event) throws VehicleAlreadyExistsException, DealershipNotRentingException,\r\n            VehicleNotRentableException, DealershipNotAcceptingVehiclesException, EmptyInventoryException {\r\n        String selectedDealershipId = dealershipComboBox.getValue();\r\n        if (selectedDealershipId == null) {\r\n            showAlert(\"Please select a dealership.\");\r\n            return;\r\n        }\r\n\r\n        if (selectedVehicle == null) {\r\n            showAlert(\"Please select a vehicle.\");\r\n            return;\r\n        }\r\n\r\n        Dealership dealership = AppStateManager.findADealership(selectedDealershipId);\r\n        if (dealership == null) {\r\n            showAlert(\"Dealership not found.\");\r\n            return;\r\n        }\r\n\r\n        //selectedVehicle.setRentable(!selectedVehicle.isRentable());\r\n        vehicleTable.refresh();\r\n\r\n        // Update the vehicle in the dealership's inventory\r\n        try {\r\n            AppStateManager.updateDealershipVehicleRentalState(selectedDealershipId, selectedVehicle);\r\n        } catch (VehicleAlreadyExistsException | DealershipNotRentingException | VehicleNotRentableException |\r\n                 DealershipNotAcceptingVehiclesException e) {\r\n            showAlert(e.getMessage());\r\n        }\r\n\r\n    }\r\n\r\n    /**\r\n     * Displays an alert dialog with the given message.\r\n     *\r\n     * @param message The message to display in the alert.\r\n     */\r\n    private void showAlert(String message) {\r\n        Alert alert = new Alert(Alert.AlertType.INFORMATION);\r\n        alert.setTitle(\"Information\");\r\n        alert.setHeaderText(null);\r\n        alert.setContentText(message);\r\n        alert.showAndWait();\r\n    }\r\n\r\n    /**\r\n     * Handles the dealership selection event, updating the vehicle table with the selected dealership's vehicles.\r\n     *\r\n     * @param event The action event.\r\n     */\r\n    @FXML\r\n    private void handleDealershipSelection(ActionEvent event) {\r\n      String selectedDealershipId = dealershipComboBox.getValue();\r\n        if (selectedDealershipId != null) {\r\n            Dealership dealership = AppStateManager.findADealership(selectedDealershipId);\r\n            if (dealership != null) {\r\n                ObservableList<Vehicle> vehicleData = FXCollections.observableArrayList(AppStateManager.getDealershipCompleteInventory(selectedDealershipId));\r\n                vehicleTable.setItems(vehicleData);\r\n            }\r\n        }\r\n    }\r\n\r\n\r\n    // Inner class to represent a row in the table\r\n    public static class VehicleRow {\r\n        private String vehicleID;\r\n        private String vehicleType;\r\n        private Boolean rental;\r\n        private String vehicleModel;\r\n        private String vehicleManufacturer;\r\n\r\n        public VehicleRow(String vehicleID, String vehicleType, Boolean rental, String vehicleModel, String vehicleManufacturer)\r\n        {\r\n            this.vehicleID = vehicleID;\r\n            this.vehicleType = vehicleType;\r\n            this.rental = rental;\r\n            this.vehicleModel = vehicleModel;\r\n            this.vehicleManufacturer = vehicleManufacturer;\r\n        }\r\n\r\n        public String getVehicleID(){return vehicleID;}\r\n        public Boolean getRental(){return rental;}\r\n        public void setRental(Boolean rentalStatus){this.rental = rentalStatus;}\r\n\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/VehicleRentalController.java b/DealershipICS/src/main/java/company/gui/VehicleRentalController.java
+--- a/DealershipICS/src/main/java/company/gui/VehicleRentalController.java	(revision 1d9d942b5e09940302b2db05e0a3f4c9c6f881ac)
++++ b/DealershipICS/src/main/java/company/gui/VehicleRentalController.java	(date 1742944317601)
+@@ -158,29 +158,4 @@
+             }
+         }
+     }
+-
+-
+-    // Inner class to represent a row in the table
+-    public static class VehicleRow {
+-        private String vehicleID;
+-        private String vehicleType;
+-        private Boolean rental;
+-        private String vehicleModel;
+-        private String vehicleManufacturer;
+-
+-        public VehicleRow(String vehicleID, String vehicleType, Boolean rental, String vehicleModel, String vehicleManufacturer)
+-        {
+-            this.vehicleID = vehicleID;
+-            this.vehicleType = vehicleType;
+-            this.rental = rental;
+-            this.vehicleModel = vehicleModel;
+-            this.vehicleManufacturer = vehicleManufacturer;
+-        }
+-
+-        public String getVehicleID(){return vehicleID;}
+-        public Boolean getRental(){return rental;}
+-        public void setRental(Boolean rentalStatus){this.rental = rentalStatus;}
+-
+-    }
+-
+ }
+\ No newline at end of file
+Index: DealershipICS/src/main/java/company/gui/VehicleTransferController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/VehicleTransferController.java b/DealershipICS/src/main/java/company/gui/VehicleTransferController.java
+new file mode 100644
+--- /dev/null	(date 1742943376290)
++++ b/DealershipICS/src/main/java/company/gui/VehicleTransferController.java	(date 1742943376290)
+@@ -0,0 +1,4 @@
++package company.gui;
++
++public class VehicleTransferController {
++}
+Index: DealershipICS/src/main/java/company/gui/ViewInventoryController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package company.gui;\r\n\r\nimport javafx.event.ActionEvent;\r\nimport javafx.fxml.FXML;\r\nimport javafx.scene.control.TableColumn;\r\nimport javafx.scene.control.TableView;\r\nimport javafx.scene.control.cell.PropertyValueFactory;\r\nimport javafx.collections.FXCollections;\r\nimport javafx.collections.ObservableList;\r\n\r\nimport java.io.IOException;\r\nimport java.time.LocalDate;\r\n\r\nimport static company.gui.FXMLPath.INVENTORY_SCREEN;\r\n\r\n/**\r\n * Controller class for the View Inventory screen.\r\n * Handles the display of vehicle inventory in a TableView.\r\n */\r\npublic class ViewInventoryController {\r\n\r\n    @FXML\r\n    private TableView<javafiles.domainfiles.Vehicle> tableView;\r\n\r\n    @FXML\r\n    private TableColumn<Vehicle, Integer> vehicleIdColumn;\r\n    @FXML\r\n    private TableColumn<Vehicle, Boolean> rentalColumn;\r\n    @FXML\r\n    private TableColumn<Vehicle, String> vehicleTypeColumn;\r\n    @FXML\r\n    private TableColumn<Vehicle, String> vehicleManufacturerColumn;\r\n    @FXML\r\n    private TableColumn<Vehicle, String> vehicleModelColumn;\r\n    @FXML\r\n    private TableColumn<Vehicle, Long> vehiclePriceColumn;\r\n    @FXML\r\n    private TableColumn<Vehicle, String> priceUnitColumn;\r\n    @FXML\r\n    private TableColumn<Vehicle, Long > acquisitionDateColumn;\r\n\r\n    /**\r\n     * Initializes the controller. Sets up the TableView columns and loads vehicle data.\r\n     */\r\n    @FXML\r\n    public void initialize() {\r\n        // Initialize the table columns with PropertyValueFactory\r\n        vehicleIdColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleId\"));\r\n        rentalColumn.setCellValueFactory(new PropertyValueFactory<>(\"rentalStatus\"));\r\n        vehicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleType\"));\r\n        vehicleManufacturerColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleManufacturer\"));\r\n        vehicleModelColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehicleModel\"));\r\n        vehiclePriceColumn.setCellValueFactory(new PropertyValueFactory<>(\"vehiclePrice\"));\r\n        priceUnitColumn.setCellValueFactory(new PropertyValueFactory<>(\"priceUnit\"));\r\n        acquisitionDateColumn.setCellValueFactory(new PropertyValueFactory<>(\"formattedAcquisitionDate\"));\r\n\r\n        // Load data into the table\r\n        loadVehicleData();\r\n    }\r\n\r\n    /**\r\n     * Loads the vehicle data from AppStateManager and populates the TableView.\r\n     */\r\n    private void loadVehicleData() {\r\n        ObservableList<javafiles.domainfiles.Vehicle> vehicleList = FXCollections.observableArrayList(AppStateManager.getListCompanyVehicles());\r\n        tableView.setItems(vehicleList);\r\n    }\r\n\r\n    /**\r\n     * Handles the \"Back\" button click event. Switches the scene to the inventory screen.\r\n     *\r\n     * @param event The ActionEvent triggered by the button click.\r\n     * @throws IOException If an I/O error occurs during scene switching.\r\n     */\r\n    @FXML\r\n    public void handleBack(ActionEvent event) throws IOException {\r\n        SceneManager sceneManager = SceneManager.getInstance(null);\r\n        sceneManager.switchScene(INVENTORY_SCREEN);\r\n    }\r\n\r\n    /**\r\n     * Inner static class representing a Vehicle.\r\n     * This class is used to hold the data for each vehicle displayed in the TableView.\r\n     */\r\n    public static class Vehicle {\r\n        private int vehicleId;\r\n        private boolean rentable;\r\n        private String type;\r\n        private String manufacturer;\r\n        private String model;\r\n        private double price;\r\n        private String priceUnit;\r\n        private LocalDate acquisitionDate;\r\n\r\n        /**\r\n         * Constructs a new Vehicle object.\r\n         *\r\n         * @param vehicleId       The vehicle's ID.\r\n         * @param rentable        Indicates if the vehicle is rentable.\r\n         * @param type            The vehicle type.\r\n         * @param manufacturer    The vehicle manufacturer.\r\n         * @param model           The vehicle model.\r\n         * @param price           The vehicle price.\r\n         * @param priceUnit       The price unit.\r\n         * @param acquisitionDate The acquisition date.\r\n         */\r\n        public Vehicle(int vehicleId, boolean rentable, String type, String manufacturer, String model, double price, String priceUnit, LocalDate acquisitionDate) {\r\n            this.vehicleId = vehicleId;\r\n            this.rentable = rentable;\r\n            this.type = type;\r\n            this.manufacturer = manufacturer;\r\n            this.model = model;\r\n            this.price = price;\r\n            this.priceUnit = priceUnit;\r\n            this.acquisitionDate = acquisitionDate;\r\n        }\r\n\r\n        // Getters and setters for all fields\r\n        public int getVehicleId() { return vehicleId; }\r\n        public void setVehicleId(int vehicleId) { this.vehicleId = vehicleId; }\r\n\r\n        public boolean isRentable() { return rentable; }\r\n        public void setRentable(boolean rentable) { this.rentable = rentable; }\r\n\r\n        public String getType() { return type; }\r\n        public void setType(String type) { this.type = type; }\r\n\r\n        public String getManufacturer() { return manufacturer; }\r\n        public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }\r\n\r\n        public String getModel() { return model; }\r\n        public void setModel(String model) { this.model = model; }\r\n\r\n        public double getPrice() { return price; }\r\n        public void setPrice(double price) { this.price = price; }\r\n\r\n        public String getPriceUnit() { return priceUnit; }\r\n        public void setPriceUnit(String priceUnit) { this.priceUnit = priceUnit; }\r\n\r\n        public LocalDate getAcquisitionDate() { return acquisitionDate; }\r\n        public void setAcquisitionDate(LocalDate acquisitionDate) { this.acquisitionDate = acquisitionDate; }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/java/company/gui/ViewInventoryController.java b/DealershipICS/src/main/java/company/gui/ViewInventoryController.java
+--- a/DealershipICS/src/main/java/company/gui/ViewInventoryController.java	(revision 1d9d942b5e09940302b2db05e0a3f4c9c6f881ac)
++++ b/DealershipICS/src/main/java/company/gui/ViewInventoryController.java	(date 1742944413313)
+@@ -1,5 +1,6 @@
+ package company.gui;
+ 
++import javafiles.domainfiles.Vehicle;
+ import javafx.event.ActionEvent;
+ import javafx.fxml.FXML;
+ import javafx.scene.control.TableColumn;
+@@ -9,7 +10,7 @@
+ import javafx.collections.ObservableList;
+ 
+ import java.io.IOException;
+-import java.time.LocalDate;
++
+ 
+ import static company.gui.FXMLPath.INVENTORY_SCREEN;
+ 
+@@ -77,67 +78,4 @@
+         SceneManager sceneManager = SceneManager.getInstance(null);
+         sceneManager.switchScene(INVENTORY_SCREEN);
+     }
+-
+-    /**
+-     * Inner static class representing a Vehicle.
+-     * This class is used to hold the data for each vehicle displayed in the TableView.
+-     */
+-    public static class Vehicle {
+-        private int vehicleId;
+-        private boolean rentable;
+-        private String type;
+-        private String manufacturer;
+-        private String model;
+-        private double price;
+-        private String priceUnit;
+-        private LocalDate acquisitionDate;
+-
+-        /**
+-         * Constructs a new Vehicle object.
+-         *
+-         * @param vehicleId       The vehicle's ID.
+-         * @param rentable        Indicates if the vehicle is rentable.
+-         * @param type            The vehicle type.
+-         * @param manufacturer    The vehicle manufacturer.
+-         * @param model           The vehicle model.
+-         * @param price           The vehicle price.
+-         * @param priceUnit       The price unit.
+-         * @param acquisitionDate The acquisition date.
+-         */
+-        public Vehicle(int vehicleId, boolean rentable, String type, String manufacturer, String model, double price, String priceUnit, LocalDate acquisitionDate) {
+-            this.vehicleId = vehicleId;
+-            this.rentable = rentable;
+-            this.type = type;
+-            this.manufacturer = manufacturer;
+-            this.model = model;
+-            this.price = price;
+-            this.priceUnit = priceUnit;
+-            this.acquisitionDate = acquisitionDate;
+-        }
+-
+-        // Getters and setters for all fields
+-        public int getVehicleId() { return vehicleId; }
+-        public void setVehicleId(int vehicleId) { this.vehicleId = vehicleId; }
+-
+-        public boolean isRentable() { return rentable; }
+-        public void setRentable(boolean rentable) { this.rentable = rentable; }
+-
+-        public String getType() { return type; }
+-        public void setType(String type) { this.type = type; }
+-
+-        public String getManufacturer() { return manufacturer; }
+-        public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
+-
+-        public String getModel() { return model; }
+-        public void setModel(String model) { this.model = model; }
+-
+-        public double getPrice() { return price; }
+-        public void setPrice(double price) { this.price = price; }
+-
+-        public String getPriceUnit() { return priceUnit; }
+-        public void setPriceUnit(String priceUnit) { this.priceUnit = priceUnit; }
+-
+-        public LocalDate getAcquisitionDate() { return acquisitionDate; }
+-        public void setAcquisitionDate(LocalDate acquisitionDate) { this.acquisitionDate = acquisitionDate; }
+-    }
+ }
+Index: DealershipICS/src/main/resources/VehicleTransfer.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/DealershipICS/src/main/resources/VehicleTransfer.fxml b/DealershipICS/src/main/resources/VehicleTransfer.fxml
+new file mode 100644
+--- /dev/null	(date 1742943280817)
++++ b/DealershipICS/src/main/resources/VehicleTransfer.fxml	(date 1742943280817)
+@@ -0,0 +1,66 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<?import javafx.geometry.Insets?>
++<?import javafx.scene.control.Button?>
++<?import javafx.scene.control.ComboBox?>
++<?import javafx.scene.control.TableView?>
++<?import javafx.scene.control.TableColumn?>
++<?import javafx.scene.layout.BorderPane?>
++<?import javafx.scene.layout.HBox?>
++<?import javafx.scene.layout.Priority?>
++
++<BorderPane xmlns="http://javafx.com/javafx/17"
++            xmlns:fx="http://javafx.com/fxml/1"
++            fx:controller="company.gui.VehicleTransferController">
++
++    <top>
++        <HBox alignment="CENTER" spacing="20">
++            <padding>
++                <Insets top="10" left="10" right="10" bottom="10" />
++            </padding>
++            <children>
++                <Button text="Back" onAction="#handleBack" minWidth="80">
++                    <HBox.hgrow>
++                        <Priority fx:constant="NEVER"/>
++                    </HBox.hgrow>
++                </Button>
++                <HBox alignment="CENTER" HBox.hgrow="ALWAYS" spacing="10">
++                    <children>
++                        <ComboBox fx:id="senderComboBox" promptText="Dealership Sending Vehicle" minWidth="80">
++                            <padding>
++                                <Insets top="5" right="10" bottom="5" left="10"/>
++                            </padding>
++                        </ComboBox>
++                        <ComboBox fx:id="receiverComboBox" promptText="Dealership Receiving Vehicle" minWidth="80">
++                            <padding>
++                                <Insets top="5" right="10" bottom="5" left="10"/>
++                            </padding>
++                        </ComboBox>
++                    </children>
++                </HBox>
++                <Button text="Transfer" onAction="#handleTransferVehicle" minWidth="80">
++                    <HBox.hgrow>
++                        <Priority fx:constant="NEVER"/>
++                    </HBox.hgrow>
++                </Button>
++
++            </children>
++        </HBox>
++    </top>
++
++
++    <center>
++        <TableView fx:id="vehicleTable" prefHeight="400.0" prefWidth="600.0">
++            <columns>
++                <TableColumn fx:id="vehicleIdColumn" text="Vehicle ID" />
++                <TableColumn fx:id="rentalColumn" text="Rentable" />
++                <TableColumn fx:id="vehicleTypeColumn" text="Type" />
++                <TableColumn fx:id="vehicleManufacturerColumn" text="Manufacturer" />
++                <TableColumn fx:id="vehicleModelColumn" text="Model" />
++                <TableColumn fx:id="vehiclePriceColum" text="Price"/>
++                <TableColumn fx:id="priceUnitColumn" text="Price Unit" />
++                <TableColumn fx:id="acquisitionDateColumn" text="Acquisition Date"/>
++            </columns>
++        </TableView>
++    </center>
++</BorderPane>
+\ No newline at end of file

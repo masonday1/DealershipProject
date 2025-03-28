@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0eec0007-b237-422b-8d7a-1d187f6a225f" name="Changes" comment="Added sequence diagram for changing dealership rental services status.">
+      <change beforePath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/domainfiles/Company.java" beforeDir="false" afterPath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/domainfiles/Company.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/domainfiles/Dealership.java" beforeDir="false" afterPath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/domainfiles/Dealership.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/gui/AppStateManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/gui/AppStateManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/gui/VehicleEntryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/gui/VehicleEntryController.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="UML Use Case" />
+        <option value="UML Sequence" />
+        <option value="Interface" />
+        <option value="FxmlFile" />
+        <option value="Class" />
+        <option value="Exception" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="9b69b8a8058cfbfe0beeafbcf0667aae9961dac8" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;csengelhart&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:masonday1/DealershipProject.git&quot;,
+    &quot;accountId&quot;: &quot;127af83c-f139-4d78-b03f-ae19e6a3be00&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/DealershipICS/src/main/java/javafiles/gui/ViewInventoryController.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2tcAgq8oy1cnteVwkMFJ3xSkeVU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Dealership.executor&quot;: &quot;Run&quot;,
+    &quot;Application.DealershipApp.executor&quot;: &quot;Run&quot;,
+    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.javafiles.gui.DealershipApp.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultPlantUmlFileTemplate&quot;: &quot;UML Sequence&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;JUnit.AppStateManagerTest.dataToInventory.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AppStateManagerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AppStateManagerTest.getCompanyData.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AppStateManagerTest.getListCompanyVehicles.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AppStateManagerTest.getListDealerships.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AppStateManagerTest.initializeCompany_alreadyInitialized.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AppStateManagerTest.initializeCompany_firstTime.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AppStateManagerTest.transferVehicle_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CompanyTest.dealershipVehicleTransfer_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CompanyTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileIOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.JSONIOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SportsCarRentalStrategyTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.VehicleCreatorTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.VehicleTest.executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Chris/IdeaProjects/DealershipProject/UMLdiagrams&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS\src\main" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS\src\main\java" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS\src\main\java\javafiles\domainfiles" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS\src\main\java\javafiles\customexceptions" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS\src\main\resources" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\UMLdiagrams" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS\src\main\resources" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS" />
+      <recent name="C:\Users\Chris\IdeaProjects\DealershipProject\DealershipICS\src\main\java\com\example\dealershipics" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="javafiles.customexceptions" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.javafiles.gui.DealershipApp">
+    <configuration name="DealershipApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="company.gui.DealershipApp" />
+      <module name="DealershipICS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="company.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="javafiles.gui.DealershipApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="javafiles.gui.DealershipApp" />
+      <module name="DealershipICS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="javafiles.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppStateManagerTest.dataToInventory" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DealershipICS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="javafiles.company.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="javafiles.company.gui" />
+      <option name="MAIN_CLASS_NAME" value="javafiles.company.gui.AppStateManagerTest" />
+      <option name="METHOD_NAME" value="dataToInventory" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppStateManagerTest.getListCompanyVehicles" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DealershipICS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="javafiles.company.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="javafiles.company.gui" />
+      <option name="MAIN_CLASS_NAME" value="javafiles.company.gui.AppStateManagerTest" />
+      <option name="METHOD_NAME" value="getListCompanyVehicles" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppStateManagerTest.transferVehicle_success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DealershipICS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="javafiles.company.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="javafiles.company.gui" />
+      <option name="MAIN_CLASS_NAME" value="javafiles.company.gui.AppStateManagerTest" />
+      <option name="METHOD_NAME" value="transferVehicle_success" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.javafiles.gui.DealershipApp" />
+        <item itemvalue="Application.DealershipApp" />
+        <item itemvalue="JUnit.AppStateManagerTest.dataToInventory" />
+        <item itemvalue="JUnit.AppStateManagerTest.transferVehicle_success" />
+        <item itemvalue="JUnit.AppStateManagerTest.getListCompanyVehicles" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0eec0007-b237-422b-8d7a-1d187f6a225f" name="Changes" comment="" />
+      <created>1740641103223</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1740641103223</updated>
+    </task>
+    <task id="LOCAL-00022" summary="VehicleCreator createVehicle() now makes use of the String vehicleID parameter passed to it, it passes the vehicleID to the child classes, who set the vehicleID attribute in their constructors. Updated getVehicle methods with null checks before calling .equals(). Updated addRental() to use isVehicleInInventory() to search rental list content.">
+      <option name="closed" value="true" />
+      <created>1742199184756</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1742199184756</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Added close button to main screen, allowing users to safely close the app. Also added another screen when &quot;manage company inventory&quot; is clicked. Added a back button to that inventory management screen as well. The back button takes user to previous screen.">
+      <option name="closed" value="true" />
+      <created>1742300848790</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1742300848790</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Added packages for organization; domainfiles,rentalstrategies,customexceptions,dataaccessfiles in javafiles. Removed the default helloAppplication and its resources.">
+      <option name="closed" value="true" />
+      <created>1742370332332</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1742370332332</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Reorganized files into customexceptions, domainfiles.">
+      <option name="closed" value="true" />
+      <created>1742370606160</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1742370606160</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Reorganized IO files into dataaccessfiles package.">
+      <option name="closed" value="true" />
+      <created>1742370782695</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1742370782695</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added custom exceptions.">
+      <option name="closed" value="true" />
+      <created>1742374750492</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1742374750492</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Added rental strategies, added vehicleFactory to take away responsibility of creating vehicles from dealership.">
+      <option name="closed" value="true" />
+      <created>1742375157900</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1742375157900</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Updated Vehicle child classes to use their respective rental strategies and to also assigne vehicleID at creation.">
+      <option name="closed" value="true" />
+      <created>1742375581737</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1742375581737</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Added a main screen and inventory screen and buttons of our GUI.">
+      <option name="closed" value="true" />
+      <created>1742376207235</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1742376207235</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Commented out all code and methods in Company and Dealership and Main that were coupled with old version of JSONIO. We can un-comment them as we update the code to match the new filehandling or decouple all together if possible.">
+      <option name="closed" value="true" />
+      <created>1742376804476</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1742376804476</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Added screens for loading inventory and options to load inventory. Added screen for managing company profile as well.">
+      <option name="closed" value="true" />
+      <created>1742378539926</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1742378539926</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Created GuiUtility.java to house our utility functions we commonly use across our GUI code like screen navigation. setScreenSize() working but not harmonious with screen button layouts.">
+      <option name="closed" value="true" />
+      <created>1742473369821</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1742473369821</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Created ScreenManager with a singleton pattern. ScreenManager will make use of the primaryStage created in the start method in application and manage scene changing. Making the app a single-window application. Still have to fix issue with layout of buttons when scene changes.">
+      <option name="closed" value="true" />
+      <created>1742564765227</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1742564765227</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Updated SceneManager to combine loadScene and switchScene into one method,with one argument, fxmlFile path. Cleaned up AddInventoryController.">
+      <option name="closed" value="true" />
+      <created>1742566623542</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1742566623542</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Removed the scenes Hashmap from SceneManager.">
+      <option name="closed" value="true" />
+      <created>1742567196032</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1742567196032</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Updated switchScene in SceneManager to create every scene to 320x240">
+      <option name="closed" value="true" />
+      <created>1742569739098</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1742569739098</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Updated switchScene in SceneManager to create every scene to 600x400. Think it's a good size because you can see all buttons clearly in every window.">
+      <option name="closed" value="true" />
+      <created>1742570112560</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1742570112560</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Added a AppStateManager that is responsible for maintaining the Company instance. Added a viewinventory button in Inventoryscreen that allows the user view the current company's inventory in table form using method from GuiUtility. If the company is empty, it lets the user know with a pop-up message in GUI. Added a method createTableFromMapList that can create a JTable from a List of Maps.">
+      <option name="closed" value="true" />
+      <created>1742699231853</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1742699231853</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Added Manual Vehicle Inventory Screen with some functionality, not done yet. Added priceUnit parameter to manualAddVehicle in Dealership. Add a method in Company to get a List of DealershipIds.">
+      <option name="closed" value="true" />
+      <created>1742727253148</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1742727253148</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Added a couple TODOs to VehicleEntryController, will keep working on it.">
+      <option name="closed" value="true" />
+      <created>1742728073914</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1742728073914</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Finished on VehicleEntryController, it can now add vehicles manually if required fields are entered and the other values can be default. Tried my best to think of errors to catch from manual entry. Also made a small tweak to createTableFromMapList, now it checks  acquisitionDate is null (default) before manipulating otherwise if it is default it makes that row entry &quot;N/A&quot;.">
+      <option name="closed" value="true" />
+      <created>1742738342697</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1742738342697</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Added &quot;*&quot; next dealership dropdown menu on VehicleEntry screen because it's a required field.">
+      <option name="closed" value="true" />
+      <created>1742739182001</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1742739182001</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Removed Load Inventory button, controller and fxml. This was the duplicate 3rd button on our main screen.">
+      <option name="closed" value="true" />
+      <created>1742804949808</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1742804949808</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Updated all of our buttons across all screens to be the same size and fit better on screen.">
+      <option name="closed" value="true" />
+      <created>1742807995397</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1742807995398</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Added change rental and change receiving functionality to ProfileManagement.">
+      <option name="closed" value="true" />
+      <created>1742812939114</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1742812939114</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Progress on implementing vehicle rental toggling capabilities to GUI">
+      <option name="closed" value="true" />
+      <created>1742856115269</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1742856115269</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Progress on implementing vehicle rental toggling capabilities to GUI. Dropdown and Table now works. Got to fix change rental now. Added a line to or module-info.java to let javafx.base read domainfiles to not cause access issues for table viewing.">
+      <option name="closed" value="true" />
+      <created>1742861124265</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1742861124265</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Very close to finishing changeRental, it works but need to address issue of dealerships not currenty accepting vehicles not accepting existing vehicles moving in between inventories.">
+      <option name="closed" value="true" />
+      <created>1742864484633</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1742864484633</updated>
+    </task>
+    <task id="LOCAL-00050" summary="Change rental is now working properly. Edited the InventoryScreen.fxml and InventoryScreenController to no longer include enable and disable rental but just change rental.">
+      <option name="closed" value="true" />
+      <created>1742867521369</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1742867521371</updated>
+    </task>
+    <task id="LOCAL-00051" summary="Fixed enable rental text to say Modify Vehicle Rental Status">
+      <option name="closed" value="true" />
+      <created>1742868209116</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1742868209116</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Implemented removal feature in GUI. Also added a method in Vehicle class that can also get AcquisitonDate formatted into &quot;DD/MM/YYYY&quot; format that I used for TableView.">
+      <option name="closed" value="true" />
+      <created>1742880338953</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1742880338953</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Changed ViewInventory to match other table types and to be in one window. Fixed a bug in Vehicle.getFormattedAcquisitionDate where it would format 0 to &quot;&quot;.">
+      <option name="closed" value="true" />
+      <created>1742899290611</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1742899290612</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Changed button sizes on AddFromFile to match rest of application.">
+      <option name="closed" value="true" />
+      <created>1742899781840</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1742899781841</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Updated controllers for rental,view inventory to remove nested inner class and use our Vehicle class to improve readability and maintainability of the code.">
+      <option name="closed" value="true" />
+      <created>1742944730165</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1742944730165</updated>
+    </task>
+    <task id="LOCAL-00056" summary="Added Transfer feature to our app. Company has method called dealershipVehicleTransfer, method added to AppStateManager to call transfer method.">
+      <option name="closed" value="true" />
+      <created>1742948007163</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1742948007163</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Added dealershipID column to ViewInventory table. The table now shows what dealership each vehicle belongs to.">
+      <option name="closed" value="true" />
+      <created>1743002910625</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1743002910625</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Updated the Company updateVehicleRental method to call Vehicle's enable,disable rental function instead of calling setRentalStatus().Updated the exception throwing as well. Included Mockito dependency in our pom.xml to use for unit testing.">
+      <option name="closed" value="true" />
+      <created>1743012343220</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1743012343220</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Took Mockito out of dependencies, was not interacting well with our versions of libraries.">
+      <option name="closed" value="true" />
+      <created>1743022277977</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1743022277977</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Updated vehicle type SUV,Sedan, SportsCar and Pickup's javadoc to correctly link VehicleCreator.">
+      <option name="closed" value="true" />
+      <created>1743023420146</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1743023420146</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Performed a scan of GUI layer and added missing javadocs.">
+      <option name="closed" value="true" />
+      <created>1743030092396</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1743030092396</updated>
+    </task>
+    <task id="LOCAL-00062" summary="Performed a scan of GUI layer and added missing javadocs.">
+      <option name="closed" value="true" />
+      <created>1743030172467</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1743030172467</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Added missing javadocs to methods and classes.">
+      <option name="closed" value="true" />
+      <created>1743051253252</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1743051253252</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Added javadocs and changed most verbage of rentable to rented including in all the table columns. Will have to do another sweep tomorrow. to make sure I got them all. Also added dealership name as a column in view inventory table.">
+      <option name="closed" value="true" />
+      <created>1743057041462</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1743057041462</updated>
+    </task>
+    <task id="LOCAL-00065" summary="Removed the other sequence diagrams from uml directory (I have a backup just incase). Updated the ChangVehicleRentalStatus sequence diagram.">
+      <option name="closed" value="true" />
+      <created>1743126165275</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1743126165290</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Edited the VehicleRentalStatusSequence and EditDealershipNameSequence.">
+      <option name="closed" value="true" />
+      <created>1743130186955</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1743130186955</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Added DealershipVehicleTransfer sequence diagram.">
+      <option name="closed" value="true" />
+      <created>1743136916531</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1743136916531</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Added manual Vehicle entry sequence diagram.">
+      <option name="closed" value="true" />
+      <created>1743143328045</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1743143328045</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Added vehicle removal sequence diagram.">
+      <option name="closed" value="true" />
+      <created>1743145097886</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1743145097886</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Added sequence diagram for changing dealership rental services status.">
+      <option name="closed" value="true" />
+      <created>1743146320583</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1743146320583</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updated all of our buttons across all screens to be the same size and fit better on screen." />
+    <MESSAGE value="Added change rental and change receiving functionality to ProfileManagement." />
+    <MESSAGE value="Progress on implementing vehicle rental toggling capabilities to GUI" />
+    <MESSAGE value="Progress on implementing vehicle rental toggling capabilities to GUI. Dropdown and Table now works. Got to fix change rental now. Added a line to or module-info.java to let javafx.base read domainfiles to not cause access issues for table viewing." />
+    <MESSAGE value="Very close to finishing changeRental, it works but need to address issue of dealerships not currenty accepting vehicles not accepting existing vehicles moving in between inventories." />
+    <MESSAGE value="Change rental is now working properly. Edited the InventoryScreen.fxml and InventoryScreenController to no longer include enable and disable rental but just change rental." />
+    <MESSAGE value="Fixed enable rental text to say Modify Vehicle Rental Status" />
+    <MESSAGE value="Implemented removal feature in GUI. Also added a method in Vehicle class that can also get AcquisitonDate formatted into &quot;DD/MM/YYYY&quot; format that I used for TableView." />
+    <MESSAGE value="Changed ViewInventory to match other table types and to be in one window. Fixed a bug in Vehicle.getFormattedAcquisitionDate where it would format 0 to &quot;&quot;." />
+    <MESSAGE value="Changed button sizes on AddFromFile to match rest of application." />
+    <MESSAGE value="Updated controllers for rental,view inventory to remove nested inner class and use our Vehicle class to improve readability and maintainability of the code." />
+    <MESSAGE value="Added Transfer feature to our app. Company has method called dealershipVehicleTransfer, method added to AppStateManager to call transfer method." />
+    <MESSAGE value="Added dealershipID column to ViewInventory table. The table now shows what dealership each vehicle belongs to." />
+    <MESSAGE value="Updated the Company updateVehicleRental method to call Vehicle's enable,disable rental function instead of calling setRentalStatus().Updated the exception throwing as well. Included Mockito dependency in our pom.xml to use for unit testing." />
+    <MESSAGE value="Took Mockito out of dependencies, was not interacting well with our versions of libraries." />
+    <MESSAGE value="Updated vehicle type SUV,Sedan, SportsCar and Pickup's javadoc to correctly link VehicleCreator." />
+    <MESSAGE value="Performed a scan of GUI layer and added missing javadocs." />
+    <MESSAGE value="Added missing javadocs to methods and classes." />
+    <MESSAGE value="Added javadocs and changed most verbage of rentable to rented including in all the table columns. Will have to do another sweep tomorrow. to make sure I got them all. Also added dealership name as a column in view inventory table." />
+    <MESSAGE value="Removed the other sequence diagrams from uml directory (I have a backup just incase). Updated the ChangVehicleRentalStatus sequence diagram." />
+    <MESSAGE value="Edited the VehicleRentalStatusSequence and EditDealershipNameSequence." />
+    <MESSAGE value="Added DealershipVehicleTransfer sequence diagram." />
+    <MESSAGE value="Added manual Vehicle entry sequence diagram." />
+    <MESSAGE value="Added vehicle removal sequence diagram." />
+    <MESSAGE value="Added sequence diagram for changing dealership rental services status." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added sequence diagram for changing dealership rental services status." />
+    <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
+  </component>
+</project>
