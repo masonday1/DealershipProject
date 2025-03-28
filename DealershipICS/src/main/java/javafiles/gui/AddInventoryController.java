@@ -1,9 +1,16 @@
 package javafiles.gui;
 
+import javafiles.Key;
+import javafiles.customexceptions.ReadWriteException;
+import javafiles.dataaccessfiles.FileIO;
+import javafiles.dataaccessfiles.FileIOBuilder;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import static javafiles.gui.FXMLPath.*;
 
@@ -31,15 +38,25 @@ public class AddInventoryController {
 
     /**
      * Handles the "Load From File" button action.
-     * Switches the scene to the "Add From File" screen.
      *
      * @param event The ActionEvent triggered by the "Load From File" button.
      * @throws IOException If an I/O error occurs during scene switching.
      */
     @FXML
     private void handleLoadFromFile(ActionEvent event) throws IOException {
-        SceneManager sceneManager = SceneManager.getInstance(null);
-        sceneManager.switchScene(ADD_FROM_FILE);
+        String path = FileIOBuilder.selectFilePath('r');
+
+        if (path == null) {
+            return;
+        }
+        try {
+            FileIO fileIO = FileIOBuilder.buildNewFileIO(path, 'r');
+            List<Map<Key, Object>> maps = fileIO.readInventory();
+            List<Map<Key, Object>> badMaps = AppStateManager.dataToInventory(maps);
+            GuiUtility.addFromFile(maps, badMaps);
+        } catch (ReadWriteException e) {
+            JOptionPane.showMessageDialog(null, "Could Not Read From File.");
+        }
     }
 
     /**

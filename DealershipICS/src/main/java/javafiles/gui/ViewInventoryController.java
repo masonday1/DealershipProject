@@ -125,7 +125,7 @@ public class ViewInventoryController {
      * @param vehicle The vehicle.
      * @return The dealership name, or "" if Dealership not found
      * @throws DealershipNotFoundException if Dealership is not found in the company
-     * @throws VehicleNotFoundException if vehicle does not exists in the company
+     * @throws VehicleNotFoundException if vehicle does not exist in the company
      */
     private String getDealershipNameFromMap(Vehicle vehicle) throws  DealershipNotFoundException, VehicleNotFoundException {
         List<Map<Key, Object>> dataMaps = AppStateManager.getCompanyData();

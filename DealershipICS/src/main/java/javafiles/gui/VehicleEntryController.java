@@ -140,10 +140,9 @@ public class VehicleEntryController implements Initializable {
             }
 
             // Call AppStateManager to add the vehicle
-            // AppStateManager.manualVehicleAdd(dealerId, vehicleId, vehicleManufacturer, vehicleModel, vehiclePrice, acquisitionDate, vehicleType, priceUnit);
             AppStateManager.manualVehicleAdd(map);
 
-            JOptionPane.showMessageDialog(null, "Vehicle ID " + vehicleId + " has been successfully added");
+            JOptionPane.showMessageDialog(null, "Vehicle ID [" + vehicleId + "] has been successfully added");
             resetFields();
 
         } catch (VehicleAlreadyExistsException | InvalidPriceException |

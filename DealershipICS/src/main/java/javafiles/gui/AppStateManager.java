@@ -8,6 +8,7 @@ import javafiles.domainfiles.Company;
 import javafiles.domainfiles.Dealership;
 import javafiles.domainfiles.Vehicle;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -152,16 +153,17 @@ public class AppStateManager {
      * This method attempts to read inventory data from the specified file using FileIO,
      * and processes it using  {@link Company#dataToInventory(List)} method.
      * If a ReadWriteException occurs, it prints the error message and returns an empty list.
-     *
-     * @return A list of Maps representing invalid data entries, or an empty list if an error occurs.
      */
-    protected static List<Map<Key, Object>> loadInitialFiles() {
+    protected static void loadInitialFiles() {
         try {
             FileIO fileIO = FileIOBuilder.buildNewFileIO(masterInventoryList, 'r');
-            return company.dataToInventory(fileIO.readInventory());
+
+            List<Map<Key, Object>> maps = fileIO.readInventory();
+            List<Map<Key, Object>> badDataMaps = company.dataToInventory(maps);
+
+            if (!badDataMaps.isEmpty()) {GuiUtility.addFromFile(maps, badDataMaps);}
         } catch (ReadWriteException e) {
-            System.out.println(e.getMessage());
-            return new ArrayList<>();
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
@@ -178,7 +180,7 @@ public class AppStateManager {
             FileIO fileIO = FileIOBuilder.buildNewFileIO(masterInventoryList, 'w');
             fileIO.writeInventory(data);
         } catch (ReadWriteException e) {
-            System.out.println("Inventory could not be loaded.");
+            JOptionPane.showMessageDialog(null, "Inventory could not be written.");
         }
     }
 
