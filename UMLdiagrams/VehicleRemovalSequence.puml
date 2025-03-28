@@ -1,0 +1,42 @@
+@startuml
+participant Actor
+Actor -> VehicleRemovalController : handleRemoveVehicle()
+alt selectedVehicle == null
+    VehicleRemovalController -> VehicleRemovalController : showAlert()
+end
+alt success
+VehicleRemovalController -> AppStateManager : removeVehicleFromDealership()
+AppStateManager -> Company : removeVehicleFromDealership()
+Company -> Company : findDealership()
+loop listDealerships
+    Company -> Dealership : getDealerId()
+    Dealership --> Company
+    alt dealership.getDealerId().equals(dealerId)
+        Company --> Company: dealership
+    end
+end
+Company --> Company: null
+Company -> Dealership : removeVehicleFromInventory()
+alt targetVehicle == null
+    create IllegalArgumentException
+    Dealership -> IllegalArgumentException:new
+end
+Dealership -> Dealership : getSaleVehicles()
+alt getSaleVehicles().contains(targetVehicle)
+    Dealership -> Dealership : getSaleVehicles.remove(targetVehicle)
+end
+Dealership -> Dealership : getRentalVehicles()
+alt getRentalVehicles().contains(targetVehicle)
+    Dealership -> Dealership : getRentalVehicles.remove(targetVehicle)
+end
+Dealership --> Company
+Company --> AppStateManager
+AppStateManager --> VehicleRemovalController
+else exception thrown
+    AppStateManager -> Company: removeVehicleFromInventory()
+    create IllegalArgumentException
+    AppStateManager -> IllegalArgumentException: new
+    AppStateManager --> VehicleRemovalController:
+    VehicleRemovalController -> VehicleRemovalController : showAlert()
+end
+@enduml
