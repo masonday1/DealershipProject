@@ -317,27 +317,6 @@ class DealershipTest {
     }
 
     @Test
-    public void testToFullString() {
-        dealership.getSaleVehicles().add(vehicle3); 
-        dealership.getRentalVehicles().add(vehicle4); 
-
-        String result = dealership.toFullString();
-
-        String sep = "\n---------------------------------------------\n";
-        StringBuilder expectedOutput = new StringBuilder("Dealership ID: D001\n");
-        expectedOutput.append("Dealership Name: Test Dealership");
-        expectedOutput.append(sep);
-        expectedOutput.append("Sales: \n\n");
-        expectedOutput.append(vehicle3.toString());
-        expectedOutput.append(sep);
-        expectedOutput.append("Rental: \n\n");
-        expectedOutput.append(vehicle4.toString());
-        expectedOutput.append(sep);
-
-        assertEquals(expectedOutput.toString(), result);
-    }
-
-    @Test
     public void testToString() {
 
         dealership.getSaleVehicles().add(vehicle3); 

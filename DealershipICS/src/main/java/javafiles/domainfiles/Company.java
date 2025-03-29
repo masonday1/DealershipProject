@@ -53,7 +53,7 @@ public class Company {
      * @param dealerId A String equal to the dealerID of the target Dealership.
      * @return The Dealership target dealership (null if absent).
      */
-    public Dealership findDealership(String dealerId)  {
+    public Dealership findDealership(String dealerId) {
         for (Dealership dealership : listDealerships) {
             if (dealership.getDealerId().equals(dealerId)) {
                 return dealership;
@@ -61,7 +61,6 @@ public class Company {
         }
         return null;
     }
-
 
     /**
      * Checks if a dealership with the given ID has renting services enabled.
@@ -78,57 +77,22 @@ public class Company {
     }
 
     /**
-     * Gets the complete inventory of a target dealership in company object.
-     * Method calls {@link Dealership#getTotalInventory()}.
+     * Adds a new vehicle to the dealership inventory based on the provided vehicle details.
+     * This method creates a new vehicle based on the vehicle type and sets its attributes
+     * using the provided parameters in map.
+     *</p>
+     * {@link VehicleFactory#createVehicle(String, String, String, Long)} is used to create and validate the vehicle type.
+     * If the vehicle type is unsupported, the method will throw an exception and return without
+     * making any changes to the inventory. If the vehicle is created successfully, it will be added
+     * to the dealership's inventory.
      *
-     * @param dealershipId dealership ID of target dealership
-     * @return a total collection of target dealership's sales and rental inventory
+     * @param map A {@link Map} containing all attributes of the Vehicle to be created.
+     * @param dealer The {@link Dealership} that will receive the Vehicle.
+     * @throws DealershipNotAcceptingVehiclesException If the dealership is not currently accepting new vehicles.
+     * @throws VehicleAlreadyExistsException If the vehicle is already present in either the sales or rental inventory.
+     * @throws InvalidVehicleTypeException If the vehicle type is not supported.
+     * @throws InvalidPriceException if the vehicle price is not a positive value
      */
-    public ArrayList <Vehicle> getDealershipCompleteInventory(String dealershipId){
-        Dealership dealership = findDealership(dealershipId);
-        return dealership.getTotalInventory();
-    }
-
-
-    /**
-     * Updates the rental status of a vehicle within a dealership and moves it between
-     * the dealership's sales and rental inventories based on the updated rental status.
-     *
-     * @param dealershipid The ID of the dealership containing the vehicle to update.
-     * @param vehicle       The vehicle object with the updated rental status. This is the same vehicle object that
-     * is present in the dealership's inventory (either sales or rental).
-     * @throws RentalException       If the vehicle is a sports car, which is not rentable.
-     */
-    public void updateVehicleRental(String dealershipid, Vehicle vehicle) throws RentalException
-    {
-        Dealership dealership = findDealership(dealershipid);
-
-        // Update the vehicle's rental status
-        if (!vehicle.getVehicleType().equalsIgnoreCase("Sports car")) {
-            if(vehicle.getRentalStatus())
-            {
-                vehicle.disableRental();
-            }
-            else
-            {
-                vehicle.enableRental();
-            }
-        }
-
-        else {
-            throw new VehicleNotRentableException("Sports car types are not currently rentable");
-        }
-
-        // Remove from the source inventory and add vehicle to opposite inventory
-        if (dealership.getSaleVehicles().contains(vehicle)) {
-            dealership.getSaleVehicles().remove(vehicle);
-            dealership.getRentalVehicles().add(vehicle);
-        } else {
-            dealership.getRentalVehicles().remove(vehicle);
-            dealership.getSaleVehicles().add(vehicle);
-        }
-    }
-
     public void manualVehicleAdd(Map<Key, Object> map, Dealership dealer) throws InvalidVehicleTypeException,
             VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException,
             InvalidPriceException, MissingCriticalInfoException {
@@ -147,46 +111,11 @@ public class Company {
     }
 
     /**
-     * Removes target {@link Vehicle} from a {@link Dealership} inventory.
-     * Method calls {@link Dealership#removeVehicleFromInventory(Vehicle)}.
+     * Returns weather a given Vehicle ID is in any Dealership of the Company.
      *
-     * @param dealershipId target dealership to remove vehicle from
-     * @param targetVehicle vehicle to be removed
-     * @throws IllegalArgumentException if target vehicle is null
+     * @param id The id of the Vehicle searched for.
+     * @return weather the Vehicle is in the company.
      */
-    public void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws  IllegalArgumentException{
-        Dealership dealership = this.findDealership(dealershipId);
-        dealership.removeVehicleFromInventory(targetVehicle);
-    }
-
-    /**
-     * Transfers a vehicle from one dealership's inventory to another.
-     * </p>
-     * Calls the {@link Dealership#addIncomingVehicle(Vehicle)} method
-     * to add the transfer vehicle to the receving dealership.
-     *
-     * @param senderId        The ID of the dealership sending the vehicle.
-     * @param receiverId      The ID of the dealership receiving the vehicle.
-     * @param transferVehicle The vehicle to be transferred.
-     * @throws DuplicateSenderException         If the sender and receiver dealership IDs are the same.
-     * @throws VehicleAlreadyExistsException    If the receiving dealership already has the vehicle in its inventory.
-     * @throws DealershipNotAcceptingVehiclesException If the receiving dealership is not accepting vehicles.
-     */
-    public void dealershipVehicleTransfer(String senderId, String receiverId, Vehicle transferVehicle)
-            throws DuplicateSenderException, VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException
-    {
-        Dealership senderDealer = this.findDealership(senderId);
-        Dealership receivingDealer = this.findDealership(receiverId);
-
-        if (senderId.equals(receiverId))
-        {
-            throw new DuplicateSenderException("Sender and receiver dealership can not be the same");
-        }
-
-        senderDealer.removeVehicleFromInventory(transferVehicle);
-        receivingDealer.addIncomingVehicle(transferVehicle);
-    }
-
     private boolean isVehicleInInventoryById(String id){
         for (Dealership dealership : listDealerships) {
             if (dealership.isVehicleInInventoryById(id)) {
@@ -225,7 +154,7 @@ public class Company {
             if (id == null) {
                 MissingCriticalInfoException cause = new MissingCriticalInfoException("No dealerID.");
                 ReadWriteException exception = new ReadWriteException(cause);
-                Key.REASON_FOR_ERROR.putNonNull(map, exception);
+                Key.REASON_FOR_ERROR.putValid(map, exception);
                 badInventoryMaps.add(map);
                 continue;
             }
@@ -235,7 +164,7 @@ public class Company {
                 if (isVehicleInInventoryById(v_id)) {
                     VehicleAlreadyExistsException cause = new VehicleAlreadyExistsException("Duplicate Vehicle ID in inventory");
                     ReadWriteException exception = new ReadWriteException(cause);
-                    Key.REASON_FOR_ERROR.putNonNull(map, exception);
+                    Key.REASON_FOR_ERROR.putValid(map, exception);
                     badInventoryMaps.add(map);
                     continue;
                 }
@@ -285,29 +214,6 @@ public class Company {
     }
 
     /**
-     * Prints the inventory of Vehicles for each Dealership in the Company.
-     * <p>
-     * This method iterates through the List of Dealerships associated in the Company.
-     * For each {@link Dealership} it retrieves the Vehicle inventory and prints
-     * information about each {@link Vehicle}. If a Dealership has no inventory, a message
-     * indicating this is printed. If the Company has no Dealerships, a message is
-     * printed to the console.
-     */
-    public void printInventory() {
-        // if company does not have any dealerships, print message and return to menu
-        if(listDealerships.isEmpty())
-        {
-            System.out.println("There are currently no dealerships in the company");
-            return;
-        }
-
-        for(Dealership dealership : listDealerships)
-        {
-            System.out.println(dealership.toFullString());
-        }
-    }
-
-    /**
      * Generates a formatted list of Dealership IDs.
      * <p>
      * This method retrieves all Dealerships associated with the Company and
@@ -348,6 +254,11 @@ public class Company {
         return dealershipIds;
     }
 
+    /**
+     * Returns a List of Maps containing data about all Dealerships in the Company.
+     *
+     * @return the List of Maps containing Dealership info.
+     */
     public List<Map<String, Object>> getDealershipInfoList() {
         List<Map<String, Object>> dealershipInfoList = new ArrayList<>();
         for (Dealership dealership : listDealerships) {
@@ -359,20 +270,6 @@ public class Company {
             dealershipInfoList.add(dealershipInfo);
         }
         return dealershipInfoList;
-    }
-
-    /**
-     * Returns a String displaying the current receiving status of the
-     * Dealership at index dealerIndex in listDealerships.
-     *
-     * @param dealerIndex The index of the dealership that is being evaluated
-     * @return A String displaying the receiving status of the Dealership.
-     */
-    public String changeReceivingStatusIntroString(int dealerIndex) {
-        Dealership dealer = listDealerships.get(dealerIndex);
-        return "Enable or disable vehicle receiving status for dealership "
-                + dealer.getDealerId() + "? (Enter 'enable' or 'disable')\n" +
-                "Currently enabled? (" + dealer.getStatusAcquiringVehicle() + ")";
     }
 
     /**

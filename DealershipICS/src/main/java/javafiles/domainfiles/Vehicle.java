@@ -207,13 +207,13 @@ public abstract class Vehicle {
      * @param map The Map to be filled with data from the Vehicle
      */
     public void getDataMap(Map<Key, Object> map) {
-        Key.VEHICLE_ID.putNonNull(map, vehicleId);
-        Key.VEHICLE_MANUFACTURER.putNonNull(map, vehicleManufacturer);
-        Key.VEHICLE_MODEL.putNonNull(map, vehicleModel);
-        Key.VEHICLE_PRICE.putNonNull(map, vehiclePrice);
-        Key.VEHICLE_PRICE_UNIT.putNonNull(map, priceUnit);
-        Key.VEHICLE_ACQUISITION_DATE.putNonNull(map, acquisitionDate);
-        Key.VEHICLE_TYPE.putNonNull(map, vehicleType);
-        Key.VEHICLE_RENTAL_STATUS.putNonNull(map, rental);
+        Key.VEHICLE_ID.putValid(map, vehicleId);
+        Key.VEHICLE_MANUFACTURER.putValid(map, vehicleManufacturer);
+        Key.VEHICLE_MODEL.putValid(map, vehicleModel);
+        Key.VEHICLE_PRICE.putValid(map, vehiclePrice);
+        Key.VEHICLE_PRICE_UNIT.putValid(map, priceUnit);
+        Key.VEHICLE_ACQUISITION_DATE.putValid(map, acquisitionDate);
+        Key.VEHICLE_TYPE.putValid(map, vehicleType);
+        Key.VEHICLE_RENTAL_STATUS.putValid(map, rental);
     }
 }

@@ -542,7 +542,7 @@ class XMLIOTest {
         List<Map<Key, Object>> mapsToTestAgainst = new ArrayList<>();
         Map<Key, Object> fullMap = getFullMap();
         mapsToTestAgainst.add(fullMap);
-        VEHICLE_ID.putNonNull(fullMap, "v_id3");
+        VEHICLE_ID.putValid(fullMap, "v_id3");
 
         putReasonDuplicate(XMLKey.V_ID, "v_id3", "v_id1", fullMap);
 

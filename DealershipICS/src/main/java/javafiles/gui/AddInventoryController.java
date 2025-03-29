@@ -53,7 +53,7 @@ public class AddInventoryController {
             FileIO fileIO = FileIOBuilder.buildNewFileIO(path, 'r');
             List<Map<Key, Object>> maps = fileIO.readInventory();
             List<Map<Key, Object>> badMaps = AppStateManager.dataToInventory(maps);
-            GuiUtility.addFromFile(maps, badMaps);
+            GuiUtility.showMapTables(maps, badMaps);
         } catch (ReadWriteException e) {
             JOptionPane.showMessageDialog(null, "Could Not Read From File.");
         }

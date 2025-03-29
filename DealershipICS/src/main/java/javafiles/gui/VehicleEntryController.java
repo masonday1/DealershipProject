@@ -110,30 +110,30 @@ public class VehicleEntryController implements Initializable {
             // Get input values, handling empty strings for optional fields
             Map<Key, Object> map = new HashMap<>();
             String dealerId = dealershipComboBox.getValue();
-            Key.DEALERSHIP_ID.putNonNull(map, dealerId);
+            Key.DEALERSHIP_ID.putValid(map, dealerId);
 
             String vehicleId = vehicleIdField.getText();
-            Key.VEHICLE_ID.putNonNull(map, vehicleId);
+            Key.VEHICLE_ID.putValid(map, vehicleId);
 
             String vehicleManufacturer = vehicleManufacturerField.getText().isEmpty() ? null : vehicleManufacturerField.getText();
-            Key.VEHICLE_MANUFACTURER.putNonNull(map, vehicleManufacturer);
+            Key.VEHICLE_MANUFACTURER.putValid(map, vehicleManufacturer);
 
             String vehicleModel = vehicleModelField.getText();
-            Key.VEHICLE_MODEL.putNonNull(map, vehicleModel);
+            Key.VEHICLE_MODEL.putValid(map, vehicleModel);
 
             String vehicleType = vehicleTypeField.getText();
-            Key.VEHICLE_TYPE.putNonNull(map, vehicleType);
+            Key.VEHICLE_TYPE.putValid(map, vehicleType);
 
             String acquisitionDateStr = acquisitionDateField.getText();
             Long acquisitionDate = acquisitionDateStr.isEmpty() ? null : parseAcquisitionDate(acquisitionDateStr);
-            Key.VEHICLE_ACQUISITION_DATE.putNonNull(map, acquisitionDate);
+            Key.VEHICLE_ACQUISITION_DATE.putValid(map, acquisitionDate);
 
             String vehiclePriceStr = vehiclePriceField.getText();
             Long vehiclePrice = parseVehiclePrice(vehiclePriceStr);
-            Key.VEHICLE_PRICE.putNonNull(map, vehiclePrice);
+            Key.VEHICLE_PRICE.putValid(map, vehiclePrice);
 
             String priceUnit = priceUnitField.getText().isEmpty() ? null : priceUnitField.getText();
-            Key.VEHICLE_PRICE_UNIT.putNonNull(map, priceUnit);
+            Key.VEHICLE_PRICE_UNIT.putValid(map, priceUnit);
 
             if (dealerId == null) {
                 throw new DealershipNotSelectedException("No dealership has been selected yet");

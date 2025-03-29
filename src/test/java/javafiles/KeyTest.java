@@ -11,13 +11,13 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class KeyTest {
-    private void putNonNullObjectTest(Object exampleInstance, Key[] notAddedKeys) {
+    private void putValidObjectTest(Object exampleInstance, Key[] notAddedKeys) {
         Map<Key, Object> map = new HashMap<>();
 
         int prevLen = 0;
 
         for (Key key: Key.values()) {
-            key.putNonNull(map, exampleInstance);
+            key.putValid(map, exampleInstance);
 
             boolean added = true;
 
@@ -35,7 +35,7 @@ class KeyTest {
     }
 
     @Test
-    public void putNonNullStringTest() {
+    public void putValidStringTest() {
         Key[] notAddedKeys = {
                 DEALERSHIP_RECEIVING_STATUS,
                 DEALERSHIP_RENTING_STATUS,
@@ -45,11 +45,11 @@ class KeyTest {
                 REASON_FOR_ERROR
         };
 
-        putNonNullObjectTest("String", notAddedKeys);
+        putValidObjectTest("String", notAddedKeys);
     }
 
     @Test
-    public void putNonNullLongTest() {
+    public void putValidLongTest() {
         Key[] notAddedKeys = new Key[values().length - 2];
 
         int i = 0;
@@ -61,11 +61,11 @@ class KeyTest {
         }
         assertEquals(notAddedKeys.length, i);
 
-        putNonNullObjectTest(1046L, notAddedKeys);
+        putValidObjectTest(1046L, notAddedKeys);
     }
 
     @Test
-    public void putNonNullBooleanTest() {
+    public void putValidBooleanTest() {
         Key[] notAddedKeys = new Key[values().length - 3];
 
         int i = 0;
@@ -78,22 +78,22 @@ class KeyTest {
         }
         assertEquals(notAddedKeys.length, i);
 
-        putNonNullObjectTest(true, notAddedKeys);
+        putValidObjectTest(true, notAddedKeys);
     }
 
     @Test
-    public void putNonNullTest() {
-        putNonNullObjectTest(null, Key.values());
+    public void putValidTest() {
+        putValidObjectTest(null, Key.values());
     }
 
     @Test
-    public void putNonNullOtherObjectTest() {
-        putNonNullObjectTest(new HashMap<Key, Object>(), Key.values());
+    public void putValidOtherObjectTest() {
+        putValidObjectTest(new HashMap<Key, Object>(), Key.values());
     }
 
     @Test
-    public void putNonNullKeyTest() {
-        putNonNullObjectTest(VEHICLE_ID, Key.values());
+    public void putValidKeyTest() {
+        putValidObjectTest(VEHICLE_ID, Key.values());
     }
 
     private Map<Key, Object> getGoodMap() {

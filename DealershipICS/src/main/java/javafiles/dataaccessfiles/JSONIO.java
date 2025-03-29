@@ -45,9 +45,9 @@ class JSONIO extends FileIO {
         for (Key key : Key.values()) {
             Object dataPoint = jObj.get(key.getKey());
             if (dataPoint == null) {continue;}
-            if (!key.putNonNull(map, dataPoint)) {
+            if (!key.putValid(map, dataPoint)) {
                 ReadWriteException exception = new ReadWriteException("Unknown");
-                Key.REASON_FOR_ERROR.putNonNull(map, exception);
+                Key.REASON_FOR_ERROR.putValid(map, exception);
             }
 
         }

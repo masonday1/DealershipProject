@@ -1,6 +1,7 @@
 package javafiles.domainfiles;
 
 import javafiles.customexceptions.DealershipNotAcceptingVehiclesException;
+import javafiles.customexceptions.DuplicateSenderException;
 import javafiles.customexceptions.VehicleAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ public class CompanyTest {
 
     @Test
     public void testGetDealershipCompleteInventory() {
-        ArrayList<Vehicle> inventory = company.getDealershipCompleteInventory("D001");
+        ArrayList<Vehicle> inventory = dealership1.getTotalInventory();
         assertEquals(1, inventory.size());
         assertEquals("V001", inventory.get(0).getVehicleId());
     }
@@ -62,7 +63,7 @@ public class CompanyTest {
     @Test
     public void testUpdateVehicleRental_enablesAndMoves() throws Exception {
         mockVehicle.disableRental(); // currently not rentable
-        company.updateVehicleRental("D001", mockVehicle);
+        dealership1.updateVehicleRental(mockVehicle);
         assertTrue(mockVehicle.getRentalStatus());
     }
 
@@ -70,19 +71,19 @@ public class CompanyTest {
     public void testUpdateVehicleRental_throwsExceptionForSportsCar() throws VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException {
         Vehicle sportsCar = new SportsCar("V002", "911", 90000L);
         dealership1.addIncomingVehicle(sportsCar);
-        assertThrows(Exception.class, () -> company.updateVehicleRental("D001", sportsCar));
+        assertThrows(Exception.class, () -> dealership1.updateVehicleRental(sportsCar));
     }
 
     @Test
     public void testRemoveVehicleFromDealership() {
-        company.removeVehicleFromDealership("D001", mockVehicle);
+        dealership1.removeVehicleFromInventory(mockVehicle);
         assertTrue(dealership1.getTotalInventory().isEmpty());
     }
 
     @Test
     public void testDealershipVehicleTransfer_success() throws Exception {
         dealership2.setReceivingVehicle(true);
-        company.dealershipVehicleTransfer("D001", "D002", mockVehicle);
+        dealership1.dealershipVehicleTransfer(dealership2, mockVehicle);
 
         assertFalse(dealership1.getTotalInventory().contains(mockVehicle));
         assertTrue(dealership2.getTotalInventory().contains(mockVehicle));
@@ -90,7 +91,7 @@ public class CompanyTest {
 
     @Test
     public void testDealershipVehicleTransfer_duplicateSenderException() {
-        assertThrows(Exception.class, () -> company.dealershipVehicleTransfer("D001", "D001", mockVehicle));
+        assertThrows(DuplicateSenderException.class, () -> dealership1.dealershipVehicleTransfer(dealership1, mockVehicle));
     }
 
     @Test

@@ -108,14 +108,14 @@ class XMLIO extends FileIO {
                     try {
                         nodeValCast = Long.parseLong(nodeValue);
                     } catch (NumberFormatException e) {
-                        XMLKey.REASON.getKey().putNonNull(map, new ReadWriteException(e));
+                        XMLKey.REASON.getKey().putValid(map, new ReadWriteException(e));
                         return;
                     }
                 }
                 if (map.containsKey(key.getKey()) && !map.get(key.getKey()).equals(nodeValCast)) {
                     String reason = "[" + map.get(key.getKey()) + "] != [" + nodeValue + "].";
                     DuplicateKeyException cause = new DuplicateKeyException(reason);
-                    XMLKey.REASON.getKey().putNonNull(map, new ReadWriteException(cause));
+                    XMLKey.REASON.getKey().putValid(map, new ReadWriteException(cause));
                     return;
                 }
                 map.put(key.getKey(), nodeValCast);

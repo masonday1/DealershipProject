@@ -118,7 +118,7 @@ public class AppStateManager {
     /**
      * Transfers a vehicle from one dealership's inventory to another.
      * </p>
-     * Calls {@link Company#dealershipVehicleTransfer(String, String, Vehicle)}.
+     * Calls {@link Dealership#dealershipVehicleTransfer(Dealership, Vehicle)}.
      *
      * @param senderId        The ID of the dealership sending the vehicle.
      * @param receiverId      The ID of the dealership receiving the vehicle.
@@ -130,7 +130,10 @@ public class AppStateManager {
     public static void transferVehicle(String senderId, String receiverId, Vehicle transferVehicle) throws
             VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException, DuplicateSenderException
     {
-        company.dealershipVehicleTransfer(senderId,receiverId,transferVehicle);
+        Dealership sender = company.findDealership(senderId);
+        Dealership receiver = company.findDealership(receiverId);
+        sender.dealershipVehicleTransfer(receiver, transferVehicle);
+
         writeToInventory();
     }
 
@@ -161,7 +164,7 @@ public class AppStateManager {
             List<Map<Key, Object>> maps = fileIO.readInventory();
             List<Map<Key, Object>> badDataMaps = company.dataToInventory(maps);
 
-            if (!badDataMaps.isEmpty()) {GuiUtility.addFromFile(maps, badDataMaps);}
+            if (!badDataMaps.isEmpty()) {GuiUtility.showMapTables(maps, badDataMaps);}
         } catch (ReadWriteException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -209,9 +212,6 @@ public class AppStateManager {
                 .map(Dealership::getDealerId)
                 .collect(Collectors.toList());
     }
-
-
-
 
     /**
      * Retrieves a List of DealershipRow objects representing dealership data.
@@ -285,11 +285,12 @@ public class AppStateManager {
      * mwethod calls {@link Company#updateVehicleRental(String, Vehicle)}
      *
     */
-    public static void updateDealershipVehicleRentalState(String dealershipid, Vehicle vehicleToUpdate) throws
+    public static void updateDealershipVehicleRentalState(String dealershipId, Vehicle vehicleToUpdate) throws
              RentalException
 
     {
-        company.updateVehicleRental(dealershipid, vehicleToUpdate);
+        Dealership dealer = company.findDealership(dealershipId);
+        dealer.updateVehicleRental(vehicleToUpdate);
         writeToInventory();
     }
 
@@ -317,9 +318,9 @@ public class AppStateManager {
      * @param dealershipId dealership ID of target dealership
      * @return ArrayList<Vehicle> represent a complete collection of target dealership's sales and rental inventory
      */
-    public static ArrayList<Vehicle> getDealershipCompleteInventory(String dealershipId)
-    {
-        return company.getDealershipCompleteInventory(dealershipId);
+    public static ArrayList<Vehicle> getDealershipCompleteInventory(String dealershipId) {
+        Dealership dealer = company.findDealership(dealershipId);
+        return dealer.getTotalInventory();
     }
 
 
@@ -332,9 +333,10 @@ public class AppStateManager {
      * @throws EmptyInventoryException if target dealership's inventory is empty
      * @throws IllegalArgumentException if target vehicle is null
      */
-    public static void removeVehicleFromDealership(String dealershipId,Vehicle targetVehicle) throws IllegalArgumentException
+    public static void removeVehicleFromDealership(String dealershipId, Vehicle targetVehicle) throws IllegalArgumentException
     {
-        company.removeVehicleFromDealership(dealershipId,targetVehicle);
+        Dealership dealer = company.findDealership(dealershipId);
+        dealer.removeVehicleFromInventory(targetVehicle);
         writeToInventory();
     }
 

@@ -87,8 +87,6 @@ public class Dealership {
      * @throws VehicleNotFoundException if the vehicle is not found.
      */
     public Vehicle getVehicleFromRentalInventory(String vehicleID) throws VehicleNotFoundException {
-
-
         for (Vehicle vehicle : rentalInventory) {
             if (vehicle.getVehicleId()!= null && vehicle.getVehicleId().equals(vehicleID)) {
                 return vehicle;
@@ -96,8 +94,6 @@ public class Dealership {
         }
         throw new VehicleNotFoundException("Vehicle with ID: " + vehicleID + " not found in rental inventory.");
     }
-
-
 
     /**
      * Checks if a vehicle is already present in the given inventory.
@@ -136,7 +132,6 @@ public class Dealership {
         }
         return false;
     }
-
 
     /**
      * Adds a new vehicle to the dealership's sales inventory.
@@ -189,7 +184,7 @@ public class Dealership {
             vehicle = vehicleFactory.createVehicle(map);
         } catch (InvalidVehicleTypeException | InvalidPriceException | MissingCriticalInfoException e) {
             ReadWriteException exception = new ReadWriteException(e);
-            Key.REASON_FOR_ERROR.putNonNull(map, exception);
+            Key.REASON_FOR_ERROR.putValid(map, exception);
             return false;
         }
 
@@ -197,7 +192,7 @@ public class Dealership {
             addIncomingVehicle(vehicle);
         } catch (VehicleAlreadyExistsException | DealershipNotAcceptingVehiclesException e) {
             ReadWriteException exception = new ReadWriteException(e);
-            Key.REASON_FOR_ERROR.putNonNull(map, exception);
+            Key.REASON_FOR_ERROR.putValid(map, exception);
             return false;
         }
         return true;
@@ -264,6 +259,40 @@ public class Dealership {
         this.addIncomingVehicle(newVehicle);
     }
 
+    /**
+     * Updates the rental status of a vehicle within a dealership and moves it between
+     * the dealership's sales and rental inventories based on the updated rental status.
+     *
+     * @param vehicle       The vehicle object with the updated rental status. This is the same vehicle object that
+     * is present in the dealership's inventory (either sales or rental).
+     * @throws RentalException       If the vehicle is a sports car, which is not rentable.
+     */
+    public void updateVehicleRental(Vehicle vehicle) throws RentalException {
+        // Update the vehicle's rental status
+        if (!vehicle.getVehicleType().equalsIgnoreCase("Sports car")) {
+            if(vehicle.getRentalStatus())
+            {
+                vehicle.disableRental();
+            }
+            else
+            {
+                vehicle.enableRental();
+            }
+        }
+
+        else {
+            throw new VehicleNotRentableException("Sports car types are not currently rentable");
+        }
+
+        // Remove from the source inventory and add vehicle to opposite inventory
+        if (this.getSaleVehicles().contains(vehicle)) {
+            this.getSaleVehicles().remove(vehicle);
+            this.getRentalVehicles().add(vehicle);
+        } else {
+            this.getRentalVehicles().remove(vehicle);
+            this.getSaleVehicles().add(vehicle);
+        }
+    }
 
     /**
      * Adds a vehicle to the dealership's rental inventory.
@@ -299,9 +328,6 @@ public class Dealership {
         this.rentalInventory.add(rental);
     }
 
-
-
-
     /**
      * Retrieves Vehicle data for the Dealership.
      * <p>
@@ -320,16 +346,15 @@ public class Dealership {
 
         for (Vehicle vehicle: fullInventory) {
             Map<Key, Object> map = new HashMap<>();
-            Key.DEALERSHIP_ID.putNonNull(map, dealerId);
-            Key.DEALERSHIP_NAME.putNonNull(map, name);
-            Key.DEALERSHIP_RECEIVING_STATUS.putNonNull(map, receivingVehicle);
-            Key.DEALERSHIP_RENTING_STATUS.putNonNull(map, rentingVehicles);
+            Key.DEALERSHIP_ID.putValid(map, dealerId);
+            Key.DEALERSHIP_NAME.putValid(map, name);
+            Key.DEALERSHIP_RECEIVING_STATUS.putValid(map, receivingVehicle);
+            Key.DEALERSHIP_RENTING_STATUS.putValid(map, rentingVehicles);
             vehicle.getDataMap(map);
             list.add(map);
         }
         return list;
     }
-
 
     /**
      * Removes a vehicle from the dealership's inventory, including sales and rental.
@@ -356,57 +381,27 @@ public class Dealership {
         }
     }
 
-
     /**
-     * Appends a formatted string representation of a vehicle inventory list to a StringBuilder.
-     * <p>
-     * This private helper method iterates through a list of {@link Vehicle} objects and appends
-     * their string representations to the provided {@link StringBuilder}. It includes a header
-     * with the given inventory name and handles the case where the inventory is empty.
+     * Transfers a vehicle from one dealership's inventory to another.
+     * </p>
+     * Calls the {@link Dealership#addIncomingVehicle(Vehicle)} method
+     * to add the transfer vehicle to the receving dealership.
      *
-     * @param inventory     The list of {@link Vehicle} objects in the inventory.
-     * @param stringBuilder The {@link StringBuilder} to append the formatted string to.
-     * @param name          The name of the inventory (e.g., "Sales", "Rental").
+     * @param receivingDealer The {@link Dealership} receiving the vehicle.
+     * @param transferVehicle The vehicle to be transferred.
+     * @throws DuplicateSenderException         If the sender and receiver dealership IDs are the same.
+     * @throws VehicleAlreadyExistsException    If the receiving dealership already has the vehicle in its inventory.
+     * @throws DealershipNotAcceptingVehiclesException If the receiving dealership is not accepting vehicles.
      */
-    private void listToStrBuilder(List<Vehicle> inventory, StringBuilder stringBuilder, String name) {
-        if (!inventory.isEmpty()) {
-            stringBuilder.append(name);
-            stringBuilder.append(": ");
-            for (Vehicle vehicle : inventory) {
-                stringBuilder.append("\n\n");
-                stringBuilder.append(vehicle.toString());
-            }
-        } else {
-            stringBuilder.append(name);
-            stringBuilder.append(" does not currently have any inventory.");
+    public void dealershipVehicleTransfer(Dealership receivingDealer, Vehicle transferVehicle)
+            throws DuplicateSenderException, VehicleAlreadyExistsException, DealershipNotAcceptingVehiclesException
+    {
+        if (this.equals(receivingDealer)) {
+            throw new DuplicateSenderException("Sender and receiver dealership can not be the same");
         }
-    }
 
-    /**
-     * Prints the inventory of Vehicles for the Dealership.
-     * <p>
-     * This method iterates through both the sales and rental inventory of vehicles in the Dealership.
-     * It prints the Dealership ID followed by the inventory of Vehicles
-     * separated by an empty line If a Dealership has no inventory,
-     * a message indicating this is printed.
-     */
-    public String toFullString() {
-        String sep = "\n---------------------------------------------\n";
-        StringBuilder stringBuilder = new StringBuilder("Dealership ID: " + dealerId);
-        stringBuilder.append("\n");
-
-        stringBuilder.append("Dealership Name: ");
-        stringBuilder.append(Objects.requireNonNullElse(name, "No name on file."));
-
-        stringBuilder.append(sep);
-        listToStrBuilder(salesInventory, stringBuilder, "Sales");
-
-        stringBuilder.append(sep);
-        listToStrBuilder(rentalInventory, stringBuilder, "Rental");
-
-        stringBuilder.append(sep);
-
-        return stringBuilder.toString();
+        this.removeVehicleFromInventory(transferVehicle);
+        receivingDealer.addIncomingVehicle(transferVehicle);
     }
 
     /**
