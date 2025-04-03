@@ -155,7 +155,7 @@ public abstract class Vehicle {
 
 
     /**
-     * Gets the acquisition date formatted as a String in "dd/MM/yyyy" format.
+     * Gets the acquisition date formatted as a String in "MM/dd/yyyy" format.
      * If the acquisition date null or if its en empty string "", an empty String
      * returned.
      *
@@ -163,14 +163,14 @@ public abstract class Vehicle {
      * @throws InvalidAcquisitionDateException if the acquisitionDate is null or an invalid epoch time.
      */
     public String getFormattedAcquisitionDate() throws InvalidAcquisitionDateException {
-        if (acquisitionDate == null || acquisitionDate.equals("")) {
+        if (acquisitionDate == null) {
             return "";
         }
         try {
             LocalDate localDate = Instant.ofEpochMilli(acquisitionDate)
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
-            return localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            return localDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         } catch (Exception e) {
             throw new InvalidAcquisitionDateException("Invalid acquisition date epoch time.");
         }

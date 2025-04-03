@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.DatePicker?>
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafiles.gui.VehicleEntryController">
     <HBox alignment="TOP_CENTER" spacing="10.0" VBox.vgrow="NEVER">
         <padding>
@@ -56,7 +57,7 @@
         <Label text="Vehicle Manufacturer:" GridPane.columnIndex="2" />
         <TextField fx:id="vehicleManufacturerField" GridPane.columnIndex="3" />
         <Label text="Acquisition Date:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <TextField fx:id="acquisitionDateField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+        <DatePicker fx:id="acquisitionDatePicker" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
         <Label text="Price Unit:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
         <TextField fx:id="priceUnitField" GridPane.columnIndex="3" GridPane.rowIndex="2" />
     </GridPane>

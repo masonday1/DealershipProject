@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import javax.swing.*;
@@ -14,6 +15,8 @@ import javax.swing.*;
 import java.io.IOException;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -54,7 +57,7 @@ public class VehicleEntryController implements Initializable {
     private TextField vehicleManufacturerField;
 
     @FXML
-    private TextField acquisitionDateField;
+    private DatePicker acquisitionDatePicker;
 
     @FXML
     private TextField priceUnitField;
@@ -124,8 +127,13 @@ public class VehicleEntryController implements Initializable {
             String vehicleType = vehicleTypeField.getText();
             Key.VEHICLE_TYPE.putValid(map, vehicleType);
 
-            String acquisitionDateStr = acquisitionDateField.getText();
-            Long acquisitionDate = acquisitionDateStr.isEmpty() ? null : parseAcquisitionDate(acquisitionDateStr);
+
+            // Get date from DatePicker and convert to epoch
+            LocalDate localDate = acquisitionDatePicker.getValue();
+            Long acquisitionDate = null;
+            if (localDate != null) {
+                acquisitionDate = convertLocalDateToEpoch(localDate);
+            }
             Key.VEHICLE_ACQUISITION_DATE.putValid(map, acquisitionDate);
 
             String vehiclePriceStr = vehiclePriceField.getText();
@@ -147,7 +155,7 @@ public class VehicleEntryController implements Initializable {
 
         } catch (VehicleAlreadyExistsException | InvalidPriceException |
                  DealershipNotAcceptingVehiclesException | InvalidVehicleTypeException |
-                 InvalidAcquisitionDateException | InvalidLongPriceException |
+                 InvalidLongPriceException |
                  DealershipNotSelectedException | MissingCriticalInfoException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -174,7 +182,7 @@ public class VehicleEntryController implements Initializable {
         vehicleModelField.clear();
         vehiclePriceField.clear();
         vehicleManufacturerField.clear();
-        acquisitionDateField.clear();
+        acquisitionDatePicker.setValue(null);
         priceUnitField.clear();
     }
 
@@ -194,18 +202,16 @@ public class VehicleEntryController implements Initializable {
     }
 
     /**
-     * Parses a string representing an acquisition date into a Long.
+     * Converts a LocalDate to epoch milliseconds.
      *
-     * @param dateStr The string to parse.
-     * @return The parsed acquisition date as a Long.
-     * @throws InvalidAcquisitionDateException If the string cannot be parsed into a Long.
+     * @param localDate The LocalDate to convert.
+     * @return The epoch milliseconds, or null if localDate is null.
      */
-    private Long parseAcquisitionDate(String dateStr) throws InvalidAcquisitionDateException {
-        try {
-            return Long.parseLong(dateStr);
-        } catch (NumberFormatException e) {
-            throw new InvalidAcquisitionDateException("Invalid format for acquisition date. Please enter a valid Epoch time number.");
+    private Long convertLocalDateToEpoch(LocalDate localDate) {
+        if (localDate == null) {
+            return null;
         }
+        return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
 }
